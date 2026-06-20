@@ -763,7 +763,7 @@ function corPac(nome){return CORES[nome.charCodeAt(0)%CORES.length];}
 function iniPac(nome){return nome.split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();}
 
 async function carregarDashboard(){
-  const {data:pacs,count:cPacs}=await sb.from('pacientes').select('*',{count:'exact'}).eq('status','Ativo');
+  const {data:pacs,count:cPacs}=await sb.from('pacientes').select('*',{count:'exact'}).in('status',['Ativo','Novo']);
   const {count:cPlanos}=await sb.from('planos').select('*',{count:'exact'}).eq('status','Ativo');
   const hoje=new Date().toISOString().split('T')[0];
   const {count:cCons}=await sb.from('consultas').select('*',{count:'exact'}).gte('data_hora',hoje+'T00:00:00').lte('data_hora',hoje+'T23:59:59');
@@ -774,7 +774,8 @@ async function carregarDashboard(){
   document.getElementById('st-planos').textContent=cPlanos||0;
   document.getElementById('st-consultas').textContent=cCons||0;
   document.getElementById('st-novos').textContent=cNovos||0;
-  document.getElementById('badge-pac').textContent=cPacs||0;
+  const {count:totalPacs}=await sb.from('pacientes').select('*',{count:'exact'});
+  document.getElementById('badge-pac').textContent=totalPacs||0;
   document.getElementById('welcome-sub').textContent=(cCons||0)+' consulta(s) hoje · '+(cPlanos||0)+' plano(s) ativo(s)';
 
   if(pacs&&pacs.length>0){
