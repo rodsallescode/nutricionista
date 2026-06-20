@@ -6,86 +6,53 @@
 <title>NutriJéssica</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --am: #F9CD54; --am2: #f0c040;
-  --pe: #FAB87F; --pe2: #F9D2B1;
-  --cr: #FEFAF0; --cr2: #F5EFE0;
-  --dk: #404041; --dm: #6B6B6C;
-  --ro: #F59996; --ve: #C5D9A6;
-  --az: #9AA9C7; --te: #B0DEDB;
-  --bd: #EDE7D8;
-  --r: 14px; --rs: 10px;
-  --sh: 0 4px 24px rgba(64,64,65,.08);
-  --shb: 0 8px 40px rgba(64,64,65,.14);
+:root{
+  --am:#F9CD54;--am2:#f0c040;--pe:#FAB87F;--pe2:#F9D2B1;
+  --cr:#FEFAF0;--dk:#404041;--dm:#6B6B6C;
+  --ro:#F59996;--ve:#C5D9A6;--az:#9AA9C7;--te:#B0DEDB;--bd:#EDE7D8;
+  --r:14px;--rs:10px;--sh:0 4px 24px rgba(64,64,65,.08);--shb:0 8px 40px rgba(64,64,65,.14);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-height:100vh;overflow-x:hidden}
 
-/* ══ LOGIN ══ */
+/* LOGIN */
 #login-screen{min-height:100vh;display:flex;flex-direction:column}
-.login-hero{
-  background:linear-gradient(135deg,var(--am) 0%,var(--pe) 100%);
-  padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden;
-}
+.login-hero{background:linear-gradient(135deg,var(--am),var(--pe));padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden}
 .login-hero::before{content:'';position:absolute;width:320px;height:320px;border-radius:50%;border:1px solid rgba(255,255,255,.18);top:-100px;left:-80px}
 .login-hero::after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;border:1px solid rgba(255,255,255,.12);bottom:-60px;right:-40px}
-.login-hero .script{font-size:36px;font-weight:300;font-style:italic;color:#fff;letter-spacing:-1px;line-height:1;position:relative;z-index:1}
-.login-hero .crn{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.8);margin-top:6px;position:relative;z-index:1}
-.login-hero .tagline{font-size:16px;font-weight:600;color:#fff;margin-top:20px;line-height:1.4;position:relative;z-index:1}
-.login-hero .tagline em{font-style:italic;font-weight:300}
-.login-pills{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:18px;position:relative;z-index:1}
-.login-pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 13px;font-size:11px;color:#fff;font-weight:500}
-
+.lh-script{font-size:36px;font-weight:300;font-style:italic;color:#fff;letter-spacing:-1px;line-height:1;position:relative;z-index:1}
+.lh-crn{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.8);margin-top:6px;position:relative;z-index:1}
+.lh-tag{font-size:16px;font-weight:600;color:#fff;margin-top:20px;line-height:1.4;position:relative;z-index:1}
+.lh-tag em{font-style:italic;font-weight:300}
+.lh-pills{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:18px;position:relative;z-index:1}
+.lh-pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 13px;font-size:11px;color:#fff;font-weight:500}
 .login-body{flex:1;display:flex;flex-direction:column;padding:28px 20px 32px;max-width:480px;margin:0 auto;width:100%}
-
-/* Perfil toggle */
 .profile-toggle{display:flex;background:white;border:1.5px solid var(--bd);border-radius:var(--r);padding:4px;margin-bottom:24px;gap:4px}
-.pt-btn{
-  flex:1;padding:11px 8px;border:none;background:none;border-radius:10px;
-  font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;
-  color:var(--dm);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;
-}
+.pt-btn{flex:1;padding:11px 8px;border:none;background:none;border-radius:10px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
 .pt-btn.active{background:var(--am);color:var(--dk);box-shadow:0 2px 8px rgba(249,205,84,.4)}
-
 .login-label{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--dm);margin-bottom:6px;display:block}
-.login-input{
-  width:100%;background:white;border:1.5px solid var(--bd);border-radius:var(--rs);
-  padding:14px 16px;font-size:14px;font-family:'Poppins',sans-serif;color:var(--dk);
-  outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:16px;
-}
+.login-input{width:100%;background:white;border:1.5px solid var(--bd);border-radius:var(--rs);padding:14px 16px;font-size:14px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:16px}
 .login-input:focus{border-color:var(--am);box-shadow:0 0 0 3px rgba(249,205,84,.2)}
-.btn-enter{
-  width:100%;border:none;border-radius:var(--rs);padding:16px;
-  font-size:15px;font-weight:600;font-family:'Poppins',sans-serif;
-  cursor:pointer;transition:all .2s;margin-top:4px;
-}
+.pac-info{background:#EEF4FB;border-radius:var(--rs);padding:14px 16px;margin-bottom:20px;font-size:12.5px;color:#1565C0;line-height:1.5;border:1px solid #c5d5ea}
+.btn-enter{width:100%;border:none;border-radius:var(--rs);padding:16px;font-size:15px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s;margin-top:4px}
 .btn-enter.nutri{background:var(--am);color:var(--dk)}
 .btn-enter.nutri:hover{background:var(--am2)}
 .btn-enter.pac{background:var(--az);color:#fff}
-.btn-enter.pac:hover{background:#8899B7}
+.btn-enter:disabled{opacity:.6;cursor:default}
 .login-foot{margin-top:20px;font-size:12px;color:var(--dm);text-align:center}
 .login-foot a{color:var(--pe);text-decoration:none;font-weight:500}
 
-.pac-info{background:#EEF4FB;border-radius:var(--rs);padding:14px 16px;margin-bottom:20px;font-size:12.5px;color:#1565C0;line-height:1.5;border:1px solid #c5d5ea}
-
-/* ══ APP NUTRICIONISTA ══ */
+/* SIDEBAR */
 #app-nutri{display:none}
-.sidebar{
-  position:fixed;left:0;top:0;bottom:0;width:230px;
-  background:white;border-right:1px solid var(--bd);
-  display:flex;flex-direction:column;z-index:200;transition:transform .3s;
-}
-.sidebar.hidden{transform:translateX(-100%)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:150}
+.sidebar-overlay.show{display:block}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:white;border-right:1px solid var(--bd);display:flex;flex-direction:column;z-index:200;transition:transform .3s}
 .sb-brand{padding:24px 20px 18px;border-bottom:1px solid var(--bd)}
 .sb-brand .sc{font-size:18px;font-style:italic;font-weight:300;color:var(--dk)}
 .sb-brand .sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dm);margin-top:3px}
 .sb-nav{flex:1;padding:14px 10px;overflow-y:auto}
 .nav-lbl{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;padding:10px 10px 5px}
-.nav-btn{
-  display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rs);
-  font-size:13px;font-weight:500;color:var(--dm);cursor:pointer;transition:all .15s;
-  margin-bottom:2px;border:none;background:none;width:100%;text-align:left;
-}
+.nav-btn{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rs);font-size:13px;font-weight:500;color:var(--dm);cursor:pointer;transition:all .15s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
 .nav-btn:hover{background:var(--cr);color:var(--dk)}
 .nav-btn.active{background:#FEF5D4;color:var(--dk)}
 .nav-ic{font-size:15px;width:18px;text-align:center}
@@ -98,13 +65,9 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .btn-out{margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;color:#B0A898;padding:4px;transition:color .15s}
 .btn-out:hover{color:var(--ro)}
 
-.main-nutri{margin-left:230px;min-height:100vh;background:var(--cr);transition:margin .3s}
-.main-nutri.full{margin-left:0}
-.topbar{
-  background:white;border-bottom:1px solid var(--bd);
-  padding:14px 24px;display:flex;align-items:center;
-  justify-content:space-between;position:sticky;top:0;z-index:100;
-}
+/* MAIN */
+.main-nutri{margin-left:230px;min-height:100vh;background:var(--cr)}
+.topbar{background:white;border-bottom:1px solid var(--bd);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .topbar-left{display:flex;align-items:center;gap:12px}
 .btn-menu{background:none;border:none;cursor:pointer;font-size:20px;color:var(--dm);padding:4px;display:none}
 .tb-title{font-size:15px;font-weight:600;color:var(--dk)}
@@ -112,27 +75,26 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .btn-new:hover{background:var(--am2)}
 .content{padding:24px}
 
-/* Cards & Grids */
+/* DASHBOARD */
 .welcome-bar{background:linear-gradient(135deg,var(--am),var(--pe));border-radius:var(--r);padding:22px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;position:relative;overflow:hidden}
 .welcome-bar::after{content:'🌿';position:absolute;right:80px;bottom:-10px;font-size:70px;opacity:.15}
 .welcome-bar h2{font-size:18px;font-weight:700;color:#fff}
 .welcome-bar p{font-size:12px;color:rgba(255,255,255,.8);margin-top:3px}
 .wb-day{font-size:11px;background:rgba(255,255,255,.25);border-radius:999px;padding:5px 13px;color:#fff;font-weight:500;white-space:nowrap}
-
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
 .stat-card{background:white;border-radius:var(--r);padding:18px 20px;border:1px solid var(--bd);position:relative;overflow:hidden}
 .stat-card .ac{position:absolute;top:0;right:0;width:70px;height:70px;border-radius:0 var(--r) 0 70px;opacity:.15}
 .stat-ic{font-size:20px;margin-bottom:10px}
 .stat-v{font-size:26px;font-weight:700;color:var(--dk);line-height:1}
 .stat-lb{font-size:11.5px;color:var(--dm);margin-top:3px;font-weight:500}
-.stat-d{font-size:11px;margin-top:5px;font-weight:500;color:#6BBF8E}
-
+.stat-d{font-size:11px;margin-top:5px;font-weight:500;color:var(--dm)}
 .two-col{display:grid;grid-template-columns:1fr 300px;gap:18px;margin-bottom:22px}
 .card{background:white;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden}
 .card-hd{padding:15px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
 .card-ttl{font-size:13.5px;font-weight:600;color:var(--dk)}
 .card-lk{font-size:12px;color:var(--pe);font-weight:500;cursor:pointer}
 
+/* LISTAS */
 .pat-row{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid #F5EFE4;cursor:pointer;transition:background .15s}
 .pat-row:last-child{border-bottom:none}
 .pat-row:hover{background:var(--cr)}
@@ -143,7 +105,6 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .b-at{background:#E8F5E9;color:#388E3C}
 .b-re{background:#FFF8E1;color:#F59600}
 .b-nv{background:#E3F2FD;color:#1565C0}
-
 .ag-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid #F5EFE4;cursor:pointer;transition:background .15s}
 .ag-item:last-child{border-bottom:none}
 .ag-item:hover{background:var(--cr)}
@@ -152,7 +113,15 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .ag-tp{font-size:11px;color:var(--dm);margin-top:1px}
 .ag-dot{width:7px;height:7px;border-radius:50%;margin-left:auto;flex-shrink:0}
 
-/* Pacientes page */
+/* VAZIO */
+.empty-state{text-align:center;padding:48px 24px;color:var(--dm)}
+.empty-state .es-ico{font-size:48px;margin-bottom:16px;opacity:.5}
+.empty-state h3{font-size:16px;font-weight:600;color:var(--dk);margin-bottom:8px}
+.empty-state p{font-size:13px;line-height:1.6;margin-bottom:20px}
+.btn-primary{background:var(--am);border:none;border-radius:var(--rs);padding:12px 24px;font-size:13.5px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer;transition:background .2s;display:inline-block}
+.btn-primary:hover{background:var(--am2)}
+
+/* PACIENTES */
 .pg-hd{margin-bottom:22px}
 .pg-hd h2{font-size:20px;font-weight:700;color:var(--dk)}
 .pg-hd p{font-size:12.5px;color:var(--dm);margin-top:3px}
@@ -171,29 +140,67 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .pcs-v{font-size:13px;font-weight:700;color:var(--dk)}
 .pcs-l{font-size:10px;color:var(--dm);margin-top:1px;font-weight:500}
 
-/* Agenda */
-.ag-week{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
-.wk-col{background:white;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden}
-.wk-hd{padding:10px 12px;text-align:center;border-bottom:1px solid var(--bd);background:var(--cr)}
-.wk-hd.today{background:var(--am)}
-.wk-dn{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dm);font-weight:600}
-.wk-num{font-size:18px;font-weight:700;color:var(--dk);line-height:1.2;margin-top:2px}
-.wk-hd.today .wk-dn,.wk-hd.today .wk-num{color:var(--dk)}
-.wk-slot{padding:8px 10px;border-bottom:1px solid #F5EFE4;min-height:48px}
-.wk-slot:last-child{border-bottom:none}
-.wk-ap{background:#FEF5D4;border-left:3px solid var(--am);border-radius:5px;padding:5px 7px;font-size:10.5px}
-.wk-ap-n{font-weight:600;color:var(--dk)}
-.wk-ap-t{color:var(--dm);margin-top:1px}
-
-/* Evolução */
-.evo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:18px}
-.evo-card{background:white;border-radius:var(--r);border:1px solid var(--bd);padding:20px}
-.evo-card h4{font-size:12px;font-weight:600;color:var(--dm);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
-.evo-bar{height:7px;background:#EDE7D8;border-radius:4px;margin-bottom:10px;overflow:hidden}
-.evo-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--am),var(--pe))}
-.evo-lbl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--dm);margin-bottom:3px}
-.evo-lbl span:last-child{font-weight:600;color:var(--dk)}
-.evo-delta{font-size:11px;margin-top:10px;font-weight:500;color:#6BBF8E}
+/* FICHA */
+#page-ficha{display:none}
+.ficha-back{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--dm);cursor:pointer;margin-bottom:18px;background:none;border:none;font-family:'Poppins',sans-serif;padding:0;transition:color .15s}
+.ficha-back:hover{color:var(--dk)}
+.ficha-hero{background:linear-gradient(135deg,var(--am),var(--pe));border-radius:var(--r);padding:22px 24px;display:flex;align-items:center;gap:18px;margin-bottom:20px;position:relative;overflow:hidden}
+.ficha-hero::after{content:'';position:absolute;width:180px;height:180px;border-radius:50%;border:1px solid rgba(255,255,255,.15);right:-40px;top:-40px}
+.ficha-av{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.5)}
+.ficha-hero-info h2{font-size:18px;font-weight:700;color:#fff}
+.ficha-hero-info p{font-size:12px;color:rgba(255,255,255,.8);margin-top:3px}
+.ficha-hero-badges{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
+.fh-badge{background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:3px 11px;font-size:11px;color:#fff;font-weight:500}
+.ficha-hero-stats{margin-left:auto;display:flex;gap:16px;flex-shrink:0}
+.fhs{text-align:center}
+.fhs-v{font-size:20px;font-weight:700;color:#fff;line-height:1}
+.fhs-l{font-size:10px;color:rgba(255,255,255,.75);margin-top:3px;font-weight:500}
+.ficha-tabs{display:flex;gap:4px;background:white;border:1px solid var(--bd);border-radius:var(--r);padding:4px;margin-bottom:20px;flex-wrap:wrap}
+.ftab{flex:1;min-width:80px;padding:9px 8px;border:none;background:none;border-radius:var(--rs);font-size:12.5px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer;transition:all .2s;white-space:nowrap}
+.ftab.active{background:var(--am);color:var(--dk)}
+.ftab-content{display:none}
+.ftab-content.active{display:block}
+.fsec{background:white;border-radius:var(--r);border:1px solid var(--bd);margin-bottom:16px;overflow:hidden}
+.fsec-hd{padding:14px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.fsec-title{font-size:13.5px;font-weight:600;color:var(--dk)}
+.fsec-action{font-size:12px;color:var(--pe);font-weight:500;cursor:pointer;background:none;border:none;font-family:'Poppins',sans-serif}
+.fsec-body{padding:16px 20px}
+.fdata-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fdata-item{background:var(--cr);border-radius:var(--rs);padding:12px}
+.fdi-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#B0A898;margin-bottom:4px}
+.fdi-value{font-size:14px;font-weight:600;color:var(--dk)}
+.antro-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.antro-table th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#B0A898;padding:8px 12px;border-bottom:1px solid var(--bd)}
+.antro-table td{padding:10px 12px;border-bottom:1px solid #F5EFE4;color:var(--dk)}
+.antro-table tr:last-child td{border-bottom:none}
+.antro-table tr:hover td{background:var(--cr)}
+.delta-pos{color:#6BBF8E;font-weight:600;font-size:11px}
+.delta-ok{color:var(--az);font-weight:600;font-size:11px}
+.nota-item{border-left:3px solid var(--am);padding:12px 14px;margin-bottom:12px;background:var(--cr);border-radius:0 var(--rs) var(--rs) 0}
+.nota-item:last-child{margin-bottom:0}
+.nota-data{font-size:10.5px;font-weight:600;color:var(--dm);margin-bottom:6px}
+.nota-texto{font-size:13px;color:var(--dk);line-height:1.6}
+.nota-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;margin-top:6px}
+.nt-consulta{background:#FEF5D4;color:#B8860B}
+.nt-retorno{background:#E8F5E9;color:#388E3C}
+.nt-obs{background:#E3F2FD;color:#1565C0}
+.nota-form textarea{width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:var(--rs);padding:12px 14px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:90px;transition:border-color .2s;margin-bottom:10px;display:block}
+.nota-form textarea:focus{border-color:var(--am)}
+.nota-form-row{display:flex;gap:8px;align-items:center}
+.nota-tipo-sel{background:var(--cr);border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 12px;font-size:12.5px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none}
+.btn-salvar{background:var(--am);border:none;border-radius:var(--rs);padding:11px 22px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer;transition:background .2s}
+.btn-salvar:hover{background:var(--am2)}
+.diario-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #F5EFE4}
+.diario-item:last-child{border-bottom:none}
+.diario-data{font-size:11px;font-weight:600;color:var(--dm);min-width:52px;padding-top:2px}
+.diario-content p{font-size:13px;color:var(--dk);line-height:1.6}
+.diario-content .dc-sub{font-size:11px;color:var(--dm);margin-top:3px}
+.plano-resumo-item{display:flex;gap:12px;padding:12px 20px;border-bottom:1px solid #F5EFE4;align-items:flex-start}
+.plano-resumo-item:last-child{border-bottom:none}
+.pri-time{font-size:11px;font-weight:600;background:var(--cr);border-radius:7px;padding:4px 8px;color:var(--dk);white-space:nowrap;flex-shrink:0;border:1px solid var(--bd)}
+.pri-nome{font-size:13px;font-weight:600;color:var(--dk);margin-bottom:2px}
+.pri-desc{font-size:12px;color:var(--dm);line-height:1.5}
+.pri-kcal{font-size:10.5px;font-weight:600;color:var(--pe);margin-top:3px}
 
 /* IA */
 .ia-wrap{max-width:680px;margin:0 auto}
@@ -214,17 +221,14 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .plano-vazio{background:var(--cr);border-radius:var(--r);padding:32px;border:1px dashed #D4C9B0;text-align:center;color:var(--dm);font-size:13px}
 .plano-vazio .ico{font-size:36px;margin-bottom:10px}
 
-/* Planos */
-.planos-card{background:white;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden}
-
-/* ══ PORTAL PACIENTE ══ */
+/* PORTAL PACIENTE */
 #app-pac{display:none;min-height:100vh;background:var(--cr)}
 .pac-topbar{background:linear-gradient(135deg,var(--am),var(--pe));padding:20px 20px 60px;position:relative;overflow:hidden}
 .pac-topbar::after{content:'';position:absolute;bottom:-30px;left:0;right:0;height:60px;background:var(--cr);border-radius:30px 30px 0 0}
 .pac-topbar-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between}
 .pac-topbar-inner h2{font-size:17px;font-weight:700;color:#fff}
 .pac-topbar-inner p{font-size:12px;color:rgba(255,255,255,.8);margin-top:2px}
-.pac-out{background:none;border:none;cursor:pointer;font-size:13px;color:rgba(255,255,255,.85);font-family:'Poppins',sans-serif;font-weight:500;padding:6px 12px;border:1px solid rgba(255,255,255,.4);border-radius:999px}
+.pac-out{background:none;border:1px solid rgba(255,255,255,.4);border-radius:999px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.85);font-family:'Poppins',sans-serif;font-weight:500;padding:6px 12px}
 .pac-body{padding:20px;max-width:560px;margin:0 auto}
 .pac-section-title{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin:20px 0 12px}
 .pac-card{background:white;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;margin-bottom:14px}
@@ -237,42 +241,29 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .ref-nome{font-size:13px;font-weight:600;color:var(--dk);margin-bottom:3px}
 .ref-items{font-size:12px;color:var(--dm);line-height:1.6}
 .ref-kcal{font-size:10.5px;font-weight:600;color:var(--pe);margin-top:4px}
-
 .pac-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .pac-stat{background:white;border-radius:var(--r);border:1px solid var(--bd);padding:16px;text-align:center}
 .pac-stat-v{font-size:26px;font-weight:700;color:var(--dk)}
 .pac-stat-l{font-size:11px;color:var(--dm);margin-top:3px;font-weight:500}
 .pac-stat-d{font-size:11px;color:#6BBF8E;font-weight:500;margin-top:4px}
-
 .pac-consulta{background:white;border-radius:var(--r);border:1px solid var(--bd);padding:18px;display:flex;gap:14px;align-items:center;margin-bottom:14px}
 .cons-date{background:var(--am);border-radius:var(--rs);padding:10px 14px;text-align:center;flex-shrink:0}
 .cons-day{font-size:22px;font-weight:700;color:var(--dk);line-height:1}
 .cons-mon{font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:600;color:var(--dk)}
 .cons-info h4{font-size:13.5px;font-weight:600;color:var(--dk);margin-bottom:3px}
 .cons-info p{font-size:12px;color:var(--dm);line-height:1.5}
-
 .diario-form{padding:18px}
 .diario-form textarea{width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:11px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:80px;transition:border-color .2s;display:block;margin-bottom:10px}
 .diario-form textarea:focus{border-color:var(--am)}
-.btn-salvar{background:var(--am);border:none;border-radius:var(--rs);padding:11px 22px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer;transition:background .2s}
-.btn-salvar:hover{background:var(--am2)}
 
-/* Overlay sidebar mobile */
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:150}
-.sidebar-overlay.show{display:block}
-
-/* Toast */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--dk);color:#fff;padding:12px 22px;border-radius:var(--rs);font-size:13px;font-weight:500;box-shadow:var(--shb);opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ══ MODAL NOVO PACIENTE ══ */
+/* MODAL */
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(64,64,65,.45);z-index:500;align-items:center;justify-content:center;padding:20px}
 .modal-backdrop.open{display:flex}
 .modal{background:white;border-radius:var(--r);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shb)}
 .modal-hd{padding:20px 24px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1}
 .modal-hd h3{font-size:16px;font-weight:700;color:var(--dk)}
 .modal-hd p{font-size:11.5px;color:var(--dm);margin-top:2px}
-.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--dm);padding:4px;line-height:1;transition:color .15s}
+.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--dm);padding:4px;line-height:1}
 .modal-close:hover{color:var(--ro)}
 .modal-body{padding:20px 24px}
 .modal-section{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin:18px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
@@ -283,21 +274,19 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .mfield input,.mfield select,.mfield textarea{width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:11px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;transition:border-color .2s,box-shadow .2s}
 .mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--am);box-shadow:0 0 0 3px rgba(249,205,84,.18)}
 .mfield textarea{resize:vertical;min-height:70px}
-.mfield input[type=password]{letter-spacing:2px}
-.mfield input[type=password]::placeholder{letter-spacing:0}
 .acesso-box{background:#F0F7FF;border:1.5px solid #c5d5ea;border-radius:var(--r);padding:16px 18px;margin-bottom:14px}
-.acesso-box .ab-title{font-size:12.5px;font-weight:600;color:#1565C0;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.acesso-box .ab-title{font-size:12.5px;font-weight:600;color:#1565C0;margin-bottom:4px}
 .acesso-box .ab-desc{font-size:11.5px;color:#1565C0;opacity:.75;line-height:1.5}
 .senha-wrap{position:relative}
 .senha-wrap input{padding-right:44px}
 .btn-olho{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--dm);padding:4px}
-.btn-gerar-senha{background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer;transition:all .2s;white-space:nowrap;margin-top:6px}
-.btn-gerar-senha:hover{border-color:var(--am);color:var(--dk);background:var(--cr)}
+.btn-gerar-senha{background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer;transition:all .2s;margin-top:6px}
+.btn-gerar-senha:hover{border-color:var(--am);color:var(--dk)}
 .strength-bar{height:4px;border-radius:2px;background:#EDE7D8;margin-top:6px;overflow:hidden}
 .strength-fill{height:100%;border-radius:2px;transition:width .3s,background .3s}
 .strength-label{font-size:10px;color:var(--dm);margin-top:3px}
 .modal-ft{padding:16px 24px;border-top:1px solid var(--bd);display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:0;background:white}
-.btn-cancel{background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:10px 20px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer;transition:all .2s}
+.btn-cancel{background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:10px 20px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer}
 .btn-cancel:hover{border-color:var(--dk);color:var(--dk)}
 .btn-criar{background:var(--am);border:none;border-radius:var(--rs);padding:10px 24px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer;transition:background .2s}
 .btn-criar:hover{background:var(--am2)}
@@ -309,118 +298,20 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .sucesso-box p{font-size:12px;color:#388E3C;line-height:1.5}
 .credencial-box{background:white;border:1.5px solid #c8e6c9;border-radius:var(--rs);padding:14px 16px;margin-top:12px;text-align:left}
 .credencial-box .cr-row{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:4px 0;border-bottom:1px solid #e8f5e9}
-.credencial-box .cr-row:last-child{border-bottom:none;padding-bottom:0}
+.credencial-box .cr-row:last-child{border-bottom:none}
 .credencial-box .cr-label{color:#388E3C;font-weight:500}
 .credencial-box .cr-value{font-weight:700;color:#1B5E20;font-family:monospace;font-size:13px}
-@media(max-width:600px){
-  .mrow{grid-template-columns:1fr}
-  .modal-ft{flex-direction:column-reverse}
-  .btn-cancel,.btn-criar{width:100%;text-align:center;padding:13px}
-}
 
-/* ══ FICHA DO PACIENTE ══ */
-#page-ficha{display:none}
-.ficha-back{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--dm);cursor:pointer;margin-bottom:18px;background:none;border:none;font-family:'Poppins',sans-serif;padding:0;transition:color .15s}
-.ficha-back:hover{color:var(--dk)}
-.ficha-hero{background:linear-gradient(135deg,var(--am),var(--pe));border-radius:var(--r);padding:22px 24px;display:flex;align-items:center;gap:18px;margin-bottom:20px;position:relative;overflow:hidden}
-.ficha-hero::after{content:'';position:absolute;width:180px;height:180px;border-radius:50%;border:1px solid rgba(255,255,255,.15);right:-40px;top:-40px}
-.ficha-av{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.5)}
-.ficha-hero-info h2{font-size:18px;font-weight:700;color:#fff}
-.ficha-hero-info p{font-size:12px;color:rgba(255,255,255,.8);margin-top:3px}
-.ficha-hero-badges{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
-.fh-badge{background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:3px 11px;font-size:11px;color:#fff;font-weight:500}
-.ficha-hero-stats{margin-left:auto;display:flex;gap:16px;flex-shrink:0}
-.fhs{text-align:center}
-.fhs-v{font-size:20px;font-weight:700;color:#fff;line-height:1}
-.fhs-l{font-size:10px;color:rgba(255,255,255,.75);margin-top:3px;font-weight:500}
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--dk);color:#fff;padding:12px 22px;border-radius:var(--rs);font-size:13px;font-weight:500;box-shadow:var(--shb);opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* Abas */
-.ficha-tabs{display:flex;gap:4px;background:white;border:1px solid var(--bd);border-radius:var(--r);padding:4px;margin-bottom:20px;flex-wrap:wrap}
-.ftab{flex:1;min-width:80px;padding:9px 8px;border:none;background:none;border-radius:var(--rs);font-size:12.5px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer;transition:all .2s;white-space:nowrap}
-.ftab.active{background:var(--am);color:var(--dk)}
-.ftab-content{display:none}
-.ftab-content.active{display:block}
-
-/* Seções da ficha */
-.fsec{background:white;border-radius:var(--r);border:1px solid var(--bd);margin-bottom:16px;overflow:hidden}
-.fsec-hd{padding:14px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.fsec-title{font-size:13.5px;font-weight:600;color:var(--dk)}
-.fsec-action{font-size:12px;color:var(--pe);font-weight:500;cursor:pointer;background:none;border:none;font-family:'Poppins',sans-serif}
-.fsec-body{padding:16px 20px}
-.fdata-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.fdata-item{background:var(--cr);border-radius:var(--rs);padding:12px}
-.fdi-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#B0A898;margin-bottom:4px}
-.fdi-value{font-size:14px;font-weight:600;color:var(--dk)}
-.fdi-sub{font-size:10.5px;color:var(--dm);margin-top:2px}
-
-/* Antropometria — histórico */
-.antro-table{width:100%;border-collapse:collapse;font-size:12.5px}
-.antro-table th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#B0A898;padding:8px 12px;border-bottom:1px solid var(--bd)}
-.antro-table td{padding:10px 12px;border-bottom:1px solid #F5EFE4;color:var(--dk)}
-.antro-table tr:last-child td{border-bottom:none}
-.antro-table tr:hover td{background:var(--cr)}
-.antro-table .delta-pos{color:#6BBF8E;font-weight:600;font-size:11px}
-.antro-table .delta-neg{color:var(--ro);font-weight:600;font-size:11px}
-.antro-table .delta-ok{color:var(--az);font-weight:600;font-size:11px}
-.antro-row-new{background:#FFFDE7}
-
-/* Medidas barra */
-.medida-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.medida-row:last-child{margin-bottom:0}
-.medida-nome{font-size:12px;font-weight:500;color:var(--dm);min-width:130px}
-.medida-bar-wrap{flex:1;height:6px;background:#EDE7D8;border-radius:3px;overflow:hidden}
-.medida-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--am),var(--pe))}
-.medida-val{font-size:12px;font-weight:700;color:var(--dk);min-width:48px;text-align:right}
-.medida-meta{font-size:10px;color:#B0A898;min-width:48px;text-align:right}
-
-/* Notas / prontuário */
-.nota-item{border-left:3px solid var(--am);padding:12px 14px;margin-bottom:12px;background:var(--cr);border-radius:0 var(--rs) var(--rs) 0}
-.nota-item:last-child{margin-bottom:0}
-.nota-data{font-size:10.5px;font-weight:600;color:var(--dm);margin-bottom:6px}
-.nota-texto{font-size:13px;color:var(--dk);line-height:1.6}
-.nota-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;margin-top:6px}
-.nt-consulta{background:#FEF5D4;color:#B8860B}
-.nt-retorno{background:#E8F5E9;color:#388E3C}
-.nt-obs{background:#E3F2FD;color:#1565C0}
-
-/* Diário do paciente */
-.diario-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #F5EFE4}
-.diario-item:last-child{border-bottom:none}
-.diario-data{font-size:11px;font-weight:600;color:var(--dm);min-width:52px;padding-top:2px}
-.diario-content{flex:1}
-.diario-content p{font-size:13px;color:var(--dk);line-height:1.6}
-.diario-content .dc-sub{font-size:11px;color:var(--dm);margin-top:3px}
-.diario-novo{background:var(--cr);border-radius:var(--rs);padding:4px 0 0;border-left:3px solid var(--az)}
-
-/* Nova nota */
-.nota-form textarea{width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:var(--rs);padding:12px 14px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:90px;transition:border-color .2s;margin-bottom:10px;display:block}
-.nota-form textarea:focus{border-color:var(--am)}
-.nota-form-row{display:flex;gap:8px;align-items:center}
-.nota-tipo-sel{background:var(--cr);border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 12px;font-size:12.5px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none}
-
-/* Plano resumo na ficha */
-.plano-resumo-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #F5EFE4;align-items:flex-start}
-.plano-resumo-item:last-child{border-bottom:none}
-.pri-time{font-size:11px;font-weight:600;background:var(--cr);border-radius:7px;padding:4px 8px;color:var(--dk);white-space:nowrap;flex-shrink:0;border:1px solid var(--bd)}
-.pri-nome{font-size:13px;font-weight:600;color:var(--dk);margin-bottom:2px}
-.pri-desc{font-size:12px;color:var(--dm);line-height:1.5}
-.pri-kcal{font-size:10.5px;font-weight:600;color:var(--pe);margin-top:3px}
-
-@media(max-width:700px){
-  .ficha-hero{flex-wrap:wrap}
-  .ficha-hero-stats{margin-left:0;gap:10px}
-  .fdata-grid{grid-template-columns:repeat(2,1fr)}
-  .ficha-tabs{gap:2px}
-  .ftab{font-size:11px;padding:8px 6px}
-}
-/* ══ RESPONSIVO ══ */
+/* RESPONSIVO */
 @media(max-width:900px){
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .two-col{grid-template-columns:1fr}
   .pats-grid{grid-template-columns:repeat(2,1fr)}
-  .evo-grid{grid-template-columns:1fr}
   .fr{grid-template-columns:1fr}
-  .ag-week{grid-template-columns:repeat(3,1fr)}
   .sidebar{transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0)}
   .main-nutri{margin-left:0}
@@ -431,70 +322,57 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 @media(max-width:600px){
   .stats-grid{grid-template-columns:1fr 1fr}
   .pats-grid{grid-template-columns:1fr}
-  .ag-week{grid-template-columns:repeat(2,1fr)}
   .welcome-bar{flex-direction:column;align-items:flex-start;gap:12px}
   .welcome-bar::after{display:none}
-  .stat-v{font-size:22px}
-  .two-col{grid-template-columns:1fr}
-  .login-body{padding:20px 16px 28px}
+  .mrow{grid-template-columns:1fr}
+  .modal-ft{flex-direction:column-reverse}
+  .btn-cancel,.btn-criar{width:100%;text-align:center;padding:13px}
+  .ficha-hero{flex-wrap:wrap}
+  .ficha-hero-stats{margin-left:0}
+  .fdata-grid{grid-template-columns:repeat(2,1fr)}
+  .ficha-tabs{gap:2px}
+  .ftab{font-size:11px;padding:8px 6px}
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════ LOGIN ══════════ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-hero">
-    <div class="script">Jéssica Nogueira</div>
-    <div class="crn">Nutricionista · CRN 87052/P</div>
-    <div class="tagline">Nutrição com <em>ciência</em> e cuidado</div>
-    <div class="login-pills">
-      <span class="login-pill">Plano Alimentar</span>
-      <span class="login-pill">Avaliação Nutricional</span>
-      <span class="login-pill">Acompanhamento Online</span>
+    <div class="lh-script">Jéssica Nogueira</div>
+    <div class="lh-crn">Nutricionista · CRN 87052/P</div>
+    <div class="lh-tag">Nutrição com <em>ciência</em> e cuidado</div>
+    <div class="lh-pills">
+      <span class="lh-pill">Plano Alimentar</span>
+      <span class="lh-pill">Avaliação Nutricional</span>
+      <span class="lh-pill">Acompanhamento Online</span>
     </div>
   </div>
-
   <div class="login-body">
     <div class="profile-toggle">
-      <button class="pt-btn active" id="btn-nutri-tab" onclick="setProfile('nutri')">
-        👩‍⚕️ Nutricionista
-      </button>
-      <button class="pt-btn" id="btn-pac-tab" onclick="setProfile('pac')">
-        🧑 Sou paciente
-      </button>
+      <button class="pt-btn active" id="btn-nutri-tab" onclick="setProfile('nutri')">👩‍⚕️ Nutricionista</button>
+      <button class="pt-btn" id="btn-pac-tab" onclick="setProfile('pac')">🧑 Sou paciente</button>
     </div>
-
-    <div id="info-pac" class="pac-info" style="display:none">
-      Acesse seu plano alimentar, registre seu diário e acompanhe sua evolução. Use o e-mail e senha que a Jéssica cadastrou para você.
-    </div>
-
+    <div id="info-pac" class="pac-info" style="display:none">Use o e-mail e senha que a Jéssica cadastrou para você.</div>
     <label class="login-label">E-mail</label>
-    <input class="login-input" type="email" id="inp-email" placeholder="seu@email.com.br">
-
+    <input class="login-input" type="email" id="inp-email" placeholder="seu@email.com">
     <label class="login-label">Senha</label>
     <input class="login-input" type="password" id="inp-senha" placeholder="••••••••">
-
     <button class="btn-enter nutri" id="btn-entrar" onclick="fazerLogin()">Entrar na plataforma</button>
-
-    <div class="login-foot">
-      <a href="#">Esqueci minha senha</a> &nbsp;·&nbsp; Suporte: contato@jessicanog.com.br
-    </div>
+    <div class="login-foot"><a href="#">Esqueci minha senha</a> · Suporte: contato@jessicanog.com.br</div>
   </div>
 </div>
 
-<!-- ══════════ APP NUTRICIONISTA ══════════ -->
+<!-- APP NUTRICIONISTA -->
 <div id="app-nutri">
   <div class="sidebar-overlay" id="overlay" onclick="fecharMenu()"></div>
   <aside class="sidebar" id="sidebar">
-    <div class="sb-brand">
-      <div class="sc">Jéssica Nogueira</div>
-      <div class="sub">Nutricionista</div>
-    </div>
+    <div class="sb-brand"><div class="sc">Jéssica Nogueira</div><div class="sub">Nutricionista</div></div>
     <nav class="sb-nav">
       <div class="nav-lbl">Principal</div>
       <button class="nav-btn active" onclick="showPage('dashboard',this)"><span class="nav-ic">🏠</span>Dashboard</button>
-      <button class="nav-btn" onclick="showPage('pacientes',this)"><span class="nav-ic">👤</span>Pacientes<span class="nav-badge">12</span></button>
+      <button class="nav-btn" onclick="showPage('pacientes',this)"><span class="nav-ic">👤</span>Pacientes<span class="nav-badge" id="badge-pac">0</span></button>
       <button class="nav-btn" onclick="showPage('agenda',this)"><span class="nav-ic">📅</span>Agenda</button>
       <div class="nav-lbl">Clínico</div>
       <button class="nav-btn" onclick="showPage('planos',this)"><span class="nav-ic">🥗</span>Planos Alimentares</button>
@@ -504,14 +382,13 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
     </nav>
     <div class="sb-foot">
       <div class="user-chip">
-        <div class="u-av">JN</div>
-        <div><div class="u-nm">Jéssica Nogueira</div><div class="u-rl">Nutricionista</div></div>
+        <div class="u-av" id="nutri-av">JN</div>
+        <div><div class="u-nm" id="nutri-nm">Jéssica Nogueira</div><div class="u-rl">Nutricionista</div></div>
         <button class="btn-out" onclick="fazerLogout()" title="Sair">⎋</button>
       </div>
     </div>
   </aside>
-
-  <main class="main-nutri" id="main-nutri">
+  <main class="main-nutri">
     <div class="topbar">
       <div class="topbar-left">
         <button class="btn-menu" onclick="abrirMenu()">☰</button>
@@ -524,289 +401,165 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       <!-- DASHBOARD -->
       <div id="page-dashboard">
         <div class="welcome-bar">
-          <div><h2>Olá, Jéssica! 🌟</h2><p>3 consultas hoje · 2 planos para revisar</p></div>
+          <div><h2 id="welcome-msg">Olá, Jéssica! 🌟</h2><p id="welcome-sub">Carregando...</p></div>
           <span class="wb-day" id="data-hoje"></span>
         </div>
         <div class="stats-grid">
-          <div class="stat-card"><div class="ac" style="background:var(--am)"></div><div class="stat-ic">👤</div><div class="stat-v">42</div><div class="stat-lb">Pacientes ativos</div><div class="stat-d">↑ +3 este mês</div></div>
-          <div class="stat-card"><div class="ac" style="background:var(--pe)"></div><div class="stat-ic">📋</div><div class="stat-v">28</div><div class="stat-lb">Planos ativos</div><div class="stat-d">↑ +5 esta semana</div></div>
-          <div class="stat-card"><div class="ac" style="background:var(--ve)"></div><div class="stat-ic">📅</div><div class="stat-v">3</div><div class="stat-lb">Consultas hoje</div><div class="stat-d">Próxima às 14h</div></div>
-          <div class="stat-card"><div class="ac" style="background:var(--te)"></div><div class="stat-ic">✅</div><div class="stat-v">89%</div><div class="stat-lb">Taxa de adesão</div><div class="stat-d">↑ Acima da média</div></div>
+          <div class="stat-card"><div class="ac" style="background:var(--am)"></div><div class="stat-ic">👤</div><div class="stat-v" id="st-pacs">—</div><div class="stat-lb">Pacientes ativos</div></div>
+          <div class="stat-card"><div class="ac" style="background:var(--pe)"></div><div class="stat-ic">📋</div><div class="stat-v" id="st-planos">—</div><div class="stat-lb">Planos ativos</div></div>
+          <div class="stat-card"><div class="ac" style="background:var(--ve)"></div><div class="stat-ic">📅</div><div class="stat-v" id="st-consultas">—</div><div class="stat-lb">Consultas hoje</div></div>
+          <div class="stat-card"><div class="ac" style="background:var(--te)"></div><div class="stat-ic">🆕</div><div class="stat-v" id="st-novos">—</div><div class="stat-lb">Novos este mês</div></div>
         </div>
         <div class="two-col">
           <div class="card">
             <div class="card-hd"><span class="card-ttl">Pacientes recentes</span><a class="card-lk" onclick="showPage('pacientes',document.querySelectorAll('.nav-btn')[1])">Ver todos →</a></div>
-            <div class="pat-row" onclick="abrirFicha('ana')"><div class="av" style="background:linear-gradient(135deg,#FAB87F,#F9CD54)">AC</div><div><div class="pn">Ana Clara Oliveira</div><div class="pi">27 anos · Perda de peso · 18/06</div></div><span class="pbg b-at">Ativa</span></div>
-            <div class="pat-row" onclick="abrirFicha('mariana')"><div class="av" style="background:linear-gradient(135deg,#B0DEDB,#9AA9C7)">MS</div><div><div class="pn">Mariana Santos</div><div class="pi">34 anos · Reeducação · Retorno 22/06</div></div><span class="pbg b-re">Retorno</span></div>
-            <div class="pat-row" onclick="abrirFicha('lucas')"><div class="av" style="background:linear-gradient(135deg,#C5D9A6,#B0DEDB)">LF</div><div><div class="pn">Lucas Ferreira</div><div class="pi">29 anos · Ganho de massa · Novo</div></div><span class="pbg b-nv">Novo</span></div>
-            <div class="pat-row" onclick="abrirFicha('camila')"><div class="av" style="background:linear-gradient(135deg,#F59996,#FAB87F)">CR</div><div><div class="pn">Camila Rodrigues</div><div class="pi">41 anos · Nutrição clínica · 15/06</div></div><span class="pbg b-at">Ativa</span></div>
+            <div id="lista-recentes"><div class="empty-state" style="padding:28px"><div class="es-ico">👤</div><p>Nenhum paciente ainda.<br>Clique em <strong>+ Novo paciente</strong> para começar.</p></div></div>
           </div>
           <div class="card">
-            <div class="card-hd"><span class="card-ttl">Agenda de hoje</span><a class="card-lk" onclick="showPage('agenda',document.querySelectorAll('.nav-btn')[2])">Ver semana →</a></div>
-            <div class="ag-item"><div class="ag-t">09h<br>00</div><div><div class="ag-nm">Ana Clara Oliveira</div><div class="ag-tp">Retorno · Antropométrica</div></div><div class="ag-dot" style="background:#F9CD54"></div></div>
-            <div class="ag-item"><div class="ag-t">11h<br>00</div><div><div class="ag-nm">Rafael Mendes</div><div class="ag-tp">Consulta inicial · Online</div></div><div class="ag-dot" style="background:#9AA9C7"></div></div>
-            <div class="ag-item"><div class="ag-t">14h<br>00</div><div><div class="ag-nm">Camila Rodrigues</div><div class="ag-tp">Entrega do plano alimentar</div></div><div class="ag-dot" style="background:#C5D9A6"></div></div>
+            <div class="card-hd"><span class="card-ttl">Agenda de hoje</span></div>
+            <div id="lista-agenda"><div class="empty-state" style="padding:28px"><div class="es-ico">📅</div><p>Sem consultas hoje.</p></div></div>
           </div>
         </div>
-      </div>
-
-      <!-- FICHA DO PACIENTE -->
-      <div id="page-ficha">
-        <button class="ficha-back" onclick="showPage('pacientes',document.querySelectorAll('.nav-btn')[1])">← Voltar para pacientes</button>
-
-        <div class="ficha-hero" id="ficha-hero">
-          <div class="ficha-av" id="ficha-av">AC</div>
-          <div class="ficha-hero-info">
-            <h2 id="ficha-nome">Ana Clara Oliveira</h2>
-            <p id="ficha-sub">27 anos · Feminino · contato@email.com</p>
-            <div class="ficha-hero-badges">
-              <span class="fh-badge" id="ficha-obj">Perda de peso</span>
-              <span class="fh-badge" id="ficha-tipo">Online</span>
-              <span class="fh-badge" id="ficha-status">Ativa</span>
-            </div>
-          </div>
-          <div class="ficha-hero-stats">
-            <div class="fhs"><div class="fhs-v" id="ficha-peso">68kg</div><div class="fhs-l">Peso atual</div></div>
-            <div class="fhs"><div class="fhs-v" id="ficha-imc">24.1</div><div class="fhs-l">IMC</div></div>
-            <div class="fhs"><div class="fhs-v" id="ficha-tempo">3m</div><div class="fhs-l">Acompanh.</div></div>
-          </div>
-        </div>
-
-        <!-- Abas -->
-        <div class="ficha-tabs">
-          <button class="ftab active" onclick="showTab('resumo',this)">📋 Resumo</button>
-          <button class="ftab" onclick="showTab('antropo',this)">📏 Antropometria</button>
-          <button class="ftab" onclick="showTab('plano',this)">🥗 Plano alimentar</button>
-          <button class="ftab" onclick="showTab('notas',this)">📝 Prontuário</button>
-          <button class="ftab" onclick="showTab('diario',this)">📓 Diário</button>
-        </div>
-
-        <!-- ABA RESUMO -->
-        <div id="ftab-resumo" class="ftab-content active">
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Dados pessoais</span><button class="fsec-action" onclick="showToast('Editar dados em breve!')">Editar</button></div>
-            <div class="fsec-body">
-              <div class="fdata-grid">
-                <div class="fdata-item"><div class="fdi-label">Nome completo</div><div class="fdi-value" id="fd-nome">Ana Clara Oliveira</div></div>
-                <div class="fdata-item"><div class="fdi-label">Data de nascimento</div><div class="fdi-value" id="fd-nasc">12/03/1997</div><div class="fdi-sub" id="fd-idade">27 anos</div></div>
-                <div class="fdata-item"><div class="fdi-label">Sexo</div><div class="fdi-value" id="fd-sexo">Feminino</div></div>
-                <div class="fdata-item"><div class="fdi-label">Telefone / WhatsApp</div><div class="fdi-value" id="fd-tel">(12) 99812-3344</div></div>
-                <div class="fdata-item"><div class="fdi-label">E-mail de acesso</div><div class="fdi-value" id="fd-email" style="font-size:12px">ana@email.com</div></div>
-                <div class="fdata-item"><div class="fdi-label">Tipo de atendimento</div><div class="fdi-value" id="fd-tipo">Online</div></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Dados clínicos</span></div>
-            <div class="fsec-body">
-              <div class="fdata-grid">
-                <div class="fdata-item"><div class="fdi-label">Objetivo</div><div class="fdi-value" id="fd-obj">Perda de peso</div></div>
-                <div class="fdata-item"><div class="fdi-label">Início do acompanhamento</div><div class="fdi-value">18/03/2025</div></div>
-                <div class="fdata-item"><div class="fdi-label">Próxima consulta</div><div class="fdi-value" style="color:#1D9E75">22/06/2025</div></div>
-                <div class="fdata-item"><div class="fdi-label">Restrições alimentares</div><div class="fdi-value" id="fd-restrict" style="font-size:12.5px">Intolerância à lactose</div></div>
-                <div class="fdata-item"><div class="fdi-label">Atividade física</div><div class="fdi-value">Musculação · 3x/sem</div></div>
-                <div class="fdata-item"><div class="fdi-label">Status</div><div class="fdi-value" style="color:#388E3C">Ativa</div></div>
-              </div>
-              <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)">
-                <div class="fdi-label" style="margin-bottom:6px">Observações clínicas</div>
-                <div style="font-size:13px;color:var(--dk);line-height:1.7;background:var(--cr);border-radius:var(--rs);padding:12px" id="fd-obs">Paciente com histórico de hipotireoidismo controlado. Relata dificuldade com doces à noite. Prefere refeições práticas e sem muita preparação. Faz musculação às manhãs, 3x por semana.</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Última atualização do paciente</span><span style="font-size:11px;color:var(--dm)">via portal · hoje às 08h32</span></div>
-            <div class="fsec-body">
-              <div class="diario-item" style="padding-top:0;border:none">
-                <div class="diario-data">Hoje</div>
-                <div class="diario-content">
-                  <p>Segui o plano direitinho hoje! Café da manhã e almoço certinhos. Na tarde tive vontade de comer algo doce mas resisti com as castanhas 😄</p>
-                  <div class="dc-sub">⚖️ Peso registrado: <strong>67,8 kg</strong> · 📓 Entrada no diário</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ABA ANTROPOMETRIA -->
-        <div id="ftab-antropo" class="ftab-content">
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Evolução do peso e IMC</span><button class="fsec-action" onclick="showToast('Registrar nova medida!')">+ Nova medida</button></div>
-            <div class="fsec-body">
-              <table class="antro-table">
-                <thead><tr><th>Data</th><th>Peso (kg)</th><th>Altura (cm)</th><th>IMC</th><th>% Gordura</th><th>Massa magra</th><th>Δ Peso</th></tr></thead>
-                <tbody>
-                  <tr class="antro-row-new"><td>18/06/2025</td><td>67,8</td><td>163</td><td>25,5</td><td>28,1%</td><td>48,7 kg</td><td class="delta-pos">↓ −0,2</td></tr>
-                  <tr><td>22/05/2025</td><td>68,0</td><td>163</td><td>25,6</td><td>28,5%</td><td>48,6 kg</td><td class="delta-pos">↓ −1,5</td></tr>
-                  <tr><td>10/04/2025</td><td>69,5</td><td>163</td><td>26,1</td><td>29,8%</td><td>48,8 kg</td><td class="delta-pos">↓ −3,0</td></tr>
-                  <tr><td>18/03/2025</td><td>72,5</td><td>163</td><td>27,3</td><td>31,4%</td><td>49,7 kg</td><td class="delta-ok">Inicial</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Circunferências e medidas (última avaliação · 22/05)</span></div>
-            <div class="fsec-body">
-              <div class="medida-row"><span class="medida-nome">Cintura</span><div class="medida-bar-wrap"><div class="medida-bar-fill" style="width:72%"></div></div><span class="medida-val">72 cm</span><span class="medida-meta">Meta: 68</span></div>
-              <div class="medida-row"><span class="medida-nome">Quadril</span><div class="medida-bar-wrap"><div class="medida-bar-fill" style="width:85%"></div></div><span class="medida-val">96 cm</span><span class="medida-meta">Meta: 92</span></div>
-              <div class="medida-row"><span class="medida-nome">Abdômen</span><div class="medida-bar-wrap"><div class="medida-bar-fill" style="width:78%"></div></div><span class="medida-val">82 cm</span><span class="medida-meta">Meta: 75</span></div>
-              <div class="medida-row"><span class="medida-nome">Coxa D</span><div class="medida-bar-wrap"><div class="medida-bar-fill" style="width:60%"></div></div><span class="medida-val">55 cm</span><span class="medida-meta">Meta: 52</span></div>
-              <div class="medida-row"><span class="medida-nome">Braço D</span><div class="medida-bar-wrap"><div class="medida-bar-fill" style="width:55%"></div></div><span class="medida-val">30 cm</span><span class="medida-meta">—</span></div>
-              <div class="medida-row"><span class="medida-nome">Relação C/Q</span><div class="medida-bar-wrap"><div class="medida-bar-fill" style="width:65%"></div></div><span class="medida-val">0,75</span><span class="medida-meta">Ideal &lt;0,80</span></div>
-            </div>
-          </div>
-
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Dobras cutâneas (Pollock 7 dobras · 22/05)</span></div>
-            <div class="fsec-body">
-              <div class="fdata-grid" style="grid-template-columns:repeat(4,1fr)">
-                <div class="fdata-item"><div class="fdi-label">Tríceps</div><div class="fdi-value">18 mm</div></div>
-                <div class="fdata-item"><div class="fdi-label">Subescapular</div><div class="fdi-value">14 mm</div></div>
-                <div class="fdata-item"><div class="fdi-label">Peitoral</div><div class="fdi-value">11 mm</div></div>
-                <div class="fdata-item"><div class="fdi-label">Axilar média</div><div class="fdi-value">12 mm</div></div>
-                <div class="fdata-item"><div class="fdi-label">Supra-ilíaca</div><div class="fdi-value">22 mm</div></div>
-                <div class="fdata-item"><div class="fdi-label">Abdominal</div><div class="fdi-value">26 mm</div></div>
-                <div class="fdata-item"><div class="fdi-label">Coxa</div><div class="fdi-value">28 mm</div></div>
-                <div class="fdata-item" style="background:#FEF5D4"><div class="fdi-label">% Gordura</div><div class="fdi-value" style="color:#B8860B">28,5%</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ABA PLANO ALIMENTAR -->
-        <div id="ftab-plano" class="ftab-content">
-          <div class="fsec">
-            <div class="fsec-hd">
-              <div><span class="fsec-title">Plano atual — Low carb · 1.800 kcal</span><div style="font-size:11px;color:var(--dm);margin-top:2px">Atualizado em 18/06/2025</div></div>
-              <button class="fsec-action" onclick="showToast('Editar plano em breve!')">Editar plano</button>
-            </div>
-            <div class="fsec-body" style="padding:0">
-              <div class="plano-resumo-item" style="padding:14px 20px"><div class="pri-time">☀️ 07h</div><div><div class="pri-nome">Café da manhã</div><div class="pri-desc">Pão integral (50g) · Ovo mexido (2 un.) · Mamão (120g) · Café sem açúcar</div><div class="pri-kcal">≈ 380 kcal · P: 18g · C: 42g · G: 12g</div></div></div>
-              <div class="plano-resumo-item" style="padding:14px 20px"><div class="pri-time">🍎 10h</div><div><div class="pri-nome">Lanche da manhã</div><div class="pri-desc">Iogurte grego natural (170g) · Granola sem açúcar (30g) · Banana (1 un.)</div><div class="pri-kcal">≈ 280 kcal · P: 14g · C: 38g · G: 7g</div></div></div>
-              <div class="plano-resumo-item" style="padding:14px 20px"><div class="pri-time">🍽️ 13h</div><div><div class="pri-nome">Almoço</div><div class="pri-desc">Arroz integral (120g) · Feijão (80g) · Frango grelhado (120g) · Salada verde à vontade · Azeite (1 col. sopa)</div><div class="pri-kcal">≈ 560 kcal · P: 38g · C: 65g · G: 14g</div></div></div>
-              <div class="plano-resumo-item" style="padding:14px 20px"><div class="pri-time">🥜 16h</div><div><div class="pri-nome">Lanche da tarde</div><div class="pri-desc">Mix de castanhas (30g) · Fruta da estação (1 un.)</div><div class="pri-kcal">≈ 220 kcal · P: 6g · C: 18g · G: 14g</div></div></div>
-              <div class="plano-resumo-item" style="padding:14px 20px"><div class="pri-time">🌙 19h</div><div><div class="pri-nome">Jantar</div><div class="pri-desc">Sopa de legumes com frango desfiado (300ml) · Torrada integral (2 un.)</div><div class="pri-kcal">≈ 360 kcal · P: 28g · C: 40g · G: 8g</div></div></div>
-            </div>
-          </div>
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Resumo nutricional diário</span></div>
-            <div class="fsec-body">
-              <div class="fdata-grid" style="grid-template-columns:repeat(4,1fr)">
-                <div class="fdata-item" style="background:#FEF5D4"><div class="fdi-label">Calorias</div><div class="fdi-value" style="color:#B8860B">1.800 kcal</div></div>
-                <div class="fdata-item"><div class="fdi-label">Proteínas</div><div class="fdi-value">104g <span style="font-size:11px;color:var(--dm)">· 23%</span></div></div>
-                <div class="fdata-item"><div class="fdi-label">Carboidratos</div><div class="fdi-value">203g <span style="font-size:11px;color:var(--dm)">· 45%</span></div></div>
-                <div class="fdata-item"><div class="fdi-label">Gorduras</div><div class="fdi-value">55g <span style="font-size:11px;color:var(--dm)">· 28%</span></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ABA PRONTUÁRIO / NOTAS -->
-        <div id="ftab-notas" class="ftab-content">
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Nova anotação</span></div>
-            <div class="fsec-body">
-              <div class="nota-form">
-                <textarea id="nota-input" placeholder="Registre observações desta consulta, intercorrências, ajustes realizados..."></textarea>
-                <div class="nota-form-row">
-                  <select class="nota-tipo-sel" id="nota-tipo">
-                    <option value="consulta">Consulta</option>
-                    <option value="retorno">Retorno</option>
-                    <option value="obs">Observação</option>
-                  </select>
-                  <button class="btn-salvar" onclick="salvarNota()" style="margin-left:auto">Salvar nota</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Histórico de anotações</span></div>
-            <div class="fsec-body" id="notas-lista">
-              <div class="nota-item"><div class="nota-data">22/05/2025 · 10h00</div><div class="nota-texto">Paciente relatou boa adesão ao plano. Dificuldade apenas nos finais de semana com refeições em família. Orientada sobre substituições adequadas. Peso: 68,0kg (↓1,5kg desde o início). Redução de cintura de 2cm. Mantido plano com ajuste no lanche da tarde — incluída banana prata como opção.</div><span class="nota-tag nt-retorno">Retorno</span></div>
-              <div class="nota-item"><div class="nota-data">10/04/2025 · 09h30</div><div class="nota-texto">Primeira reavaliação. Peso: 69,5kg. Paciente motivada, boa adesão geral. Relatou melhora na disposição e sono. Ajustado jantar para incluir proteína mais leve. Orientada sobre hidratação — meta de 2L/dia.</div><span class="nota-tag nt-retorno">Retorno</span></div>
-              <div class="nota-item"><div class="nota-data">18/03/2025 · 08h30</div><div class="nota-texto">Consulta inicial. Anamnese completa realizada. Paciente com hipotireoidismo controlado (Levotiroxina 50mcg). IMC: 27,3 — sobrepeso. Objetivo: perda de peso gradual com foco em reeducação alimentar. Relata episódios de compulsão noturna por doces. Iniciado plano low carb 1.800kcal com distribuição em 5 refeições. Solicitado exames laboratoriais (hemograma, TSH, glicemia, colesterol).</div><span class="nota-tag nt-consulta">Consulta inicial</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ABA DIÁRIO DO PACIENTE -->
-        <div id="ftab-diario" class="ftab-content">
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Registros do paciente</span><span style="font-size:11px;color:var(--dm)">Enviados pelo portal</span></div>
-            <div class="fsec-body">
-              <div class="diario-item diario-novo" style="border-left:3px solid var(--az);padding-left:12px;margin-bottom:4px">
-                <div class="diario-data" style="color:#1565C0">Hoje<br><span style="font-weight:400">08h32</span></div>
-                <div class="diario-content">
-                  <p>Segui o plano direitinho hoje! Café da manhã e almoço certinhos. Na tarde tive vontade de comer algo doce mas resisti com as castanhas 😄</p>
-                  <div class="dc-sub">⚖️ Peso registrado: <strong>67,8 kg</strong></div>
-                </div>
-              </div>
-              <div class="diario-item">
-                <div class="diario-data">19/06<br><span style="font-weight:400;font-size:10px">20h15</span></div>
-                <div class="diario-content"><p>Almoço fora do plano — fui a um aniversário. Tentei escolher as opções mais saudáveis mas comi bolo. Jantar compensei com salada.</p><div class="dc-sub">⚖️ Peso: não registrado</div></div>
-              </div>
-              <div class="diario-item">
-                <div class="diario-data">18/06<br><span style="font-weight:400;font-size:10px">21h00</span></div>
-                <div class="diario-content"><p>Dia perfeito! Segui tudo. Treino foi ótimo hoje de manhã. Sinto que estou emagrecendo porque as roupas estão mais folgadas 🎉</p><div class="dc-sub">⚖️ Peso: <strong>68,0 kg</strong></div></div>
-              </div>
-              <div class="diario-item">
-                <div class="diario-data">17/06<br><span style="font-weight:400;font-size:10px">22h10</span></div>
-                <div class="diario-content"><p>Tive muita fome à noite. Comi uma fruta extra além do planejado. Não consegui fazer o lanche da tarde no horário certo por causa do trabalho.</p><div class="dc-sub">⚖️ Peso: <strong>68,2 kg</strong></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
 
       <!-- PACIENTES -->
       <div id="page-pacientes" style="display:none">
-        <div class="pg-hd"><h2>Pacientes</h2><p>42 pacientes ativos</p></div>
-        <div class="search-bar"><input type="text" placeholder="Buscar por nome ou objetivo..."><button class="btn-new" onclick="showToast('Em breve!')">+ Novo</button></div>
-        <div class="pats-grid">
-          <div class="pc" onclick="abrirFicha('ana')"><div class="pc-top"><div class="av" style="background:linear-gradient(135deg,#FAB87F,#F9CD54);width:40px;height:40px">AC</div><div><div class="pc-nm">Ana Clara Oliveira</div><div class="pc-mt">27 anos · Perda de peso</div></div></div><div class="pc-stats"><div class="pcs"><div class="pcs-v">68kg</div><div class="pcs-l">Peso</div></div><div class="pcs"><div class="pcs-v">24.1</div><div class="pcs-l">IMC</div></div><div class="pcs"><div class="pcs-v">3 meses</div><div class="pcs-l">Tempo</div></div></div></div>
-          <div class="pc" onclick="abrirFicha('mariana')"><div class="pc-top"><div class="av" style="background:linear-gradient(135deg,#B0DEDB,#9AA9C7);width:40px;height:40px">MS</div><div><div class="pc-nm">Mariana Santos</div><div class="pc-mt">34 anos · Reeducação</div></div></div><div class="pc-stats"><div class="pcs"><div class="pcs-v">72kg</div><div class="pcs-l">Peso</div></div><div class="pcs"><div class="pcs-v">25.8</div><div class="pcs-l">IMC</div></div><div class="pcs"><div class="pcs-v">6 meses</div><div class="pcs-l">Tempo</div></div></div></div>
-          <div class="pc" onclick="abrirFicha('lucas')"><div class="pc-top"><div class="av" style="background:linear-gradient(135deg,#C5D9A6,#B0DEDB);width:40px;height:40px">LF</div><div><div class="pc-nm">Lucas Ferreira</div><div class="pc-mt">29 anos · Ganho de massa</div></div></div><div class="pc-stats"><div class="pcs"><div class="pcs-v">80kg</div><div class="pcs-l">Peso</div></div><div class="pcs"><div class="pcs-v">24.9</div><div class="pcs-l">IMC</div></div><div class="pcs"><div class="pcs-v">Novo</div><div class="pcs-l">Tempo</div></div></div></div>
-          <div class="pc" onclick="abrirFicha('camila')"><div class="pc-top"><div class="av" style="background:linear-gradient(135deg,#F59996,#FAB87F);width:40px;height:40px">CR</div><div><div class="pc-nm">Camila Rodrigues</div><div class="pc-mt">41 anos · Nutrição clínica</div></div></div><div class="pc-stats"><div class="pcs"><div class="pcs-v">65kg</div><div class="pcs-l">Peso</div></div><div class="pcs"><div class="pcs-v">23.5</div><div class="pcs-l">IMC</div></div><div class="pcs"><div class="pcs-v">1 ano</div><div class="pcs-l">Tempo</div></div></div></div>
-          <div class="pc" onclick="abrirFicha('rafael')"><div class="pc-top"><div class="av" style="background:linear-gradient(135deg,#9AA9C7,#B0DEDB);width:40px;height:40px">RM</div><div><div class="pc-nm">Rafael Mendes</div><div class="pc-mt">31 anos · Performance</div></div></div><div class="pc-stats"><div class="pcs"><div class="pcs-v">85kg</div><div class="pcs-l">Peso</div></div><div class="pcs"><div class="pcs-v">26.1</div><div class="pcs-l">IMC</div></div><div class="pcs"><div class="pcs-v">2 meses</div><div class="pcs-l">Tempo</div></div></div></div>
-          <div class="pc" onclick="abrirFicha('fernanda')"><div class="pc-top"><div class="av" style="background:linear-gradient(135deg,#F9D2B1,#F59996);width:40px;height:40px">FL</div><div><div class="pc-nm">Fernanda Lima</div><div class="pc-mt">38 anos · S. metabólica</div></div></div><div class="pc-stats"><div class="pcs"><div class="pcs-v">78kg</div><div class="pcs-l">Peso</div></div><div class="pcs"><div class="pcs-v">27.4</div><div class="pcs-l">IMC</div></div><div class="pcs"><div class="pcs-v">8 meses</div><div class="pcs-l">Tempo</div></div></div></div>
+        <div class="pg-hd"><h2>Pacientes</h2><p id="sub-pacientes">Carregando...</p></div>
+        <div class="search-bar">
+          <input type="text" id="busca-pac" placeholder="Buscar por nome ou objetivo..." oninput="filtrarPacientes()">
+          <button class="btn-new" onclick="abrirModal()">+ Novo</button>
+        </div>
+        <div class="pats-grid" id="grid-pacientes">
+          <div class="empty-state" style="grid-column:1/-1;padding:48px">
+            <div class="es-ico">👤</div><h3>Nenhum paciente cadastrado</h3>
+            <p>Comece adicionando sua primeira paciente.</p>
+            <button class="btn-primary" onclick="abrirModal()">+ Cadastrar paciente</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FICHA -->
+      <div id="page-ficha">
+        <button class="ficha-back" onclick="showPage('pacientes',document.querySelectorAll('.nav-btn')[1])">← Voltar para pacientes</button>
+        <div class="ficha-hero">
+          <div class="ficha-av" id="ficha-av">?</div>
+          <div class="ficha-hero-info">
+            <h2 id="ficha-nome">—</h2><p id="ficha-sub">—</p>
+            <div class="ficha-hero-badges">
+              <span class="fh-badge" id="ficha-obj">—</span>
+              <span class="fh-badge" id="ficha-tipo">—</span>
+              <span class="fh-badge" id="ficha-status">—</span>
+            </div>
+          </div>
+          <div class="ficha-hero-stats">
+            <div class="fhs"><div class="fhs-v" id="ficha-peso">—</div><div class="fhs-l">Peso</div></div>
+            <div class="fhs"><div class="fhs-v" id="ficha-imc">—</div><div class="fhs-l">IMC</div></div>
+            <div class="fhs"><div class="fhs-v" id="ficha-tempo">—</div><div class="fhs-l">Acompanh.</div></div>
+          </div>
+        </div>
+        <div class="ficha-tabs">
+          <button class="ftab active" onclick="showTab('resumo',this)">📋 Resumo</button>
+          <button class="ftab" onclick="showTab('antropo',this)">📏 Antropometria</button>
+          <button class="ftab" onclick="showTab('plano',this)">🥗 Plano</button>
+          <button class="ftab" onclick="showTab('notas',this)">📝 Prontuário</button>
+          <button class="ftab" onclick="showTab('diario',this)">📓 Diário</button>
+        </div>
+
+        <div id="ftab-resumo" class="ftab-content active">
+          <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Dados pessoais</span></div>
+            <div class="fsec-body"><div class="fdata-grid">
+              <div class="fdata-item"><div class="fdi-label">Nome</div><div class="fdi-value" id="fd-nome">—</div></div>
+              <div class="fdata-item"><div class="fdi-label">Nascimento</div><div class="fdi-value" id="fd-nasc">—</div></div>
+              <div class="fdata-item"><div class="fdi-label">Sexo</div><div class="fdi-value" id="fd-sexo">—</div></div>
+              <div class="fdata-item"><div class="fdi-label">Telefone</div><div class="fdi-value" id="fd-tel">—</div></div>
+              <div class="fdata-item"><div class="fdi-label">E-mail</div><div class="fdi-value" id="fd-email" style="font-size:12px">—</div></div>
+              <div class="fdata-item"><div class="fdi-label">Atendimento</div><div class="fdi-value" id="fd-tipo">—</div></div>
+            </div></div>
+          </div>
+          <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Dados clínicos</span></div>
+            <div class="fsec-body"><div class="fdata-grid">
+              <div class="fdata-item"><div class="fdi-label">Objetivo</div><div class="fdi-value" id="fd-obj">—</div></div>
+              <div class="fdata-item"><div class="fdi-label">Início</div><div class="fdi-value" id="fd-inicio">—</div></div>
+              <div class="fdata-item"><div class="fdi-label">Status</div><div class="fdi-value" id="fd-status">—</div></div>
+              <div class="fdata-item" style="grid-column:1/-1"><div class="fdi-label">Restrições</div><div class="fdi-value" id="fd-restrict" style="font-size:13px">—</div></div>
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)">
+              <div class="fdi-label" style="margin-bottom:6px">Observações clínicas</div>
+              <div style="font-size:13px;color:var(--dk);line-height:1.7;background:var(--cr);border-radius:var(--rs);padding:12px" id="fd-obs">—</div>
+            </div></div>
+          </div>
+          <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Último registro do paciente</span></div>
+            <div class="fsec-body" id="ficha-diario-resumo"><div style="color:var(--dm);font-size:13px">Nenhum registro ainda.</div></div>
+          </div>
+        </div>
+
+        <div id="ftab-antropo" class="ftab-content">
+          <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Histórico de avaliações</span><button class="fsec-action" onclick="showToast('Em breve!')">+ Nova medida</button></div>
+            <div class="fsec-body" style="padding:0">
+              <table class="antro-table">
+                <thead><tr><th>Data</th><th>Peso (kg)</th><th>Altura (cm)</th><th>IMC</th><th>% Gordura</th><th>Massa magra</th><th>Δ Peso</th></tr></thead>
+                <tbody id="antro-tbody"><tr><td colspan="7" style="text-align:center;color:var(--dm);padding:20px">Nenhuma avaliação registrada</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="ftab-plano" class="ftab-content">
+          <div class="fsec"><div class="fsec-hd"><span class="fsec-title" id="plano-titulo">Plano alimentar</span><button class="fsec-action" onclick="showToast('Em breve!')">Editar</button></div>
+            <div class="fsec-body" style="padding:0" id="plano-refeicoes">
+              <div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano ativo.<br>Use <strong>Gerar Plano com IA</strong>.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ftab-notas" class="ftab-content">
+          <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Nova anotação</span></div>
+            <div class="fsec-body"><div class="nota-form">
+              <textarea id="nota-input" placeholder="Registre observações desta consulta..."></textarea>
+              <div class="nota-form-row">
+                <select class="nota-tipo-sel" id="nota-tipo">
+                  <option value="Consulta">Consulta</option>
+                  <option value="Retorno">Retorno</option>
+                  <option value="Observação">Observação</option>
+                </select>
+                <button class="btn-salvar" onclick="salvarNota()" style="margin-left:auto">Salvar nota</button>
+              </div>
+            </div></div>
+          </div>
+          <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Histórico</span></div>
+            <div class="fsec-body" id="notas-lista"><div style="color:var(--dm);font-size:13px">Nenhuma anotação ainda.</div></div>
+          </div>
+        </div>
+
+        <div id="ftab-diario" class="ftab-content">
+          <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Registros do paciente</span><span style="font-size:11px;color:var(--dm)">via portal</span></div>
+            <div class="fsec-body" id="diario-lista"><div style="color:var(--dm);font-size:13px">Nenhum registro ainda.</div></div>
+          </div>
         </div>
       </div>
 
       <!-- AGENDA -->
       <div id="page-agenda" style="display:none">
-        <div class="pg-hd"><h2>Agenda semanal</h2><p>16 a 20 de junho de 2025</p></div>
-        <div class="ag-week">
-          <div class="wk-col"><div class="wk-hd"><div class="wk-dn">Seg</div><div class="wk-num">16</div></div><div class="wk-slot"><div class="wk-ap"><div class="wk-ap-n">Ana Clara</div><div class="wk-ap-t">09h · Retorno</div></div></div><div class="wk-slot"></div><div class="wk-slot"><div class="wk-ap"><div class="wk-ap-n">Fernanda Lima</div><div class="wk-ap-t">14h · Consulta</div></div></div></div>
-          <div class="wk-col"><div class="wk-hd"><div class="wk-dn">Ter</div><div class="wk-num">17</div></div><div class="wk-slot"><div class="wk-ap"><div class="wk-ap-n">Mariana Santos</div><div class="wk-ap-t">10h · Retorno</div></div></div><div class="wk-slot"></div><div class="wk-slot"></div></div>
-          <div class="wk-col"><div class="wk-hd"><div class="wk-dn">Qua</div><div class="wk-num">18</div></div><div class="wk-slot"></div><div class="wk-slot"><div class="wk-ap"><div class="wk-ap-n">Rafael Mendes</div><div class="wk-ap-t">11h · Online</div></div></div><div class="wk-slot"><div class="wk-ap"><div class="wk-ap-n">Lucas Ferreira</div><div class="wk-ap-t">15h · Inicial</div></div></div></div>
-          <div class="wk-col"><div class="wk-hd"><div class="wk-dn">Qui</div><div class="wk-num">19</div></div><div class="wk-slot"><div class="wk-ap"><div class="wk-ap-n">Camila Rodrigues</div><div class="wk-ap-t">09h · Plano</div></div></div><div class="wk-slot"></div><div class="wk-slot"></div></div>
-          <div class="wk-col"><div class="wk-hd today"><div class="wk-dn">Sex</div><div class="wk-num">20</div></div><div class="wk-slot"><div class="wk-ap"><div class="wk-ap-n">Ana Clara</div><div class="wk-ap-t">09h · Avaliação</div></div></div><div class="wk-slot"><div class="wk-ap"><div class="wk-ap-n">Rafael Mendes</div><div class="wk-ap-t">11h · Online</div></div></div><div class="wk-slot"><div class="wk-ap"><div class="wk-ap-n">Camila Rodrigues</div><div class="wk-ap-t">14h · Plano</div></div></div></div>
+        <div class="pg-hd"><h2>Agenda</h2><p>Consultas agendadas</p></div>
+        <div class="card">
+          <div class="card-hd"><span class="card-ttl">Próximas consultas</span><button class="fsec-action" onclick="showToast('Em breve: agendar consulta!')">+ Agendar</button></div>
+          <div id="lista-consultas"><div class="empty-state" style="padding:32px"><div class="es-ico">📅</div><h3>Nenhuma consulta agendada</h3><p>As consultas aparecerão aqui quando forem cadastradas.</p></div></div>
         </div>
       </div>
 
       <!-- PLANOS -->
       <div id="page-planos" style="display:none">
-        <div class="pg-hd"><h2>Planos Alimentares</h2><p>28 planos em andamento</p></div>
+        <div class="pg-hd"><h2>Planos Alimentares</h2><p id="sub-planos">—</p></div>
         <div class="card">
-          <div class="card-hd"><span class="card-ttl">Planos ativos</span><a class="card-lk" onclick="showToast('Exportando...')">Exportar PDF</a></div>
-          <div class="pat-row" onclick="showToast('Abrindo plano de Ana Clara...')"><div class="av" style="background:linear-gradient(135deg,#FAB87F,#F9CD54)">AC</div><div><div class="pn">Ana Clara Oliveira</div><div class="pi">1.800 kcal · Low carb · Atualizado 18/06</div></div><span class="pbg b-at">Ativo</span></div>
-          <div class="pat-row" onclick="showToast('Abrindo plano de Mariana...')"><div class="av" style="background:linear-gradient(135deg,#B0DEDB,#9AA9C7)">MS</div><div><div class="pn">Mariana Santos</div><div class="pi">2.000 kcal · Mediterrâneo · Atualizado 15/06</div></div><span class="pbg b-re">Revisar</span></div>
-          <div class="pat-row" onclick="showToast('Abrindo plano de Lucas...')"><div class="av" style="background:linear-gradient(135deg,#C5D9A6,#B0DEDB)">LF</div><div><div class="pn">Lucas Ferreira</div><div class="pi">3.200 kcal · Hipertrofia · Gerado com IA ✨</div></div><span class="pbg b-nv">Novo</span></div>
+          <div class="card-hd"><span class="card-ttl">Planos ativos</span></div>
+          <div id="lista-planos"><div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><h3>Nenhum plano cadastrado</h3><p>Crie planos pela ficha do paciente ou usando a IA.</p></div></div>
         </div>
       </div>
 
       <!-- EVOLUÇÃO -->
       <div id="page-evolucao" style="display:none">
-        <div class="pg-hd"><h2>Evolução dos pacientes</h2><p>Progresso ao longo do tempo</p></div>
-        <div class="evo-grid">
-          <div class="evo-card"><h4>Ana Clara — Perda de peso</h4><div class="evo-lbl"><span>Peso inicial</span><span>75 kg</span></div><div class="evo-lbl"><span>Atual</span><span>68 kg</span></div><div class="evo-bar"><div class="evo-fill" style="width:90%"></div></div><div class="evo-lbl"><span>Meta</span><span>63 kg</span></div><div class="evo-delta">↓ −7kg em 3 meses · 58% da meta</div></div>
-          <div class="evo-card"><h4>Mariana Santos — IMC</h4><div class="evo-lbl"><span>IMC inicial</span><span>29.2</span></div><div class="evo-lbl"><span>Atual</span><span>25.8</span></div><div class="evo-bar"><div class="evo-fill" style="width:70%"></div></div><div class="evo-lbl"><span>Meta</span><span>23.0</span></div><div class="evo-delta">↓ −3.4 pontos em 6 meses</div></div>
-          <div class="evo-card"><h4>Camila — Composição corporal</h4><div class="evo-lbl"><span>% Gordura inicial</span><span>38%</span></div><div class="evo-lbl"><span>Atual</span><span>31%</span></div><div class="evo-bar"><div class="evo-fill" style="width:75%"></div></div><div class="evo-lbl"><span>Meta</span><span>25%</span></div><div class="evo-delta">↓ −7pp em 1 ano · Consistente</div></div>
-          <div class="evo-card"><h4>Rafael Mendes — Ganho de massa</h4><div class="evo-lbl"><span>Peso inicial</span><span>78 kg</span></div><div class="evo-lbl"><span>Atual</span><span>85 kg</span></div><div class="evo-bar"><div class="evo-fill" style="width:60%"></div></div><div class="evo-lbl"><span>Meta</span><span>90 kg</span></div><div class="evo-delta">↑ +7kg em 2 meses · No ritmo</div></div>
-        </div>
+        <div class="pg-hd"><h2>Evolução</h2><p>Progresso dos pacientes</p></div>
+        <div class="empty-state"><div class="es-ico">📊</div><h3>Sem dados ainda</h3><p>A evolução aparece conforme as avaliações forem registradas.</p></div>
       </div>
 
       <!-- IA -->
@@ -814,13 +567,24 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
         <div class="ia-wrap">
           <div class="pg-hd"><h2>✨ Gerar Plano com IA</h2><p>Preencha os dados e a IA monta o plano usando a tabela TACO</p></div>
           <div class="ia-card">
-            <h3>Dados do paciente</h3>
-            <p>Informações para personalizar o plano nutricional.</p>
-            <div class="fr"><div class="ff"><label>Paciente</label><select><option>Ana Clara Oliveira</option><option>Mariana Santos</option><option>Lucas Ferreira</option><option>Camila Rodrigues</option></select></div><div class="ff"><label>Objetivo</label><select><option>Perda de peso</option><option>Ganho de massa</option><option>Manutenção</option><option>Reeducação alimentar</option></select></div></div>
-            <div class="fr"><div class="ff"><label>Calorias diárias (kcal)</label><input type="number" value="1800"></div><div class="ff"><label>Restrições</label><input type="text" placeholder="Ex: sem glúten, sem lactose"></div></div>
-            <div class="ff" style="margin-bottom:14px"><label>Observações</label><textarea placeholder="Preferências, rotina, horários..."></textarea></div>
+            <h3>Dados do paciente</h3><p>Informações para personalizar o plano nutricional.</p>
+            <div class="fr">
+              <div class="ff"><label>Paciente</label><select id="ia-paciente"><option value="">Selecione...</option></select></div>
+              <div class="ff"><label>Objetivo</label><select id="ia-obj"><option>Perda de peso</option><option>Ganho de massa</option><option>Manutenção</option><option>Reeducação alimentar</option></select></div>
+            </div>
+            <div class="fr">
+              <div class="ff"><label>Calorias diárias (kcal)</label><input type="number" id="ia-kcal" value="1800"></div>
+              <div class="ff"><label>Restrições</label><input type="text" id="ia-restrict" placeholder="Ex: sem glúten"></div>
+            </div>
+            <div class="ff" style="margin-bottom:14px"><label>Observações</label><textarea id="ia-obs" placeholder="Preferências, rotina, horários..."></textarea></div>
             <div style="font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--dm);margin-bottom:8px">Tipo de dieta</div>
-            <div class="tag-grp"><button class="tag-pill sel" onclick="toggleTag(this)">Equilibrada</button><button class="tag-pill" onclick="toggleTag(this)">Low carb</button><button class="tag-pill" onclick="toggleTag(this)">Mediterrâneo</button><button class="tag-pill" onclick="toggleTag(this)">Hipertrofia</button><button class="tag-pill" onclick="toggleTag(this)">Vegetariana</button></div>
+            <div class="tag-grp">
+              <button class="tag-pill sel" onclick="toggleTag(this)">Equilibrada</button>
+              <button class="tag-pill" onclick="toggleTag(this)">Low carb</button>
+              <button class="tag-pill" onclick="toggleTag(this)">Mediterrâneo</button>
+              <button class="tag-pill" onclick="toggleTag(this)">Hipertrofia</button>
+              <button class="tag-pill" onclick="toggleTag(this)">Vegetariana</button>
+            </div>
             <button class="btn-gerar" id="btn-gerar" onclick="simularIA()">✨ Gerar plano alimentar com IA</button>
           </div>
           <div class="ia-card" id="resultado-ia">
@@ -829,71 +593,44 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
         </div>
       </div>
 
-    </div><!-- /content -->
+    </div>
   </main>
-</div><!-- /app-nutri -->
+</div>
 
-<!-- ══════════ PORTAL PACIENTE ══════════ -->
+<!-- PORTAL PACIENTE -->
 <div id="app-pac">
   <div class="pac-topbar">
     <div class="pac-topbar-inner">
-      <div>
-        <h2>Olá, Ana Clara 👋</h2>
-        <p>Seu plano alimentar de hoje</p>
-      </div>
+      <div><h2 id="pac-ola">Olá! 👋</h2><p>Seu plano alimentar de hoje</p></div>
       <button class="pac-out" onclick="fazerLogout()">Sair</button>
     </div>
   </div>
-
   <div class="pac-body">
-
     <div class="pac-stats">
-      <div class="pac-stat"><div class="pac-stat-v">68kg</div><div class="pac-stat-l">Peso atual</div><div class="pac-stat-d">↓ −7kg desde o início</div></div>
-      <div class="pac-stat"><div class="pac-stat-v">24.1</div><div class="pac-stat-l">IMC</div><div class="pac-stat-d">↓ Melhorando</div></div>
+      <div class="pac-stat"><div class="pac-stat-v" id="pac-peso">—</div><div class="pac-stat-l">Peso atual</div><div class="pac-stat-d">Acompanhe sua evolução</div></div>
+      <div class="pac-stat"><div class="pac-stat-v" id="pac-imc">—</div><div class="pac-stat-l">IMC</div><div class="pac-stat-d">Índice de massa corporal</div></div>
     </div>
-
     <div class="pac-section-title">Próxima consulta</div>
-    <div class="pac-consulta">
-      <div class="cons-date"><div class="cons-day">22</div><div class="cons-mon">Jun</div></div>
-      <div class="cons-info"><h4>Retorno — Avaliação Nutricional</h4><p>Terça-feira · 10h00 · Atendimento online<br>Link será enviado no dia anterior.</p></div>
-    </div>
-
+    <div id="pac-consulta-box"><div class="pac-card" style="padding:18px;color:var(--dm);font-size:13px">Nenhuma consulta agendada.</div></div>
     <div class="pac-section-title">Plano alimentar de hoje</div>
     <div class="pac-card">
-      <div class="pac-card-hd"><span class="pac-card-ttl">Plano alimentar</span><span class="pac-card-sub">1.800 kcal · Low carb</span></div>
-      <div class="refeicao-item"><div class="ref-time">☀️ 07h</div><div><div class="ref-nome">Café da manhã</div><div class="ref-items">Pão integral (50g) · Ovo mexido (2 un.) · Mamão (120g) · Café sem açúcar</div><div class="ref-kcal">≈ 380 kcal</div></div></div>
-      <div class="refeicao-item"><div class="ref-time">🍎 10h</div><div><div class="ref-nome">Lanche da manhã</div><div class="ref-items">Iogurte grego (170g) · Granola (30g) · Banana (1 un.)</div><div class="ref-kcal">≈ 280 kcal</div></div></div>
-      <div class="refeicao-item"><div class="ref-time">🍽️ 13h</div><div><div class="ref-nome">Almoço</div><div class="ref-items">Arroz integral (120g) · Feijão (80g) · Frango grelhado (120g) · Salada à vontade · Azeite (1 col.)</div><div class="ref-kcal">≈ 560 kcal</div></div></div>
-      <div class="refeicao-item"><div class="ref-time">🥜 16h</div><div><div class="ref-nome">Lanche da tarde</div><div class="ref-items">Mix de castanhas (30g) · Fruta da estação (1 un.)</div><div class="ref-kcal">≈ 220 kcal</div></div></div>
-      <div class="refeicao-item"><div class="ref-time">🌙 19h</div><div><div class="ref-nome">Jantar</div><div class="ref-items">Sopa de legumes com frango (300ml) · Torrada integral (2 un.)</div><div class="ref-kcal">≈ 360 kcal</div></div></div>
+      <div class="pac-card-hd"><span class="pac-card-ttl">Plano alimentar</span><span class="pac-card-sub" id="pac-plano-sub">—</span></div>
+      <div id="pac-refeicoes"><div style="padding:20px;color:var(--dm);font-size:13px;text-align:center">Nenhum plano ativo no momento.</div></div>
     </div>
-
     <div class="pac-section-title">Diário alimentar de hoje</div>
     <div class="pac-card">
       <div class="pac-card-hd"><span class="pac-card-ttl">O que você comeu hoje?</span></div>
       <div class="diario-form">
-        <textarea placeholder="Descreva o que comeu, horários, como se sentiu..."></textarea>
+        <textarea id="pac-diario-txt" placeholder="Descreva o que comeu, horários, como se sentiu..."></textarea>
+        <input type="number" step="0.1" placeholder="Seu peso hoje (kg) — opcional" id="pac-peso-input" style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:10px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;margin-bottom:10px;display:block">
         <button class="btn-salvar" onclick="salvarDiarioPaciente()">Salvar diário</button>
       </div>
     </div>
-
-    <div class="pac-section-title">Seu progresso</div>
-    <div class="pac-card">
-      <div class="pac-card-hd"><span class="pac-card-ttl">Evolução do peso</span></div>
-      <div style="padding:18px">
-        <div class="evo-lbl"><span>Início (março)</span><span>75 kg</span></div>
-        <div class="evo-lbl"><span>Agora</span><span>68 kg</span></div>
-        <div class="evo-bar"><div class="evo-fill" style="width:58%"></div></div>
-        <div class="evo-lbl"><span>Meta</span><span>63 kg</span></div>
-        <div class="evo-delta" style="margin-top:10px">↓ −7kg · Você está no caminho certo! 🌟</div>
-      </div>
-    </div>
-
     <div style="height:32px"></div>
   </div>
 </div>
 
-<!-- ══ MODAL NOVO PACIENTE ══ -->
+<!-- MODAL NOVO PACIENTE -->
 <div class="modal-backdrop" id="modal-paciente">
   <div class="modal">
     <div class="modal-hd">
@@ -902,17 +639,41 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
     </div>
     <div class="modal-body">
       <div class="modal-section">Dados pessoais</div>
-      <div class="mrow"><div class="mfield"><label>Nome completo *</label><input type="text" id="m-nome" placeholder="Ana Clara Oliveira" oninput="validarForm()"></div><div class="mfield"><label>Data de nascimento</label><input type="date" id="m-nasc"></div></div>
-      <div class="mrow"><div class="mfield"><label>Telefone / WhatsApp</label><input type="tel" id="m-tel" placeholder="(12) 99999-0000"></div><div class="mfield"><label>Sexo</label><select id="m-sexo"><option value="">Selecione</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select></div></div>
+      <div class="mrow">
+        <div class="mfield"><label>Nome completo *</label><input type="text" id="m-nome" placeholder="Nome da paciente" oninput="validarForm()"></div>
+        <div class="mfield"><label>Data de nascimento</label><input type="date" id="m-nasc"></div>
+      </div>
+      <div class="mrow">
+        <div class="mfield"><label>Telefone / WhatsApp</label><input type="tel" id="m-tel" placeholder="(12) 99999-0000"></div>
+        <div class="mfield"><label>Sexo</label><select id="m-sexo"><option value="">Selecione</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select></div>
+      </div>
       <div class="modal-section">Dados clínicos</div>
-      <div class="mrow"><div class="mfield"><label>Objetivo principal *</label><select id="m-obj" onchange="validarForm()"><option value="">Selecione</option><option>Perda de peso</option><option>Ganho de massa</option><option>Manutenção</option><option>Reeducação alimentar</option><option>Nutrição clínica</option><option>Performance esportiva</option></select></div><div class="mfield"><label>Tipo de atendimento</label><select id="m-tipo"><option>Presencial</option><option>Online</option><option>Híbrido</option></select></div></div>
-      <div class="mrow"><div class="mfield"><label>Peso atual (kg)</label><input type="number" id="m-peso" placeholder="68" step="0.1"></div><div class="mfield"><label>Altura (cm)</label><input type="number" id="m-altura" placeholder="165"></div></div>
-      <div class="mrow full"><div class="mfield"><label>Restrições alimentares / alergias</label><input type="text" id="m-restrict" placeholder="Ex: intolerância à lactose, sem glúten..."></div></div>
+      <div class="mrow">
+        <div class="mfield"><label>Objetivo *</label><select id="m-obj" onchange="validarForm()"><option value="">Selecione</option><option>Perda de peso</option><option>Ganho de massa</option><option>Manutenção</option><option>Reeducação alimentar</option><option>Nutrição clínica</option><option>Performance esportiva</option></select></div>
+        <div class="mfield"><label>Tipo de atendimento</label><select id="m-tipo"><option>Presencial</option><option>Online</option><option>Híbrido</option></select></div>
+      </div>
+      <div class="mrow">
+        <div class="mfield"><label>Peso atual (kg)</label><input type="number" id="m-peso" placeholder="68" step="0.1"></div>
+        <div class="mfield"><label>Altura (cm)</label><input type="number" id="m-altura" placeholder="165"></div>
+      </div>
+      <div class="mrow full"><div class="mfield"><label>Restrições alimentares</label><input type="text" id="m-restrict" placeholder="Ex: sem glúten, sem lactose..."></div></div>
       <div class="mrow full"><div class="mfield"><label>Observações clínicas</label><textarea id="m-obs" placeholder="Histórico, medicamentos, condições especiais..."></textarea></div></div>
-      <div class="modal-section">Acesso ao portal do paciente</div>
-      <div class="acesso-box"><div class="ab-title">🔐 Login do paciente</div><div class="ab-desc">Você define o e-mail e a senha que o paciente usará para acessar o portal. Repasse as credenciais a ele após o cadastro.</div></div>
-      <div class="mrow"><div class="mfield"><label>E-mail de acesso *</label><input type="email" id="m-email" placeholder="ana@email.com" oninput="validarForm()"></div><div class="mfield"><label>Senha de acesso *</label><div class="senha-wrap"><input type="password" id="m-senha" placeholder="Mínimo 6 caracteres" oninput="avaliarSenha(this.value);validarForm()"><button class="btn-olho" onclick="toggleSenha()" type="button">👁</button></div><div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div><div class="strength-label" id="strength-label"></div><button class="btn-gerar-senha" onclick="gerarSenha()" type="button">🔀 Gerar senha automática</button></div></div>
-      <div class="sucesso-box" id="sucesso-box"><div class="suc-ico">🎉</div><h4>Paciente cadastrado com sucesso!</h4><p>Repasse as credenciais abaixo ao paciente para que ele acesse o portal.</p><div class="credencial-box" id="cred-box"></div></div>
+      <div class="modal-section">Acesso ao portal</div>
+      <div class="acesso-box"><div class="ab-title">🔐 Login do paciente</div><div class="ab-desc">Você define o e-mail e a senha. Repasse as credenciais ao paciente após o cadastro.</div></div>
+      <div class="mrow">
+        <div class="mfield"><label>E-mail de acesso *</label><input type="email" id="m-email" placeholder="paciente@email.com" oninput="validarForm()"></div>
+        <div class="mfield">
+          <label>Senha de acesso *</label>
+          <div class="senha-wrap"><input type="password" id="m-senha" placeholder="Mínimo 6 caracteres" oninput="avaliarSenha(this.value);validarForm()"><button class="btn-olho" onclick="toggleSenha()" type="button">👁</button></div>
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+          <div class="strength-label" id="strength-label"></div>
+          <button class="btn-gerar-senha" onclick="gerarSenha()" type="button">🔀 Gerar senha automática</button>
+        </div>
+      </div>
+      <div class="sucesso-box" id="sucesso-box">
+        <div class="suc-ico">🎉</div><h4>Paciente cadastrado!</h4><p>Repasse as credenciais abaixo ao paciente.</p>
+        <div class="credencial-box" id="cred-box"></div>
+      </div>
     </div>
     <div class="modal-ft">
       <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
@@ -925,212 +686,363 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ── SUPABASE ──
-const SUPA_URL  = 'https://lkckywsrnwueehjuydxl.supabase.co';
-const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrY2t5d3Nybnd1ZWVoanV5ZHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjMyNTIsImV4cCI6MjA5NzUzOTI1Mn0.nDN07ZVQB8tfh24o2itXAZzD5v20s9T-JRwRWtze850';
-const sb = supabase.createClient(SUPA_URL, SUPA_KEY, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-    flowType: 'implicit'
-  }
-});
+const SUPA_URL='https://lkckywsrnwueehjuydxl.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrY2t5d3Nybnd1ZWVoanV5ZHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjMyNTIsImV4cCI6MjA5NzUzOTI1Mn0.nDN07ZVQB8tfh24o2itXAZzD5v20s9T-JRwRWtze850';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true,flowType:'implicit'}});
 
-let perfil = 'nutri';
-let usuarioAtual = null;
+let perfil='nutri',usuarioAtual=null,pacienteAtualId=null,todosPacientes=[];
 
-// Verifica sessão e limpa hash de erro
-window.addEventListener('DOMContentLoaded', async () => {
-  if(window.location.hash.includes('error=')) {
-    history.replaceState(null, '', window.location.pathname);
-    showToast('Link expirado. Faça login normalmente.');
-  }
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) entrarComSessao(session.user);
+window.addEventListener('DOMContentLoaded',async()=>{
+  if(window.location.hash.includes('error=')){history.replaceState(null,'',window.location.pathname);showToast('Link expirado. Faça login normalmente.');}
+  const {data:{session}}=await sb.auth.getSession();
+  if(session)entrarComSessao(session.user);
 });
 
 function setProfile(p){
-  perfil = p;
-  document.getElementById('btn-nutri-tab').classList.toggle('active', p==='nutri');
-  document.getElementById('btn-pac-tab').classList.toggle('active', p==='pac');
-  document.getElementById('info-pac').style.display = p==='pac' ? 'block' : 'none';
-  const btn = document.getElementById('btn-entrar');
-  btn.textContent = p==='nutri' ? 'Entrar na plataforma' : 'Acessar meu plano';
-  btn.className = 'btn-enter ' + p;
-  document.getElementById('inp-email').placeholder = p==='nutri' ? 'contato@jessicanog.com.br' : 'seu@email.com.br';
+  perfil=p;
+  document.getElementById('btn-nutri-tab').classList.toggle('active',p==='nutri');
+  document.getElementById('btn-pac-tab').classList.toggle('active',p==='pac');
+  document.getElementById('info-pac').style.display=p==='pac'?'block':'none';
+  const btn=document.getElementById('btn-entrar');
+  btn.textContent=p==='nutri'?'Entrar na plataforma':'Acessar meu plano';
+  btn.className='btn-enter '+p;
 }
 
 async function fazerLogin(){
-  const email = document.getElementById('inp-email').value.trim();
-  const senha = document.getElementById('inp-senha').value;
+  const email=document.getElementById('inp-email').value.trim();
+  const senha=document.getElementById('inp-senha').value;
   if(!email||!senha){showToast('Preencha e-mail e senha.');return;}
-
-  const btn = document.getElementById('btn-entrar');
-  btn.textContent = 'Entrando...';
-  btn.disabled = true;
-
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: senha });
-
-  btn.disabled = false;
-  btn.textContent = perfil==='nutri' ? 'Entrar na plataforma' : 'Acessar meu plano';
-
+  const btn=document.getElementById('btn-entrar');
+  btn.textContent='Entrando...';btn.disabled=true;
+  const {data,error}=await sb.auth.signInWithPassword({email,password:senha});
+  btn.disabled=false;
+  btn.textContent=perfil==='nutri'?'Entrar na plataforma':'Acessar meu plano';
   if(error){
-    console.error('Erro login:', error);
-    if(error.message.includes('Invalid login')) showToast('E-mail ou senha incorretos.');
-    else if(error.message.includes('Email not confirmed')) showToast('Confirme o e-mail primeiro ou peça ao admin.');
-    else showToast('Erro: ' + error.message);
+    if(error.message.includes('Invalid login'))showToast('E-mail ou senha incorretos.');
+    else if(error.message.includes('Email not confirmed'))showToast('Confirme o e-mail ou peça ao admin.');
+    else showToast('Erro: '+error.message);
     return;
   }
-
   entrarComSessao(data.user);
 }
 
 async function entrarComSessao(user){
-  usuarioAtual = user;
-
-  // Busca o perfil no banco para saber o tipo
-  const { data: perfilData } = await sb
-    .from('perfis')
-    .select('tipo, nome')
-    .eq('id', user.id)
-    .single();
-
-  const tipo = perfilData?.tipo || 'paciente';
-  const nome = perfilData?.nome || user.email;
-
-  document.getElementById('login-screen').style.display = 'none';
-
-  if(tipo === 'nutricionista'){
-    document.getElementById('app-nutri').style.display = 'block';
-    const hoje = new Date();
-    document.getElementById('data-hoje').textContent =
-      hoje.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  usuarioAtual=user;
+  const {data:pf}=await sb.from('perfis').select('tipo,nome').eq('id',user.id).single();
+  const tipo=pf?.tipo||'paciente';
+  document.getElementById('login-screen').style.display='none';
+  if(tipo==='nutricionista'){
+    document.getElementById('app-nutri').style.display='block';
+    const hoje=new Date();
+    document.getElementById('data-hoje').textContent=hoje.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+    const nm=pf?.nome||'Jéssica';
+    document.getElementById('welcome-msg').textContent='Olá, '+nm.split(' ')[0]+'! 🌟';
+    document.getElementById('nutri-nm').textContent=nm;
+    document.getElementById('nutri-av').textContent=nm.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
     await carregarDashboard();
+    await carregarPacientes();
+    await carregarSelectIA();
   } else {
-    document.getElementById('app-pac').style.display = 'block';
-    await carregarPortalPaciente(user.id, nome);
+    document.getElementById('app-pac').style.display='block';
+    await carregarPortalPaciente(user.id);
   }
 }
 
 async function fazerLogout(){
   await sb.auth.signOut();
-  usuarioAtual = null;
-  document.getElementById('app-nutri').style.display = 'none';
-  document.getElementById('app-pac').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('inp-email').value = '';
-  document.getElementById('inp-senha').value = '';
+  usuarioAtual=null;
+  document.getElementById('app-nutri').style.display='none';
+  document.getElementById('app-pac').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('inp-email').value='';
+  document.getElementById('inp-senha').value='';
 }
 
-// ── CARREGAR DASHBOARD (nutricionista) ──
+const CORES=['linear-gradient(135deg,#FAB87F,#F9CD54)','linear-gradient(135deg,#B0DEDB,#9AA9C7)','linear-gradient(135deg,#C5D9A6,#B0DEDB)','linear-gradient(135deg,#F59996,#FAB87F)','linear-gradient(135deg,#9AA9C7,#B0DEDB)'];
+function corPac(nome){return CORES[nome.charCodeAt(0)%CORES.length];}
+function iniPac(nome){return nome.split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();}
+
 async function carregarDashboard(){
-  const { data: pacs } = await sb
-    .from('pacientes')
-    .select('id, nome, objetivo, status, criado_em')
-    .order('criado_em', { ascending: false })
-    .limit(4);
+  const {data:pacs,count:cPacs}=await sb.from('pacientes').select('*',{count:'exact'}).eq('status','Ativo');
+  const {count:cPlanos}=await sb.from('planos').select('*',{count:'exact'}).eq('status','Ativo');
+  const hoje=new Date().toISOString().split('T')[0];
+  const {count:cCons}=await sb.from('consultas').select('*',{count:'exact'}).gte('data_hora',hoje+'T00:00:00').lte('data_hora',hoje+'T23:59:59');
+  const mesIni=new Date();mesIni.setDate(1);
+  const {count:cNovos}=await sb.from('pacientes').select('*',{count:'exact'}).gte('criado_em',mesIni.toISOString());
 
-  if(pacs && pacs.length > 0){
-    const lista = document.querySelector('#page-dashboard .card .card-hd + div, #page-dashboard .card');
-    // Atualiza contador no sidebar
-    const badge = document.querySelector('.nav-badge');
-    const { count } = await sb.from('pacientes').select('*', {count:'exact',head:true}).eq('status','Ativo');
-    if(badge && count) badge.textContent = count;
+  document.getElementById('st-pacs').textContent=cPacs||0;
+  document.getElementById('st-planos').textContent=cPlanos||0;
+  document.getElementById('st-consultas').textContent=cCons||0;
+  document.getElementById('st-novos').textContent=cNovos||0;
+  document.getElementById('badge-pac').textContent=cPacs||0;
+  document.getElementById('welcome-sub').textContent=(cCons||0)+' consulta(s) hoje · '+(cPlanos||0)+' plano(s) ativo(s)';
+
+  if(pacs&&pacs.length>0){
+    document.getElementById('lista-recentes').innerHTML=pacs.slice(0,4).map(p=>{
+      const badge=p.status==='Novo'?'b-nv':p.status==='Ativo'?'b-at':'b-re';
+      return `<div class="pat-row" onclick="abrirFicha('${p.id}')"><div class="av" style="background:${corPac(p.nome)}">${iniPac(p.nome)}</div><div><div class="pn">${p.nome}</div><div class="pi">${p.objetivo||'—'} · ${new Date(p.criado_em).toLocaleDateString('pt-BR')}</div></div><span class="pbg ${badge}">${p.status}</span></div>`;
+    }).join('');
+  }
+
+  const {data:cons}=await sb.from('consultas').select('*,pacientes(nome)').gte('data_hora',hoje+'T00:00:00').lte('data_hora',hoje+'T23:59:59').order('data_hora');
+  if(cons&&cons.length>0){
+    document.getElementById('lista-agenda').innerHTML=cons.map(c=>{
+      const h=new Date(c.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      return `<div class="ag-item"><div class="ag-t">${h}</div><div><div class="ag-nm">${c.pacientes?.nome||'—'}</div><div class="ag-tp">${c.tipo}</div></div><div class="ag-dot" style="background:var(--am)"></div></div>`;
+    }).join('');
   }
 }
 
-// ── CARREGAR PORTAL DO PACIENTE ──
-async function carregarPortalPaciente(userId, nome){
-  // Busca dados do paciente pelo user_id
-  const { data: pac } = await sb
-    .from('pacientes')
-    .select(`
-      id, nome, objetivo, status,
-      avaliacoes(peso, imc, data_avaliacao),
-      planos(id, titulo, tipo_dieta, kcal_total, status,
-        refeicoes(ordem, nome, horario, emoji, kcal, descricao))
-    `)
-    .eq('user_id', userId)
-    .single();
-
-  if(!pac) return;
-
-  // Atualiza nome no header
-  document.querySelector('.pac-topbar-inner h2').textContent = `Olá, ${pac.nome.split(' ')[0]} 👋`;
-
-  // Última avaliação
-  const avals = pac.avaliacoes?.sort((a,b) => new Date(b.data_avaliacao) - new Date(a.data_avaliacao));
-  if(avals && avals.length > 0){
-    const ult = avals[0];
-    document.querySelector('.pac-stat-v').textContent = ult.peso ? ult.peso + 'kg' : '—';
-    document.querySelectorAll('.pac-stat-v')[1].textContent = ult.imc || '—';
-  }
-
-  // Plano ativo
-  const planoAtivo = pac.planos?.find(p => p.status === 'Ativo');
-  if(planoAtivo && planoAtivo.refeicoes?.length > 0){
-    document.querySelector('.pac-card-ttl').textContent = planoAtivo.titulo;
-    document.querySelector('.pac-card-sub').textContent =
-      `${planoAtivo.kcal_total || '—'} kcal · ${planoAtivo.tipo_dieta || ''}`;
-
-    const refsOrdenadas = planoAtivo.refeicoes.sort((a,b) => a.ordem - b.ordem);
-    const refContainer = document.querySelector('.pac-card .refeicao-item')?.parentElement;
-    if(refContainer){
-      refContainer.innerHTML = refsOrdenadas.map(r => `
-        <div class="refeicao-item">
-          <div class="ref-time">${r.emoji||'🍽️'} ${r.horario ? r.horario.slice(0,5) : '—'}</div>
-          <div>
-            <div class="ref-nome">${r.nome}</div>
-            <div class="ref-items">${r.descricao || '—'}</div>
-            <div class="ref-kcal">≈ ${r.kcal || '—'} kcal</div>
-          </div>
-        </div>`).join('');
-    }
-  }
-
-  // Diário — salvar no banco
-  window._pacienteId = pac.id;
+async function carregarPacientes(){
+  const {data}=await sb.from('pacientes').select('*,avaliacoes(peso,imc,data_avaliacao)').order('criado_em',{ascending:false});
+  todosPacientes=data||[];
+  renderizarPacientes(todosPacientes);
+  document.getElementById('sub-pacientes').textContent=todosPacientes.length+' paciente(s) cadastrado(s)';
 }
 
-// ── SALVAR DIÁRIO DO PACIENTE ──
+function renderizarPacientes(lista){
+  const grid=document.getElementById('grid-pacientes');
+  if(!lista||lista.length===0){
+    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1;padding:48px"><div class="es-ico">👤</div><h3>Nenhum paciente cadastrado</h3><p>Comece adicionando sua primeira paciente.</p><button class="btn-primary" onclick="abrirModal()">+ Cadastrar paciente</button></div>`;
+    return;
+  }
+  grid.innerHTML=lista.map(p=>{
+    const avals=p.avaliacoes?.sort((a,b)=>new Date(b.data_avaliacao)-new Date(a.data_avaliacao));
+    const ult=avals?.[0];
+    const meses=Math.floor((new Date()-new Date(p.criado_em))/(1000*60*60*24*30));
+    return `<div class="pc" onclick="abrirFicha('${p.id}')">
+      <div class="pc-top"><div class="av" style="background:${corPac(p.nome)};width:40px;height:40px">${iniPac(p.nome)}</div>
+      <div><div class="pc-nm">${p.nome}</div><div class="pc-mt">${p.tipo_atendimento||'—'} · ${p.objetivo||'—'}</div></div></div>
+      <div class="pc-stats">
+        <div class="pcs"><div class="pcs-v">${ult?.peso?ult.peso+'kg':'—'}</div><div class="pcs-l">Peso</div></div>
+        <div class="pcs"><div class="pcs-v">${ult?.imc||'—'}</div><div class="pcs-l">IMC</div></div>
+        <div class="pcs"><div class="pcs-v">${meses===0?'Novo':meses+'m'}</div><div class="pcs-l">Tempo</div></div>
+      </div></div>`;
+  }).join('');
+}
+
+function filtrarPacientes(){
+  const q=document.getElementById('busca-pac').value.toLowerCase();
+  renderizarPacientes(todosPacientes.filter(p=>p.nome.toLowerCase().includes(q)||(p.objetivo||'').toLowerCase().includes(q)));
+}
+
+async function abrirFicha(id){
+  pacienteAtualId=id;
+  const {data:p}=await sb.from('pacientes').select('*').eq('id',id).single();
+  if(!p)return;
+
+  document.getElementById('ficha-av').textContent=iniPac(p.nome);
+  document.getElementById('ficha-av').style.background=corPac(p.nome);
+  document.getElementById('ficha-nome').textContent=p.nome;
+  document.getElementById('ficha-sub').textContent=p.email||'—';
+  document.getElementById('ficha-obj').textContent=p.objetivo||'—';
+  document.getElementById('ficha-tipo').textContent=p.tipo_atendimento||'—';
+  document.getElementById('ficha-status').textContent=p.status||'—';
+  document.getElementById('fd-nome').textContent=p.nome;
+  document.getElementById('fd-nasc').textContent=p.data_nascimento?new Date(p.data_nascimento).toLocaleDateString('pt-BR'):'—';
+  document.getElementById('fd-sexo').textContent=p.sexo||'—';
+  document.getElementById('fd-tel').textContent=p.telefone||'—';
+  document.getElementById('fd-email').textContent=p.email||'—';
+  document.getElementById('fd-tipo').textContent=p.tipo_atendimento||'—';
+  document.getElementById('fd-obj').textContent=p.objetivo||'—';
+  document.getElementById('fd-inicio').textContent=new Date(p.criado_em).toLocaleDateString('pt-BR');
+  document.getElementById('fd-status').textContent=p.status||'—';
+  document.getElementById('fd-restrict').textContent=p.restricoes||'Sem restrições';
+  document.getElementById('fd-obs').textContent=p.observacoes||'Sem observações';
+
+  const {data:avals}=await sb.from('avaliacoes').select('*').eq('paciente_id',id).order('data_avaliacao',{ascending:false});
+  if(avals&&avals.length>0){
+    const ult=avals[0];
+    document.getElementById('ficha-peso').textContent=ult.peso?ult.peso+'kg':'—';
+    document.getElementById('ficha-imc').textContent=ult.imc||'—';
+    const meses=Math.floor((new Date()-new Date(p.criado_em))/(1000*60*60*24*30));
+    document.getElementById('ficha-tempo').textContent=meses===0?'Novo':meses+'m';
+    document.getElementById('antro-tbody').innerHTML=avals.map((a,i)=>{
+      const prev=avals[i+1];
+      const delta=prev&&a.peso&&prev.peso?(a.peso-prev.peso).toFixed(1):null;
+      const dh=i===avals.length-1?`<span class="delta-ok">Inicial</span>`:delta?`<span class="${parseFloat(delta)<0?'delta-pos':''}">${parseFloat(delta)>0?'+':''}${delta}</span>`:'—';
+      return `<tr><td>${new Date(a.data_avaliacao).toLocaleDateString('pt-BR')}</td><td>${a.peso||'—'}</td><td>${a.altura||'—'}</td><td>${a.imc||'—'}</td><td>${a.percentual_gordura?a.percentual_gordura+'%':'—'}</td><td>${a.massa_magra?a.massa_magra+' kg':'—'}</td><td>${dh}</td></tr>`;
+    }).join('');
+  } else {
+    ['ficha-peso','ficha-imc','ficha-tempo'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('antro-tbody').innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--dm);padding:20px">Nenhuma avaliação registrada</td></tr>';
+  }
+
+  const {data:planos}=await sb.from('planos').select('*,refeicoes(*)').eq('paciente_id',id).eq('status','Ativo').limit(1);
+  const plano=planos?.[0];
+  if(plano){
+    document.getElementById('plano-titulo').textContent=plano.titulo+(plano.kcal_total?' · '+plano.kcal_total+' kcal':'');
+    const refs=plano.refeicoes?.sort((a,b)=>a.ordem-b.ordem)||[];
+    document.getElementById('plano-refeicoes').innerHTML=refs.length>0?refs.map(r=>`<div class="plano-resumo-item"><div class="pri-time">${r.emoji||'🍽️'} ${r.horario?r.horario.slice(0,5):'—'}</div><div><div class="pri-nome">${r.nome}</div><div class="pri-desc">${r.descricao||'—'}</div><div class="pri-kcal">≈ ${r.kcal||'—'} kcal</div></div></div>`).join(''):'<div class="empty-state" style="padding:24px"><p>Nenhuma refeição cadastrada.</p></div>';
+  } else {
+    document.getElementById('plano-refeicoes').innerHTML='<div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano ativo. Use <strong>Gerar Plano com IA</strong>.</p></div>';
+  }
+
+  const notasCls={Consulta:'nt-consulta',Retorno:'nt-retorno','Observação':'nt-obs'};
+  const {data:notas}=await sb.from('notas').select('*').eq('paciente_id',id).order('criado_em',{ascending:false});
+  document.getElementById('notas-lista').innerHTML=notas&&notas.length>0?notas.map(n=>`<div class="nota-item"><div class="nota-data">${new Date(n.criado_em).toLocaleString('pt-BR')}</div><div class="nota-texto">${n.texto}</div><span class="nota-tag ${notasCls[n.tipo]||'nt-obs'}">${n.tipo}</span></div>`).join(''):'<div style="color:var(--dm);font-size:13px">Nenhuma anotação ainda.</div>';
+
+  const {data:diario}=await sb.from('diario').select('*').eq('paciente_id',id).order('criado_em',{ascending:false}).limit(10);
+  const dHtml=diario&&diario.length>0?diario.map(d=>`<div class="diario-item"><div class="diario-data">${new Date(d.criado_em).toLocaleDateString('pt-BR')}<br><span style="font-weight:400;font-size:10px">${new Date(d.criado_em).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span></div><div class="diario-content"><p>${d.texto||'—'}</p><div class="dc-sub">${d.peso_dia?'⚖️ Peso: <strong>'+d.peso_dia+' kg</strong>':''}</div></div></div>`).join(''):'<div style="color:var(--dm);font-size:13px">Nenhum registro ainda.</div>';
+  document.getElementById('diario-lista').innerHTML=dHtml;
+  document.getElementById('ficha-diario-resumo').innerHTML=diario&&diario.length>0?`<div class="diario-item" style="padding-top:0;border:none"><div class="diario-data">${new Date(diario[0].criado_em).toLocaleDateString('pt-BR')}</div><div class="diario-content"><p>${diario[0].texto||'—'}</p><div class="dc-sub">${diario[0].peso_dia?'⚖️ Peso: <strong>'+diario[0].peso_dia+' kg</strong>':''}</div></div></div>`:'<div style="color:var(--dm);font-size:13px">Nenhum registro ainda.</div>';
+
+  showTab('resumo',document.querySelector('.ftab'));
+  document.querySelectorAll('[id^="page-"]').forEach(el=>el.style.display='none');
+  document.getElementById('page-ficha').style.display='block';
+  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tb-title').textContent=p.nome;
+  window.scrollTo(0,0);fecharMenu();
+}
+
+async function salvarNota(){
+  const txt=document.getElementById('nota-input').value.trim();
+  if(!txt){showToast('Escreva a anotação antes de salvar.');return;}
+  if(!pacienteAtualId)return;
+  const tipo=document.getElementById('nota-tipo').value;
+  const {error}=await sb.from('notas').insert({paciente_id:pacienteAtualId,tipo,texto:txt});
+  if(error){showToast('Erro ao salvar.');return;}
+  document.getElementById('nota-input').value='';
+  await abrirFicha(pacienteAtualId);
+  showTab('notas',document.querySelectorAll('.ftab')[3]);
+  showToast('Anotação salva!');
+}
+
+async function carregarPortalPaciente(userId){
+  const {data:pac}=await sb.from('pacientes').select('*,avaliacoes(peso,imc,data_avaliacao),planos(id,titulo,tipo_dieta,kcal_total,status,refeicoes(ordem,nome,horario,emoji,kcal,descricao)),consultas(data_hora,tipo,status)').eq('user_id',userId).single();
+  if(!pac)return;
+  document.getElementById('pac-ola').textContent='Olá, '+pac.nome.split(' ')[0]+'! 👋';
+  window._pacienteId=pac.id;
+  const avals=pac.avaliacoes?.sort((a,b)=>new Date(b.data_avaliacao)-new Date(a.data_avaliacao));
+  if(avals&&avals[0]){document.getElementById('pac-peso').textContent=avals[0].peso?avals[0].peso+'kg':'—';document.getElementById('pac-imc').textContent=avals[0].imc||'—';}
+  const plano=pac.planos?.find(p=>p.status==='Ativo');
+  if(plano){
+    document.getElementById('pac-plano-sub').textContent=(plano.kcal_total||'—')+' kcal · '+(plano.tipo_dieta||'');
+    const refs=plano.refeicoes?.sort((a,b)=>a.ordem-b.ordem)||[];
+    document.getElementById('pac-refeicoes').innerHTML=refs.map(r=>`<div class="refeicao-item"><div class="ref-time">${r.emoji||'🍽️'} ${r.horario?r.horario.slice(0,5):'—'}</div><div><div class="ref-nome">${r.nome}</div><div class="ref-items">${r.descricao||'—'}</div><div class="ref-kcal">≈ ${r.kcal||'—'} kcal</div></div></div>`).join('');
+  }
+  const prox=pac.consultas?.filter(c=>c.status==='Agendada'&&new Date(c.data_hora)>new Date()).sort((a,b)=>new Date(a.data_hora)-new Date(b.data_hora))[0];
+  if(prox){const d=new Date(prox.data_hora);document.getElementById('pac-consulta-box').innerHTML=`<div class="pac-consulta"><div class="cons-date"><div class="cons-day">${d.getDate()}</div><div class="cons-mon">${d.toLocaleString('pt-BR',{month:'short'})}</div></div><div class="cons-info"><h4>${prox.tipo}</h4><p>${d.toLocaleDateString('pt-BR',{weekday:'long'})} · ${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</p></div></div>`;}
+}
+
 async function salvarDiarioPaciente(){
-  const txt = document.querySelector('.diario-form textarea').value.trim();
+  const txt=document.getElementById('pac-diario-txt').value.trim();
+  const peso=document.getElementById('pac-peso-input').value;
   if(!txt){showToast('Escreva algo antes de salvar.');return;}
   if(!window._pacienteId){showToast('Erro: paciente não identificado.');return;}
-
-  const { error } = await sb.from('diario').insert({
-    paciente_id: window._pacienteId,
-    texto: txt,
-    data_registro: new Date().toISOString()
-  });
-
-  if(error){ showToast('Erro ao salvar. Tente novamente.'); return; }
-  document.querySelector('.diario-form textarea').value = '';
+  const {error}=await sb.from('diario').insert({paciente_id:window._pacienteId,texto:txt,peso_dia:peso||null});
+  if(error){showToast('Erro ao salvar.');return;}
+  document.getElementById('pac-diario-txt').value='';
+  document.getElementById('pac-peso-input').value='';
   showToast('Diário salvo! Jéssica vai ver em breve 💛');
 }
 
-// ── CRIAR PACIENTE NO SUPABASE ──
-async function criarPacienteSupabase(dados){
-  // 1. Cria usuário no Supabase Auth via Admin API
-  //    (em produção isso deve ser uma Edge Function — aqui usamos insert direto)
-  // Por ora: cria o registro na tabela pacientes e sinaliza para a nutricionista
-  // repassar as credenciais manualmente ou via e-mail.
+function abrirModal(){
+  document.getElementById('modal-paciente').classList.add('open');
+  document.getElementById('sucesso-box').classList.remove('show');
+  document.getElementById('btn-criar').disabled=true;
+  document.getElementById('btn-criar').textContent='Criar paciente';
+  ['m-nome','m-nasc','m-tel','m-email','m-senha','m-peso','m-altura','m-restrict','m-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('m-sexo').selectedIndex=0;
+  document.getElementById('m-obj').selectedIndex=0;
+  document.getElementById('strength-fill').style.width='0';
+  document.getElementById('strength-label').textContent='';
+  setTimeout(()=>document.getElementById('m-nome').focus(),100);
+}
+function fecharModal(){document.getElementById('modal-paciente').classList.remove('open');}
 
-  const { data: pac, error } = await sb.from('pacientes').insert({
-    nome:            dados.nome,
-    email:           dados.email,
-    telefone:        dados.tel,
-    data_nascimento: dados.nasc || null,
-    sexo:            dados.sexo || null,
-    objetivo:        dados.obj,
-    tipo_atendimento:dados.tipo,
-    restricoes:      dados.restrict || null,
-    observacoes:     dados.obs || null,
-    status:          'Novo'
+function validarForm(){
+  const nome=document.getElementById('m-nome').value.trim();
+  const email=document.getElementById('m-email').value.trim();
+  const senha=document.getElementById('m-senha').value;
+  const obj=document.getElementById('m-obj').value;
+  document.getElementById('btn-criar').disabled=!(nome.length>2&&email.includes('@')&&senha.length>=6&&obj!=='');
+}
+
+function avaliarSenha(v){
+  const fill=document.getElementById('strength-fill'),lbl=document.getElementById('strength-label');
+  if(!v){fill.style.width='0';lbl.textContent='';return;}
+  let s=0;if(v.length>=6)s++;if(v.length>=10)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;
+  const l=[{w:'20%',bg:'#F59996',t:'Muito fraca'},{w:'40%',bg:'#FAB87F',t:'Fraca'},{w:'60%',bg:'#F9CD54',t:'Razoável'},{w:'80%',bg:'#9AA9C7',t:'Boa'},{w:'100%',bg:'#6BBF8E',t:'Excelente'}][Math.min(s,4)];
+  fill.style.width=l.w;fill.style.background=l.bg;lbl.textContent=l.t;lbl.style.color=l.bg;
+}
+function toggleSenha(){const i=document.getElementById('m-senha');i.type=i.type==='password'?'text':'password';}
+function gerarSenha(){
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789@#!';
+  let s='';for(let i=0;i<10;i++)s+=c[Math.floor(Math.random()*c.length)];
+  const inp=document.getElementById('m-senha');inp.value=s;inp.type='text';avaliarSenha(s);validarForm();
+}
+
+async function criarPaciente(){
+  const nome=document.getElementById('m-nome').value.trim();
+  const email=document.getElementById('m-email').value.trim();
+  const senha=document.getElementById('m-senha').value;
+  const obj=document.getElementById('m-obj').value;
+  const tipo=document.getElementById('m-tipo').value;
+  const peso=document.getElementById('m-peso').value;
+  const altura=document.getElementById('m-altura').value;
+  const btn=document.getElementById('btn-criar');
+  btn.textContent='Criando...';btn.disabled=true;
+
+  const {data:pac,error}=await sb.from('pacientes').insert({
+    nome,email,telefone:document.getElementById('m-tel').value,
+    data_nascimento:document.getElementById('m-nasc').value||null,
+    sexo:document.getElementById('m-sexo').value||null,
+    objetivo:obj,tipo_atendimento:tipo,
+    restricoes:document.getElementById('m-restrict').value||null,
+    observacoes:document.getElementById('m-obs').value||null,
+    status:'Novo'
   }).select().single();
 
-  return { pac, error };
+  if(error){showToast('Erro: '+error.message);btn.textContent='Criar paciente';btn.disabled=false;return;}
+
+  if(peso&&altura&&pac){
+    await sb.from('avaliacoes').insert({paciente_id:pac.id,peso:parseFloat(peso),altura:parseFloat(altura),data_avaliacao:new Date().toISOString().split('T')[0]});
+  }
+
+  let imc='—';
+  if(peso&&altura){const h=parseFloat(altura)/100;imc=(parseFloat(peso)/(h*h)).toFixed(1);}
+
+  document.getElementById('sucesso-box').classList.add('show');
+  document.getElementById('cred-box').innerHTML=`
+    <div class="cr-row"><span class="cr-label">👤 Paciente</span><span class="cr-value">${nome}</span></div>
+    <div class="cr-row"><span class="cr-label">✉️ E-mail</span><span class="cr-value">${email}</span></div>
+    <div class="cr-row"><span class="cr-label">🔑 Senha</span><span class="cr-value">${senha}</span></div>
+    <div class="cr-row"><span class="cr-label">🎯 Objetivo</span><span class="cr-value">${obj}</span></div>
+    ${imc!=='—'?`<div class="cr-row"><span class="cr-label">📊 IMC</span><span class="cr-value">${imc}</span></div>`:''}
+    <div style="margin-top:10px;font-size:11px;color:#388E3C;line-height:1.5">Para ativar o login: Supabase → Authentication → Add user com este e-mail e senha.</div>`;
+  document.getElementById('sucesso-box').scrollIntoView({behavior:'smooth',block:'center'});
+
+  btn.textContent='✅ Criado!';btn.style.background='#6BBF8E';btn.style.color='white';
+  await carregarPacientes();await carregarDashboard();await carregarSelectIA();
+
+  setTimeout(()=>{fecharModal();btn.textContent='Criar paciente';btn.style.background='';btn.style.color='';showToast(nome.split(' ')[0]+' cadastrada! 🎉');},3500);
+}
+
+async function carregarSelectIA(){
+  const {data}=await sb.from('pacientes').select('id,nome').order('nome');
+  const sel=document.getElementById('ia-paciente');
+  sel.innerHTML='<option value="">Selecione...</option>'+(data||[]).map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
+}
+
+function toggleTag(el){document.querySelectorAll('.tag-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+
+function simularIA(){
+  const btn=document.getElementById('btn-gerar');
+  btn.textContent='⏳ Gerando plano...';btn.disabled=true;
+  setTimeout(()=>{
+    document.getElementById('resultado-ia').innerHTML=`
+      <h3 style="margin-bottom:5px">Plano gerado ✅</h3>
+      <p style="color:var(--dm);font-size:12.5px;margin-bottom:16px">Em breve: integração com tabela TACO e salvamento automático no prontuário.</p>
+      <div style="background:var(--cr);border-radius:10px;padding:18px;font-size:12.5px;line-height:1.8">
+        <strong>☀️ Café da manhã</strong><br>Pão integral (50g) · Ovo mexido (2 un.) · Mamão (120g) · Café sem açúcar<br><br>
+        <strong>🍎 Lanche da manhã</strong><br>Iogurte grego (170g) · Granola (30g) · Banana (1 un.)<br><br>
+        <strong>🍽️ Almoço</strong><br>Arroz integral (120g) · Feijão (80g) · Frango grelhado (120g) · Salada à vontade · Azeite (1 col.)<br><br>
+        <strong>🥜 Lanche da tarde</strong><br>Mix de castanhas (30g) · Fruta da estação<br><br>
+        <strong>🌙 Jantar</strong><br>Sopa de legumes com frango (300ml) · Torrada integral (2 un.)
+      </div>`;
+    btn.textContent='✨ Gerar plano alimentar com IA';btn.disabled=false;
+  },2000);
 }
 
 function showPage(pg,btn){
@@ -1143,338 +1055,26 @@ function showPage(pg,btn){
   fecharMenu();
 }
 
-function abrirMenu(){
-  document.getElementById('sidebar').classList.add('open');
-  document.getElementById('overlay').classList.add('show');
-}
-function fecharMenu(){
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
+function showTab(tab,btn){
+  document.querySelectorAll('.ftab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.ftab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('ftab-'+tab).classList.add('active');
+  if(btn)btn.classList.add('active');
 }
 
-function toggleTag(el){
-  document.querySelectorAll('.tag-pill').forEach(p=>p.classList.remove('sel'));
-  el.classList.add('sel');
-}
-
-function simularIA(){
-  const btn=document.getElementById('btn-gerar');
-  btn.textContent='⏳ Consultando tabela TACO...';
-  btn.disabled=true;
-  setTimeout(()=>{
-    document.getElementById('resultado-ia').innerHTML=`
-      <h3 style="margin-bottom:5px">Plano gerado com sucesso ✅</h3>
-      <p>1.800 kcal · Dieta equilibrada · Tabela TACO</p>
-      <div style="background:var(--cr);border-radius:10px;padding:18px;font-size:12.5px;line-height:1.8">
-        <strong>☀️ Café da manhã</strong><br>Pão integral (50g) · Ovo mexido (2 un.) · Mamão (120g) · Café sem açúcar<br><br>
-        <strong>🍎 Lanche da manhã</strong><br>Iogurte grego (170g) · Granola (30g) · Banana (1 un.)<br><br>
-        <strong>🍽️ Almoço</strong><br>Arroz integral (120g) · Feijão (80g) · Frango grelhado (120g) · Salada à vontade · Azeite (1 col.)<br><br>
-        <strong>🥜 Lanche da tarde</strong><br>Mix de castanhas (30g) · Fruta da estação (1 un.)<br><br>
-        <strong>🌙 Jantar</strong><br>Sopa de legumes com frango (300ml) · Torrada integral (2 un.)
-      </div>
-      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
-        <button class="btn-gerar" style="flex:1;min-width:140px" onclick="showToast('PDF exportado!')">📄 Exportar PDF</button>
-        <button class="btn-gerar" style="flex:1;min-width:140px;background:var(--pe2);color:var(--dk)" onclick="showToast('Plano salvo no prontuário!')">💾 Salvar no prontuário</button>
-      </div>`;
-    btn.textContent='✨ Gerar plano alimentar com IA';
-    btn.disabled=false;
-  },2200);
-}
+function abrirMenu(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show');}
+function fecharMenu(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
 
 let toastTimer;
 function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
 }
 
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')fazerLogin();
   if(e.key==='Escape')fecharModal();
 });
-
-// ── FICHA DO PACIENTE ──
-const pacientesData = {
-  ana: {
-    av:'AC', cor:'linear-gradient(135deg,#FAB87F,#F9CD54)',
-    nome:'Ana Clara Oliveira', sub:'27 anos · Feminino · ana@email.com',
-    obj:'Perda de peso', tipo:'Online', status:'Ativa',
-    peso:'67,8 kg', imc:'25,5', tempo:'3m',
-    fd_nome:'Ana Clara Oliveira', fd_nasc:'12/03/1997', fd_idade:'27 anos',
-    fd_sexo:'Feminino', fd_tel:'(12) 99812-3344', fd_email:'ana@email.com',
-    fd_tipo:'Online', fd_obj:'Perda de peso',
-    fd_restrict:'Intolerância à lactose',
-    fd_obs:'Paciente com histórico de hipotireoidismo controlado. Relata dificuldade com doces à noite. Prefere refeições práticas. Faz musculação 3x/sem.'
-  },
-  mariana: {
-    av:'MS', cor:'linear-gradient(135deg,#B0DEDB,#9AA9C7)',
-    nome:'Mariana Santos', sub:'34 anos · Feminino · mariana@email.com',
-    obj:'Reeducação alimentar', tipo:'Presencial', status:'Ativa',
-    peso:'72 kg', imc:'25,8', tempo:'6m',
-    fd_nome:'Mariana Santos', fd_nasc:'05/07/1990', fd_idade:'34 anos',
-    fd_sexo:'Feminino', fd_tel:'(12) 98765-4321', fd_email:'mariana@email.com',
-    fd_tipo:'Presencial', fd_obj:'Reeducação alimentar',
-    fd_restrict:'Sem restrições',
-    fd_obs:'Histórico de dietas restritivas. Bom vínculo com alimentação intuitiva. Em processo de melhora da relação com a comida.'
-  },
-  lucas: {
-    av:'LF', cor:'linear-gradient(135deg,#C5D9A6,#B0DEDB)',
-    nome:'Lucas Ferreira', sub:'29 anos · Masculino · lucas@email.com',
-    obj:'Ganho de massa', tipo:'Online', status:'Novo',
-    peso:'80 kg', imc:'24,9', tempo:'Novo',
-    fd_nome:'Lucas Ferreira', fd_nasc:'22/11/1995', fd_idade:'29 anos',
-    fd_sexo:'Masculino', fd_tel:'(12) 91234-5678', fd_email:'lucas@email.com',
-    fd_tipo:'Online', fd_obj:'Ganho de massa muscular',
-    fd_restrict:'Sem restrições',
-    fd_obs:'Pratica musculação 5x/sem. Objetivo de ganho de massa limpa. Treino de força periodizado.'
-  },
-  camila: {
-    av:'CR', cor:'linear-gradient(135deg,#F59996,#FAB87F)',
-    nome:'Camila Rodrigues', sub:'41 anos · Feminino · camila@email.com',
-    obj:'Nutrição clínica', tipo:'Híbrido', status:'Ativa',
-    peso:'65 kg', imc:'23,5', tempo:'1 ano',
-    fd_nome:'Camila Rodrigues', fd_nasc:'14/02/1983', fd_idade:'41 anos',
-    fd_sexo:'Feminino', fd_tel:'(12) 97654-3210', fd_email:'camila@email.com',
-    fd_tipo:'Híbrido', fd_obj:'Nutrição clínica',
-    fd_restrict:'Sem glúten (doença celíaca)',
-    fd_obs:'Diagnóstico de doença celíaca confirmado. Plano 100% sem glúten. Acompanhamento conjunto com gastroenterologista.'
-  },
-  rafael: {
-    av:'RM', cor:'linear-gradient(135deg,#9AA9C7,#B0DEDB)',
-    nome:'Rafael Mendes', sub:'31 anos · Masculino · rafael@email.com',
-    obj:'Performance esportiva', tipo:'Online', status:'Ativo',
-    peso:'85 kg', imc:'26,1', tempo:'2m',
-    fd_nome:'Rafael Mendes', fd_nasc:'08/04/1993', fd_idade:'31 anos',
-    fd_sexo:'Masculino', fd_tel:'(12) 95555-1234', fd_email:'rafael@email.com',
-    fd_tipo:'Online', fd_obj:'Performance esportiva',
-    fd_restrict:'Sem restrições',
-    fd_obs:'Corredor amador. Prepara-se para meia maratona. Foco em carboidratos para performance e recuperação.'
-  },
-  fernanda: {
-    av:'FL', cor:'linear-gradient(135deg,#F9D2B1,#F59996)',
-    nome:'Fernanda Lima', sub:'38 anos · Feminino · fernanda@email.com',
-    obj:'Nutrição clínica', tipo:'Presencial', status:'Ativa',
-    peso:'78 kg', imc:'27,4', tempo:'8m',
-    fd_nome:'Fernanda Lima', fd_nasc:'30/09/1986', fd_idade:'38 anos',
-    fd_sexo:'Feminino', fd_tel:'(12) 93333-9876', fd_email:'fernanda@email.com',
-    fd_tipo:'Presencial', fd_obj:'Síndrome metabólica',
-    fd_restrict:'Restrição de sódio',
-    fd_obs:'Diagnóstico de síndrome metabólica. HAS controlada. Plano hipossódico e com controle glicêmico. Caminhada 4x/sem.'
-  }
-};
-
-function abrirFicha(id) {
-  const p = pacientesData[id] || pacientesData['ana'];
-  // Hero
-  document.getElementById('ficha-av').textContent = p.av;
-  document.getElementById('ficha-av').style.background = p.cor;
-  document.getElementById('ficha-nome').textContent = p.nome;
-  document.getElementById('ficha-sub').textContent = p.sub;
-  document.getElementById('ficha-obj').textContent = p.obj;
-  document.getElementById('ficha-tipo').textContent = p.tipo;
-  document.getElementById('ficha-status').textContent = p.status;
-  document.getElementById('ficha-peso').textContent = p.peso;
-  document.getElementById('ficha-imc').textContent = p.imc;
-  document.getElementById('ficha-tempo').textContent = p.tempo;
-  // Dados
-  document.getElementById('fd-nome').textContent = p.fd_nome;
-  document.getElementById('fd-nasc').textContent = p.fd_nasc;
-  document.getElementById('fd-idade').textContent = p.fd_idade;
-  document.getElementById('fd-sexo').textContent = p.fd_sexo;
-  document.getElementById('fd-tel').textContent = p.fd_tel;
-  document.getElementById('fd-email').textContent = p.fd_email;
-  document.getElementById('fd-tipo').textContent = p.fd_tipo;
-  document.getElementById('fd-obj').textContent = p.fd_obj;
-  document.getElementById('fd-restrict').textContent = p.fd_restrict;
-  document.getElementById('fd-obs').textContent = p.fd_obs;
-  // Abre a aba resumo por padrão
-  showTab('resumo', document.querySelector('.ftab'));
-  // Navega para a ficha
-  document.querySelectorAll('[id^="page-"]').forEach(el => el.style.display = 'none');
-  document.getElementById('page-ficha').style.display = 'block';
-  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('tb-title').textContent = p.fd_nome;
-  window.scrollTo(0, 0);
-  fecharMenu();
-}
-
-function showTab(tab, btn) {
-  document.querySelectorAll('.ftab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.ftab').forEach(el => el.classList.remove('active'));
-  document.getElementById('ftab-' + tab).classList.add('active');
-  if (btn) btn.classList.add('active');
-}
-
-function salvarNota() {
-  const txt = document.getElementById('nota-input').value.trim();
-  if (!txt) { showToast('Escreva a anotação antes de salvar.'); return; }
-  const tipo = document.getElementById('nota-tipo').value;
-  const tipoLabel = {consulta:'Consulta', retorno:'Retorno', obs:'Observação'}[tipo];
-  const tipoClass = {consulta:'nt-consulta', retorno:'nt-retorno', obs:'nt-obs'}[tipo];
-  const agora = new Date();
-  const data = agora.toLocaleDateString('pt-BR') + ' · ' + agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  const nova = document.createElement('div');
-  nova.className = 'nota-item';
-  nova.innerHTML = `<div class="nota-data">${data}</div><div class="nota-texto">${txt}</div><span class="nota-tag ${tipoClass}">${tipoLabel}</span>`;
-  const lista = document.getElementById('notas-lista');
-  lista.insertBefore(nova, lista.firstChild);
-  document.getElementById('nota-input').value = '';
-  showToast('Anotação salva no prontuário!');
-}
-function abrirModal(){
-  document.getElementById('modal-paciente').classList.add('open');
-  document.getElementById('sucesso-box').classList.remove('show');
-  document.getElementById('btn-criar').disabled=true;
-  document.getElementById('btn-criar').textContent='Criar paciente';
-  ['m-nome','m-nasc','m-tel','m-email','m-senha','m-peso','m-altura','m-restrict','m-obs'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.value='';
-  });
-  document.getElementById('m-sexo').selectedIndex=0;
-  document.getElementById('m-obj').selectedIndex=0;
-  document.getElementById('strength-fill').style.width='0';
-  document.getElementById('strength-label').textContent='';
-  setTimeout(()=>document.getElementById('m-nome').focus(),100);
-}
-
-function fecharModal(){
-  document.getElementById('modal-paciente').classList.remove('open');
-}
-
-function validarForm(){
-  const nome=document.getElementById('m-nome').value.trim();
-  const email=document.getElementById('m-email').value.trim();
-  const senha=document.getElementById('m-senha').value;
-  const obj=document.getElementById('m-obj').value;
-  const ok=nome.length>2 && email.includes('@') && senha.length>=6 && obj!=='';
-  document.getElementById('btn-criar').disabled=!ok;
-}
-
-function avaliarSenha(v){
-  const fill=document.getElementById('strength-fill');
-  const lbl=document.getElementById('strength-label');
-  if(!v){fill.style.width='0';lbl.textContent='';return;}
-  let score=0;
-  if(v.length>=6)score++;
-  if(v.length>=10)score++;
-  if(/[A-Z]/.test(v))score++;
-  if(/[0-9]/.test(v))score++;
-  if(/[^A-Za-z0-9]/.test(v))score++;
-  const levels=[
-    {w:'20%',bg:'#F59996',txt:'Muito fraca'},
-    {w:'40%',bg:'#FAB87F',txt:'Fraca'},
-    {w:'60%',bg:'#F9CD54',txt:'Razoável'},
-    {w:'80%',bg:'#9AA9C7',txt:'Boa'},
-    {w:'100%',bg:'#6BBF8E',txt:'Excelente'},
-  ];
-  const l=levels[Math.min(score,4)];
-  fill.style.width=l.w;
-  fill.style.background=l.bg;
-  lbl.textContent=l.txt;
-  lbl.style.color=l.bg;
-}
-
-function toggleSenha(){
-  const inp=document.getElementById('m-senha');
-  inp.type=inp.type==='password'?'text':'password';
-}
-
-function gerarSenha(){
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789@#!';
-  let s='';
-  for(let i=0;i<10;i++)s+=chars[Math.floor(Math.random()*chars.length)];
-  const inp=document.getElementById('m-senha');
-  inp.value=s;
-  inp.type='text';
-  avaliarSenha(s);
-  validarForm();
-}
-
-async function criarPaciente(){
-  const nome    = document.getElementById('m-nome').value.trim();
-  const email   = document.getElementById('m-email').value.trim();
-  const senha   = document.getElementById('m-senha').value;
-  const obj     = document.getElementById('m-obj').value;
-  const tipo    = document.getElementById('m-tipo').value;
-  const peso    = document.getElementById('m-peso').value;
-  const altura  = document.getElementById('m-altura').value;
-  const nasc    = document.getElementById('m-nasc').value;
-  const sexo    = document.getElementById('m-sexo').value;
-  const restrict= document.getElementById('m-restrict').value;
-  const obs     = document.getElementById('m-obs').value;
-
-  const btn = document.getElementById('btn-criar');
-  btn.textContent = 'Criando...';
-  btn.disabled = true;
-
-  // 1. Cria o login do paciente via Supabase Auth (admin via anon — funciona com service_role em Edge Function)
-  //    Por ora: insert direto na tabela + orientação para criar manualmente no painel
-  const { pac, error: errPac } = await criarPacienteSupabase({
-    nome, email, tel: document.getElementById('m-tel').value,
-    nasc, sexo, obj, tipo, restrict, obs
-  });
-
-  if(errPac){
-    showToast('Erro ao cadastrar: ' + errPac.message);
-    btn.textContent = 'Criar paciente';
-    btn.disabled = false;
-    return;
-  }
-
-  // 2. Se tiver peso/altura, insere avaliação inicial
-  if(peso && altura && pac){
-    await sb.from('avaliacoes').insert({
-      paciente_id: pac.id,
-      peso: parseFloat(peso),
-      altura: parseFloat(altura),
-      data_avaliacao: new Date().toISOString().split('T')[0]
-    });
-  }
-
-  // IMC para exibir
-  let imc = '—';
-  if(peso && altura){ const h=parseFloat(altura)/100; imc=(parseFloat(peso)/(h*h)).toFixed(1); }
-
-  // Mostra sucesso
-  const sb2 = document.getElementById('sucesso-box');
-  sb2.classList.add('show');
-  document.getElementById('cred-box').innerHTML=`
-    <div class="cr-row"><span class="cr-label">👤 Paciente</span><span class="cr-value">${nome}</span></div>
-    <div class="cr-row"><span class="cr-label">✉️ E-mail</span><span class="cr-value">${email}</span></div>
-    <div class="cr-row"><span class="cr-label">🔑 Senha definida</span><span class="cr-value">${senha}</span></div>
-    <div class="cr-row"><span class="cr-label">🎯 Objetivo</span><span class="cr-value">${obj}</span></div>
-    ${imc!=='—'?`<div class="cr-row"><span class="cr-label">📊 IMC inicial</span><span class="cr-value">${imc}</span></div>`:''}
-    <div style="margin-top:10px;font-size:11px;color:#388E3C;line-height:1.5">⚠️ Para ativar o login do paciente, crie o usuário no painel Supabase → Authentication → Add user com este e-mail e senha.</div>
-  `;
-  sb2.scrollIntoView({behavior:'smooth',block:'center'});
-
-  // Adiciona card visualmente
-  const iniciais=nome.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
-  const cores=['linear-gradient(135deg,#FAB87F,#F9CD54)','linear-gradient(135deg,#B0DEDB,#9AA9C7)','linear-gradient(135deg,#C5D9A6,#B0DEDB)','linear-gradient(135deg,#F59996,#FAB87F)'];
-  const cor=cores[Math.floor(Math.random()*cores.length)];
-  const grid=document.querySelector('.pats-grid');
-  if(grid){
-    const div=document.createElement('div');
-    div.className='pc';
-    div.onclick=()=>showToast(`Abrindo ficha de ${nome.split(' ')[0]}...`);
-    div.innerHTML=`<div class="pc-top"><div class="av" style="background:${cor};width:40px;height:40px">${iniciais}</div><div><div class="pc-nm">${nome}</div><div class="pc-mt">${tipo} · ${obj}</div></div></div><div class="pc-stats"><div class="pcs"><div class="pcs-v">${peso?peso+'kg':'—'}</div><div class="pcs-l">Peso</div></div><div class="pcs"><div class="pcs-v">${imc}</div><div class="pcs-l">IMC</div></div><div class="pcs"><div class="pcs-v">Novo</div><div class="pcs-l">Tempo</div></div></div>`;
-    grid.prepend(div);
-  }
-
-  btn.textContent = '✅ Paciente criado!';
-  btn.style.background = '#6BBF8E';
-  btn.style.color = 'white';
-
-  setTimeout(()=>{
-    fecharModal();
-    btn.textContent='Criar paciente';
-    btn.style.background='';
-    btn.style.color='';
-    showToast(`${nome.split(' ')[0]} cadastrada com sucesso! 🎉`);
-  }, 3500);
-}
 </script>
 </body>
 </html>
