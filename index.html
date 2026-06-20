@@ -376,6 +376,7 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       <button class="nav-btn" onclick="showPage('agenda',this)"><span class="nav-ic">📅</span>Agenda</button>
       <div class="nav-lbl">Clínico</div>
       <button class="nav-btn" onclick="showPage('planos',this)"><span class="nav-ic">🥗</span>Planos Alimentares</button>
+      <button class="nav-btn" onclick="showPage('planos',this);setTimeout(()=>showSubTab('templates',document.getElementById('tab-templates')),100)"><span class="nav-ic">📁</span>Modelos de dieta</button>
       <button class="nav-btn" onclick="showPage('evolucao',this)"><span class="nav-ic">📊</span>Evolução</button>
       <div class="nav-lbl">Inteligência</div>
       <button class="nav-btn" onclick="showPage('ia',this)"><span class="nav-ic">✨</span>Gerar Plano com IA</button>
@@ -614,15 +615,32 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
         </div>
 
         <div id="ftab-plano" class="ftab-content">
-          <!-- Anotações da nutricionista sobre o plano -->
+          <!-- Config + Anotações para geração IA -->
           <div class="fsec" id="plano-anotacao-box">
-            <div class="fsec-hd"><span class="fsec-title">✏️ Anotações sobre o plano</span><button class="fsec-action" onclick="toggleAnotacaoPlano()">Recolher ▲</button></div>
+            <div class="fsec-hd"><span class="fsec-title">⚙️ Configurar geração com IA</span><button class="fsec-action" onclick="toggleAnotacaoPlano()" id="btn-toggle-config">Recolher ▲</button></div>
             <div id="plano-anotacao-body" class="fsec-body">
-              <textarea id="plano-anotacao-txt" placeholder="Ex: paciente tem intolerância à lactose confirmada, prefere jantar leve, não come peixe..." style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:11px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:80px;display:block;margin-bottom:10px;transition:border-color .2s"></textarea>
-              <div style="display:flex;justify-content:flex-end;gap:8px">
-                <button class="btn-salvar" onclick="salvarAnotacaoPlano()">Salvar anotações</button>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+                <div class="mfield"><label>Calorias alvo (kcal)</label><input type="number" id="ficha-ia-kcal" placeholder="1800" value="1800"></div>
+                <div class="mfield"><label>Nº de refeições</label><select id="ficha-ia-nrefeicoes"><option value="5">5 refeições</option><option value="6">6 refeições</option><option value="4">4 refeições</option></select></div>
+                <div class="mfield"><label>Primeira refeição</label><input type="time" id="ficha-ia-horario" value="07:00"></div>
               </div>
-              <div id="plano-anotacao-salva" style="display:none;margin-top:10px;background:#E8F5E9;border-radius:var(--rs);padding:10px 14px;font-size:12.5px;color:#2E7D32">✅ Anotações salvas! Serão usadas pela IA na próxima geração.</div>
+              <div style="font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--dm);margin-bottom:8px">Tipo de dieta</div>
+              <div class="tag-grp" id="ficha-ia-tipo-grp" style="margin-bottom:14px">
+                <button class="tag-pill sel" onclick="toggleTagFicha(this)">Equilibrada</button>
+                <button class="tag-pill" onclick="toggleTagFicha(this)">Low carb</button>
+                <button class="tag-pill" onclick="toggleTagFicha(this)">Mediterrâneo</button>
+                <button class="tag-pill" onclick="toggleTagFicha(this)">Hipertrofia</button>
+                <button class="tag-pill" onclick="toggleTagFicha(this)">Vegetariana</button>
+                <button class="tag-pill" onclick="toggleTagFicha(this)">Cetogênica</button>
+              </div>
+              <div class="mfield" style="margin-bottom:12px">
+                <label>Anotações e preferências do paciente</label>
+                <textarea id="plano-anotacao-txt" placeholder="Ex: não come peixe, prefere jantar leve, treina às 18h, intolerante à lactose..." style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:11px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:70px;display:block;transition:border-color .2s"></textarea>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:8px">
+                <button class="btn-cancel" onclick="salvarAnotacaoPlano()">💾 Salvar anotações</button>
+              </div>
+              <div id="plano-anotacao-salva" style="display:none;margin-top:10px;background:#E8F5E9;border-radius:var(--rs);padding:10px 14px;font-size:12.5px;color:#2E7D32">✅ Salvo! Usado na próxima geração com IA.</div>
             </div>
           </div>
           <!-- Plano atual -->
@@ -630,22 +648,37 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
             <div class="fsec-hd">
               <span class="fsec-title" id="plano-titulo">Plano alimentar</span>
               <div style="display:flex;gap:8px;align-items:center">
-                <button class="fsec-action" onclick="gerarPlanoIAFicha()" style="background:linear-gradient(135deg,var(--am),var(--pe));border:none;border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">✨ Gerar com IA</button>
+                <button class="fsec-action" onclick="gerarPlanoIAFicha()" style="background:linear-gradient(135deg,var(--am),var(--pe));border:none;border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">✨ Gerar 2 opções com IA</button>
               </div>
             </div>
             <div class="fsec-body" style="padding:0" id="plano-refeicoes">
               <div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano ativo.<br>Clique em <strong>✨ Gerar com IA</strong>.</p></div>
             </div>
           </div>
-          <!-- Resultado IA inline -->
+          <!-- Resultado IA inline: 2 opções -->
           <div id="plano-ia-resultado" style="display:none">
-            <div class="fsec">
-              <div class="fsec-hd"><span class="fsec-title">✨ Plano gerado pela IA</span><span style="font-size:11px;color:var(--dm)" id="plano-ia-meta"></span></div>
-              <div class="fsec-body" style="padding:0" id="plano-ia-refeicoes"></div>
+            <div style="font-size:13px;font-weight:600;color:var(--dk);margin-bottom:12px;padding:0 4px">Escolha uma das opções:</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+              <div style="background:white;border:2px solid var(--bd);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s" id="ficha-card-a" onclick="selecionarOpcaoFicha('a')">
+                <div style="padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between">
+                  <span style="font-size:13px;font-weight:700;color:var(--dk)">Opção A</span>
+                  <span id="ficha-badge-a" style="display:none;background:var(--am);border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700;color:var(--dk)">✓</span>
+                </div>
+                <div id="ficha-ia-refeicoes-a" style="padding:0"></div>
+                <div style="padding:8px 16px;font-size:11px;color:var(--pe);font-weight:600" id="ficha-ia-meta-a"></div>
+              </div>
+              <div style="background:white;border:2px solid var(--bd);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s" id="ficha-card-b" onclick="selecionarOpcaoFicha('b')">
+                <div style="padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between">
+                  <span style="font-size:13px;font-weight:700;color:var(--dk)">Opção B</span>
+                  <span id="ficha-badge-b" style="display:none;background:var(--am);border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700;color:var(--dk)">✓</span>
+                </div>
+                <div id="ficha-ia-refeicoes-b" style="padding:0"></div>
+                <div style="padding:8px 16px;font-size:11px;color:var(--pe);font-weight:600" id="ficha-ia-meta-b"></div>
+              </div>
             </div>
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:20px;padding:0 4px">
               <button class="btn-cancel" onclick="document.getElementById('plano-ia-resultado').style.display='none'">Descartar</button>
-              <button class="btn-salvar" onclick="salvarPlanoIA()">💾 Salvar este plano</button>
+              <button class="btn-salvar" id="btn-salvar-ficha-ia" onclick="salvarPlanoIA()" disabled>💾 Salvar opção selecionada</button>
             </div>
           </div>
         </div>
@@ -763,12 +796,32 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
         </div>
       </div>
 
-      <!-- PLANOS -->
+      <!-- PLANOS / TEMPLATES -->
       <div id="page-planos" style="display:none">
         <div class="pg-hd"><h2>Planos Alimentares</h2><p id="sub-planos">—</p></div>
-        <div class="card">
-          <div class="card-hd"><span class="card-ttl">Planos ativos</span></div>
-          <div id="lista-planos"><div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><h3>Nenhum plano cadastrado</h3><p>Crie planos pela ficha do paciente ou usando a IA.</p></div></div>
+        <!-- Tabs planos vs templates -->
+        <div style="display:flex;gap:4px;background:white;border:1px solid var(--bd);border-radius:var(--r);padding:4px;margin-bottom:18px;width:fit-content">
+          <button class="ftab active" id="tab-planos-ativos" onclick="showSubTab('planos-ativos',this)" style="min-width:140px">📋 Planos ativos</button>
+          <button class="ftab" id="tab-templates" onclick="showSubTab('templates',this)" style="min-width:140px">📁 Meus modelos</button>
+        </div>
+
+        <!-- Planos ativos -->
+        <div id="subtab-planos-ativos">
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">Planos ativos por paciente</span></div>
+            <div id="lista-planos"><div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><h3>Nenhum plano cadastrado</h3><p>Crie planos pela ficha do paciente ou usando a IA.</p></div></div>
+          </div>
+        </div>
+
+        <!-- Templates -->
+        <div id="subtab-templates" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div style="font-size:13px;color:var(--dm)">Modelos reutilizáveis — aplique a qualquer paciente com 1 clique</div>
+            <button class="btn-new" onclick="abrirModalTemplate()">+ Novo modelo</button>
+          </div>
+          <div id="grid-templates">
+            <div class="empty-state"><div class="es-ico">📁</div><h3>Nenhum modelo ainda</h3><p>Salve um plano como modelo ou crie um do zero.</p><button class="btn-primary" onclick="abrirModalTemplate()">+ Criar modelo</button></div>
+          </div>
         </div>
       </div>
 
@@ -781,30 +834,66 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       <!-- IA -->
       <div id="page-ia" style="display:none">
         <div class="ia-wrap">
-          <div class="pg-hd"><h2>✨ Gerar Plano com IA</h2><p>Preencha os dados e a IA monta o plano usando a tabela TACO</p></div>
+          <div class="pg-hd"><h2>✨ Gerar Plano com IA</h2><p>A IA usa a tabela TACO e gera 2 opções diferentes para você escolher</p></div>
           <div class="ia-card">
-            <h3>Dados do paciente</h3><p>Informações para personalizar o plano nutricional.</p>
+            <h3>Configurar plano</h3><p>Quanto mais detalhes, melhor o resultado.</p>
             <div class="fr">
-              <div class="ff"><label>Paciente</label><select id="ia-paciente"><option value="">Selecione...</option></select></div>
-              <div class="ff"><label>Objetivo</label><select id="ia-obj"><option>Perda de peso</option><option>Ganho de massa</option><option>Manutenção</option><option>Reeducação alimentar</option></select></div>
+              <div class="ff"><label>Paciente *</label><select id="ia-paciente"><option value="">Selecione...</option></select></div>
+              <div class="ff"><label>Objetivo</label><select id="ia-obj"><option value="Perda de peso">Perda de peso</option><option value="Ganho de massa">Ganho de massa</option><option value="Manutenção">Manutenção</option><option value="Reeducação alimentar">Reeducação alimentar</option></select></div>
             </div>
             <div class="fr">
               <div class="ff"><label>Calorias diárias (kcal)</label><input type="number" id="ia-kcal" value="1800"></div>
-              <div class="ff"><label>Restrições</label><input type="text" id="ia-restrict" placeholder="Ex: sem glúten"></div>
+              <div class="ff"><label>Número de refeições</label><select id="ia-nrefeicoes"><option value="5">5 refeições</option><option value="6">6 refeições</option><option value="4">4 refeições</option></select></div>
             </div>
-            <div class="ff" style="margin-bottom:14px"><label>Observações</label><textarea id="ia-obs" placeholder="Preferências, rotina, horários..."></textarea></div>
+            <div class="fr">
+              <div class="ff"><label>Restrições alimentares</label><input type="text" id="ia-restrict" placeholder="sem glúten, sem lactose..."></div>
+              <div class="ff"><label>Horário de início das refeições</label><input type="time" id="ia-horario" value="07:00"></div>
+            </div>
+            <div class="ff" style="margin-bottom:14px"><label>Observações e preferências</label><textarea id="ia-obs" placeholder="Gosta de frutas, não come peixe, treina às 18h, trabalha fora..." style="min-height:70px"></textarea></div>
             <div style="font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--dm);margin-bottom:8px">Tipo de dieta</div>
-            <div class="tag-grp">
-              <button class="tag-pill sel" onclick="toggleTag(this)">Equilibrada</button>
-              <button class="tag-pill" onclick="toggleTag(this)">Low carb</button>
-              <button class="tag-pill" onclick="toggleTag(this)">Mediterrâneo</button>
-              <button class="tag-pill" onclick="toggleTag(this)">Hipertrofia</button>
-              <button class="tag-pill" onclick="toggleTag(this)">Vegetariana</button>
+            <div class="tag-grp" id="ia-tipo-grp">
+              <button class="tag-pill sel" onclick="toggleTagIA(this)">Equilibrada</button>
+              <button class="tag-pill" onclick="toggleTagIA(this)">Low carb</button>
+              <button class="tag-pill" onclick="toggleTagIA(this)">Mediterrâneo</button>
+              <button class="tag-pill" onclick="toggleTagIA(this)">Hipertrofia</button>
+              <button class="tag-pill" onclick="toggleTagIA(this)">Vegetariana</button>
+              <button class="tag-pill" onclick="toggleTagIA(this)">Cetogênica</button>
             </div>
-            <button class="btn-gerar" id="btn-gerar" onclick="simularIA()">✨ Gerar plano alimentar com IA</button>
+            <button class="btn-gerar" id="btn-gerar" onclick="gerarPlanosIA()">✨ Gerar 2 opções de plano</button>
           </div>
-          <div class="ia-card" id="resultado-ia">
-            <div class="plano-vazio"><div class="ico">🥗</div><div style="font-weight:600;color:var(--dk);margin-bottom:6px">Pronto para gerar</div>Preencha os dados acima e clique em <strong>Gerar plano com IA</strong>.</div>
+
+          <!-- RESULTADOS: 2 opções lado a lado -->
+          <div id="resultado-ia" style="display:none">
+            <div style="font-size:13px;font-weight:600;color:var(--dk);margin-bottom:12px">Escolha uma das opções geradas:</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+
+              <!-- Opção A -->
+              <div class="ia-card" style="border:2px solid transparent;cursor:pointer;transition:all .2s" id="card-opcao-a" onclick="selecionarOpcao('a')">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                  <div style="font-size:13px;font-weight:700;color:var(--dk)">Opção A</div>
+                  <div id="badge-opcao-a" style="display:none;background:var(--am);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--dk)">✓ Selecionada</div>
+                </div>
+                <div id="ia-resultado-a"><div class="plano-vazio" style="padding:20px"><div class="ico" style="font-size:24px">🥗</div>Aguardando...</div></div>
+              </div>
+
+              <!-- Opção B -->
+              <div class="ia-card" style="border:2px solid transparent;cursor:pointer;transition:all .2s" id="card-opcao-b" onclick="selecionarOpcao('b')">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                  <div style="font-size:13px;font-weight:700;color:var(--dk)">Opção B</div>
+                  <div id="badge-opcao-b" style="display:none;background:var(--am);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--dk)">✓ Selecionada</div>
+                </div>
+                <div id="ia-resultado-b"><div class="plano-vazio" style="padding:20px"><div class="ico" style="font-size:24px">🥗</div>Aguardando...</div></div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+              <button class="btn-cancel" onclick="document.getElementById('resultado-ia').style.display='none'">Descartar</button>
+              <button class="btn-gerar" id="btn-salvar-ia-menu" onclick="salvarPlanoIAMenu()" style="width:auto;padding:12px 28px" disabled>💾 Salvar plano selecionado</button>
+            </div>
+          </div>
+
+          <div class="ia-card" id="ia-placeholder">
+            <div class="plano-vazio"><div class="ico">🥗</div><div style="font-weight:600;color:var(--dk);margin-bottom:6px">Pronto para gerar</div>Selecione um paciente, preencha os dados e clique em <strong>Gerar 2 opções de plano</strong>.</div>
           </div>
         </div>
       </div>
@@ -861,6 +950,73 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       </div>
     </div>
     <div style="height:32px"></div>
+  </div>
+</div>
+
+<!-- MODAL TEMPLATE -->
+<div class="modal-backdrop" id="modal-template">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-hd">
+      <div><h3 id="modal-template-titulo">📁 Novo modelo de plano</h3><p>Crie um modelo reutilizável para qualquer paciente</p></div>
+      <button class="modal-close" onclick="fecharModalTemplate()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="mrow">
+        <div class="mfield"><label>Nome do modelo *</label><input type="text" id="tpl-nome" placeholder="Ex: Dieta para Ozempic, Plano fim de semana..."></div>
+        <div class="mfield"><label>Categoria</label>
+          <select id="tpl-categoria">
+            <option>Emagrecimento</option><option>Ganho de massa</option><option>Clínica</option>
+            <option>Manutenção</option><option>Especial</option><option>Final de semana</option>
+            <option>Medicamentos</option><option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="mfield"><label>Calorias totais (kcal)</label><input type="number" id="tpl-kcal" placeholder="1800"></div>
+        <div class="mfield"><label>Tipo de dieta</label>
+          <select id="tpl-tipo">
+            <option>Equilibrada</option><option>Low carb</option><option>Mediterrâneo</option>
+            <option>Hipertrofia</option><option>Vegetariana</option><option>Cetogênica</option><option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="mrow full"><div class="mfield"><label>Descrição / indicação</label>
+        <textarea id="tpl-desc" placeholder="Para quem é indicado, observações, contraindicações..." style="min-height:60px"></textarea>
+      </div></div>
+
+      <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">Refeições do modelo</div>
+      <div id="tpl-refeicoes-lista"></div>
+      <button onclick="adicionarRefeicaoTemplate()" style="width:100%;border:2px dashed var(--bd);background:none;border-radius:var(--rs);padding:12px;font-size:13px;font-weight:500;color:var(--dm);cursor:pointer;font-family:'Poppins',sans-serif;margin-top:8px;transition:all .2s" onmouseover="this.style.borderColor='var(--am)'" onmouseout="this.style.borderColor='var(--bd)'">+ Adicionar refeição</button>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="fecharModalTemplate()">Cancelar</button>
+      <button class="btn-criar" id="btn-salvar-template" onclick="salvarTemplate()">💾 Salvar modelo</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL APLICAR TEMPLATE -->
+<div class="modal-backdrop" id="modal-aplicar-template">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-hd">
+      <div><h3>🚀 Aplicar modelo</h3><p id="modal-aplicar-sub">Escolha o paciente</p></div>
+      <button class="modal-close" onclick="fecharModalAplicarTemplate()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="mfield" style="margin-bottom:16px">
+        <label>Paciente *</label>
+        <select id="aplicar-paciente-sel" style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:11px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none">
+          <option value="">Selecione o paciente...</option>
+        </select>
+      </div>
+      <div style="background:var(--cr);border-radius:var(--rs);padding:14px;border:1px solid var(--bd);font-size:12.5px;color:var(--dm)">
+        ⚠️ O plano atual do paciente será substituído por este modelo.
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="fecharModalAplicarTemplate()">Cancelar</button>
+      <button class="btn-criar" onclick="aplicarTemplate()">✅ Aplicar modelo</button>
+    </div>
   </div>
 </div>
 
@@ -1787,22 +1943,374 @@ function pacDeltaCard(label,delta,unit,menorEMelhor){
   </div>`;
 }
 
-function simularIA(){
+// ── IA: FUNÇÕES COMPARTILHADAS ────────────────────────
+function toggleTagIA(el){document.querySelectorAll('#ia-tipo-grp .tag-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+function toggleTagFicha(el){document.querySelectorAll('#ficha-ia-tipo-grp .tag-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+
+function refeicaoHtml(r){
+  return `<div class="plano-resumo-item">
+    <div class="pri-time">${r.emoji||'🍽️'} ${r.horario||'—'}</div>
+    <div><div class="pri-nome">${r.nome}</div><div class="pri-desc">${r.descricao}</div><div class="pri-kcal">≈ ${r.kcal||'—'} kcal</div></div>
+  </div>`;
+}
+
+async function chamarEdgeFunctionIA(payload){
+  const r=await fetch(`${SUPA_URL}/functions/v1/gerar-plano-ia`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+    body:JSON.stringify(payload)
+  });
+  const data=await r.json();
+  if(data.erro)throw new Error(data.erro);
+  return data.plano;
+}
+
+// ── IA MENU LATERAL: gerar 2 opções ──────────────────
+let _planosIAMenu={a:null,b:null};
+let _opcaoMenuSelecionada=null;
+
+async function gerarPlanosIA(){
+  const pacId=document.getElementById('ia-paciente').value;
+  if(!pacId){showToast('Selecione um paciente primeiro.');return;}
   const btn=document.getElementById('btn-gerar');
-  btn.textContent='⏳ Gerando plano...';btn.disabled=true;
-  setTimeout(()=>{
-    document.getElementById('resultado-ia').innerHTML=`
-      <h3 style="margin-bottom:5px">Plano gerado ✅</h3>
-      <p style="color:var(--dm);font-size:12.5px;margin-bottom:16px">Em breve: integração com tabela TACO e salvamento automático no prontuário.</p>
-      <div style="background:var(--cr);border-radius:10px;padding:18px;font-size:12.5px;line-height:1.8">
-        <strong>☀️ Café da manhã</strong><br>Pão integral (50g) · Ovo mexido (2 un.) · Mamão (120g) · Café sem açúcar<br><br>
-        <strong>🍎 Lanche da manhã</strong><br>Iogurte grego (170g) · Granola (30g) · Banana (1 un.)<br><br>
-        <strong>🍽️ Almoço</strong><br>Arroz integral (120g) · Feijão (80g) · Frango grelhado (120g) · Salada à vontade · Azeite (1 col.)<br><br>
-        <strong>🥜 Lanche da tarde</strong><br>Mix de castanhas (30g) · Fruta da estação<br><br>
-        <strong>🌙 Jantar</strong><br>Sopa de legumes com frango (300ml) · Torrada integral (2 un.)
-      </div>`;
-    btn.textContent='✨ Gerar plano alimentar com IA';btn.disabled=false;
-  },2000);
+  btn.textContent='⏳ Gerando 2 opções...';btn.disabled=true;
+  document.getElementById('ia-placeholder').style.display='none';
+  document.getElementById('resultado-ia').style.display='none';
+
+  const {data:p}=await sb.from('pacientes').select('nome,sexo,data_nascimento,objetivo,restricoes,anotacao_plano').eq('id',pacId).single();
+  const {data:avals}=await sb.from('avaliacoes').select('peso,altura,tmb,get_calorico').eq('paciente_id',pacId).order('data_avaliacao',{ascending:false}).limit(1);
+  const ult=avals?.[0];
+  let idade=null;
+  if(p?.data_nascimento) idade=Math.floor((new Date()-new Date(p.data_nascimento))/(365.25*24*60*60*1000));
+
+  const tipoSel=document.querySelector('#ia-tipo-grp .tag-pill.sel')?.textContent||'Equilibrada';
+  const basePayload={
+    nome:p?.nome,sexo:p?.sexo,idade,
+    objetivo:document.getElementById('ia-obj').value||p?.objetivo,
+    restricoes:document.getElementById('ia-restrict').value||p?.restricoes,
+    anotacoes:document.getElementById('ia-obs').value||p?.anotacao_plano,
+    kcal_alvo:parseInt(document.getElementById('ia-kcal').value)||ult?.get_calorico||1800,
+    tmb:ult?.tmb,get:ult?.get_calorico,
+    n_refeicoes:document.getElementById('ia-nrefeicoes').value,
+    horario_inicio:document.getElementById('ia-horario').value,
+  };
+
+  // Mostrar área de resultados com loading
+  document.getElementById('resultado-ia').style.display='block';
+  document.getElementById('ia-resultado-a').innerHTML='<div style="padding:20px;text-align:center;color:var(--dm);font-size:13px">⏳ Gerando opção A...</div>';
+  document.getElementById('ia-resultado-b').innerHTML='<div style="padding:20px;text-align:center;color:var(--dm);font-size:13px">⏳ Gerando opção B...</div>';
+
+  // Gerar opção A e B em paralelo com tipos diferentes
+  const tiposB={Equilibrada:'Mediterrâneo','Low carb':'Hipertrofia',Mediterrâneo:'Equilibrada',Hipertrofia:'Low carb',Vegetariana:'Mediterrâneo',Cetogênica:'Low carb'};
+  const tipoB=tiposB[tipoSel]||'Mediterrâneo';
+
+  try{
+    const [planoA,planoB]=await Promise.all([
+      chamarEdgeFunctionIA({...basePayload,tipo_dieta:tipoSel}),
+      chamarEdgeFunctionIA({...basePayload,tipo_dieta:tipoB,variante:'B'})
+    ]);
+    _planosIAMenu={a:planoA,b:planoB};
+
+    document.getElementById('ia-resultado-a').innerHTML=
+      `<div style="font-size:11.5px;font-weight:600;color:var(--pe);padding:8px 16px 4px">${planoA.tipo_dieta} · ${planoA.kcal_total} kcal</div>`+
+      planoA.refeicoes.map(refeicaoHtml).join('');
+    document.getElementById('ia-resultado-b').innerHTML=
+      `<div style="font-size:11.5px;font-weight:600;color:var(--pe);padding:8px 16px 4px">${planoB.tipo_dieta} · ${planoB.kcal_total} kcal</div>`+
+      planoB.refeicoes.map(refeicaoHtml).join('');
+  }catch(e){
+    showToast('Erro ao gerar: '+e.message);
+    document.getElementById('resultado-ia').style.display='none';
+    document.getElementById('ia-placeholder').style.display='block';
+  }
+
+  btn.textContent='✨ Gerar 2 opções de plano';btn.disabled=false;
+}
+
+function selecionarOpcao(opcao){
+  _opcaoMenuSelecionada=opcao;
+  ['a','b'].forEach(o=>{
+    const card=document.getElementById('card-opcao-'+o);
+    const badge=document.getElementById('badge-opcao-'+o);
+    if(o===opcao){card.style.borderColor='var(--am)';card.style.boxShadow='0 0 0 3px rgba(249,205,84,.3)';badge.style.display='block';}
+    else{card.style.borderColor='transparent';card.style.boxShadow='none';badge.style.display='none';}
+  });
+  document.getElementById('btn-salvar-ia-menu').disabled=false;
+}
+
+async function salvarPlanoIAMenu(){
+  const pacId=document.getElementById('ia-paciente').value;
+  if(!pacId||!_opcaoMenuSelecionada){showToast('Selecione paciente e opção.');return;}
+  const plano=_planosIAMenu[_opcaoMenuSelecionada];
+  await _salvarPlanoNoBanco(pacId,plano);
+  document.getElementById('resultado-ia').style.display='none';
+  document.getElementById('ia-placeholder').style.display='block';
+  _opcaoMenuSelecionada=null;
+  showToast('Plano salvo no perfil do paciente! 🥗');
+}
+
+// ── IA FICHA: gerar 2 opções dentro do perfil ────────
+let _planosIAFicha={a:null,b:null};
+let _opcaoFichaSelecionada=null;
+
+async function gerarPlanoIAFicha(){
+  if(!pacienteAtualId)return;
+  const btn=document.querySelector('#ftab-plano .fsec-action');
+  btn.textContent='⏳ Gerando...';btn.disabled=true;
+
+  const {data:p}=await sb.from('pacientes').select('nome,sexo,data_nascimento,objetivo,restricoes,anotacao_plano').eq('id',pacienteAtualId).single();
+  const {data:avals}=await sb.from('avaliacoes').select('peso,altura,tmb,get_calorico').eq('paciente_id',pacienteAtualId).order('data_avaliacao',{ascending:false}).limit(1);
+  const ult=avals?.[0];
+  let idade=null;
+  if(p?.data_nascimento) idade=Math.floor((new Date()-new Date(p.data_nascimento))/(365.25*24*60*60*1000));
+
+  const tipoSel=document.querySelector('#ficha-ia-tipo-grp .tag-pill.sel')?.textContent||'Equilibrada';
+  const tiposB={Equilibrada:'Mediterrâneo','Low carb':'Hipertrofia',Mediterrâneo:'Equilibrada',Hipertrofia:'Low carb',Vegetariana:'Mediterrâneo',Cetogênica:'Low carb'};
+  const tipoB=tiposB[tipoSel]||'Mediterrâneo';
+
+  const basePayload={
+    nome:p?.nome,sexo:p?.sexo,idade,
+    objetivo:p?.objetivo,restricoes:p?.restricoes,
+    anotacoes:document.getElementById('plano-anotacao-txt').value||p?.anotacao_plano,
+    kcal_alvo:parseInt(document.getElementById('ficha-ia-kcal').value)||ult?.get_calorico||1800,
+    tmb:ult?.tmb,get:ult?.get_calorico,
+    n_refeicoes:document.getElementById('ficha-ia-nrefeicoes').value,
+    horario_inicio:document.getElementById('ficha-ia-horario').value,
+  };
+
+  document.getElementById('plano-ia-resultado').style.display='block';
+  document.getElementById('ficha-ia-refeicoes-a').innerHTML='<div style="padding:16px;text-align:center;color:var(--dm);font-size:12px">⏳ Gerando...</div>';
+  document.getElementById('ficha-ia-refeicoes-b').innerHTML='<div style="padding:16px;text-align:center;color:var(--dm);font-size:12px">⏳ Gerando...</div>';
+
+  try{
+    const [planoA,planoB]=await Promise.all([
+      chamarEdgeFunctionIA({...basePayload,tipo_dieta:tipoSel}),
+      chamarEdgeFunctionIA({...basePayload,tipo_dieta:tipoB,variante:'B'})
+    ]);
+    _planosIAFicha={a:planoA,b:planoB};
+
+    document.getElementById('ficha-ia-refeicoes-a').innerHTML=planoA.refeicoes.map(refeicaoHtml).join('');
+    document.getElementById('ficha-ia-meta-a').textContent=planoA.tipo_dieta+' · '+planoA.kcal_total+' kcal';
+    document.getElementById('ficha-ia-refeicoes-b').innerHTML=planoB.refeicoes.map(refeicaoHtml).join('');
+    document.getElementById('ficha-ia-meta-b').textContent=planoB.tipo_dieta+' · '+planoB.kcal_total+' kcal';
+    document.getElementById('plano-ia-resultado').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){
+    showToast('Erro: '+e.message);
+    document.getElementById('plano-ia-resultado').style.display='none';
+  }
+
+  btn.textContent='✨ Gerar 2 opções com IA';btn.disabled=false;
+}
+
+function selecionarOpcaoFicha(opcao){
+  _opcaoFichaSelecionada=opcao;
+  ['a','b'].forEach(o=>{
+    const card=document.getElementById('ficha-card-'+o);
+    const badge=document.getElementById('ficha-badge-'+o);
+    if(o===opcao){card.style.borderColor='var(--am)';card.style.boxShadow='0 0 0 3px rgba(249,205,84,.3)';badge.style.display='inline-block';}
+    else{card.style.borderColor='var(--bd)';card.style.boxShadow='none';badge.style.display='none';}
+  });
+  document.getElementById('btn-salvar-ficha-ia').disabled=false;
+}
+
+async function salvarPlanoIA(){
+  if(!pacienteAtualId||!_opcaoFichaSelecionada){showToast('Selecione uma opção.');return;}
+  const plano=_planosIAFicha[_opcaoFichaSelecionada];
+  await _salvarPlanoNoBanco(pacienteAtualId,plano);
+  document.getElementById('plano-ia-resultado').style.display='none';
+  _opcaoFichaSelecionada=null;
+  showToast('Plano salvo! 🥗');
+  await abrirFicha(pacienteAtualId);
+  showTab('plano',document.querySelectorAll('.ftab')[2]);
+}
+
+async function _salvarPlanoNoBanco(pacId,plano){
+  await sb.from('planos').update({status:'Inativo'}).eq('paciente_id',pacId);
+  const {data:novo,error}=await sb.from('planos').insert({
+    paciente_id:pacId,titulo:plano.titulo,tipo_dieta:plano.tipo_dieta,
+    kcal_total:plano.kcal_total,status:'Ativo',gerado_por_ia:true
+  }).select().single();
+  if(error)throw error;
+  for(const r of plano.refeicoes){
+    await sb.from('refeicoes').insert({plano_id:novo.id,ordem:r.ordem,emoji:r.emoji,nome:r.nome,horario:r.horario,kcal:r.kcal,descricao:r.descricao});
+  }
+  return novo;
+}
+
+// ── TEMPLATES ─────────────────────────────────────────
+let _tplRefeicoes=[];
+let _tplEditandoId=null;
+let _tplAplicandoId=null;
+
+function showSubTab(tab,btn){
+  ['planos-ativos','templates'].forEach(t=>{
+    const el=document.getElementById('subtab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('#page-planos .ftab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(tab==='templates')carregarTemplates();
+  if(tab==='planos-ativos')carregarListaPlanos();
+}
+
+async function carregarListaPlanos(){
+  const {data}=await sb.from('planos').select('*,pacientes(nome)').eq('status','Ativo').order('criado_em',{ascending:false});
+  const lista=document.getElementById('lista-planos');
+  if(!data||data.length===0){
+    lista.innerHTML='<div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><h3>Nenhum plano ativo</h3><p>Crie planos pela ficha do paciente ou usando a IA.</p></div>';
+    document.getElementById('sub-planos').textContent='Nenhum plano ativo';
+    return;
+  }
+  document.getElementById('sub-planos').textContent=data.length+' plano(s) ativo(s)';
+  lista.innerHTML=data.map(p=>`
+    <div class="pat-row" onclick="abrirFicha('${p.paciente_id}')">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--am),var(--pe));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🥗</div>
+      <div style="flex:1"><div class="pn">${p.pacientes?.nome||'—'}</div><div class="pi">${p.titulo} · ${p.tipo_dieta||'—'} · ${p.kcal_total||'—'} kcal</div></div>
+      ${p.gerado_por_ia?'<span style="background:#FEF5D4;color:#B8860B;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px">✨ IA</span>':''}
+    </div>`).join('');
+}
+
+async function carregarTemplates(){
+  const {data}=await sb.from('templates_plano').select('*').order('criado_em',{ascending:false});
+  const grid=document.getElementById('grid-templates');
+  if(!data||data.length===0){
+    grid.innerHTML='<div class="empty-state"><div class="es-ico">📁</div><h3>Nenhum modelo ainda</h3><p>Salve um plano como modelo ou crie um do zero.</p><button class="btn-primary" onclick="abrirModalTemplate()">+ Criar modelo</button></div>';
+    return;
+  }
+  const cores={Emagrecimento:'#F59996',Ganho:'#C5D9A6',Clínica:'#9AA9C7',Manutenção:'#B0DEDB',Especial:'#FAB87F',Medicamentos:'#F9CD54','Final de semana':'#C5D9A6',Outro:'#EDE7D8'};
+  grid.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">`+data.map(t=>{
+    const cor=Object.entries(cores).find(([k])=>t.categoria?.includes(k))?.[1]||'#EDE7D8';
+    return `<div style="background:white;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;transition:box-shadow .2s" onmouseover="this.style.boxShadow='var(--sh)'" onmouseout="this.style.boxShadow='none'">
+      <div style="height:6px;background:${cor}"></div>
+      <div style="padding:16px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+          <div style="font-size:14px;font-weight:700;color:var(--dk);line-height:1.3">${t.nome}</div>
+          <span style="background:${cor}33;color:var(--dk);font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap;flex-shrink:0">${t.categoria}</span>
+        </div>
+        <div style="font-size:11.5px;color:var(--dm);margin-bottom:10px;line-height:1.5">${t.descricao||'Sem descrição'}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+          <span style="background:var(--cr);border:1px solid var(--bd);border-radius:999px;padding:3px 9px;font-size:11px;color:var(--dk)">${t.tipo_dieta||'—'}</span>
+          <span style="background:var(--cr);border:1px solid var(--bd);border-radius:999px;padding:3px 9px;font-size:11px;color:var(--dk)">${t.kcal_total||'—'} kcal</span>
+          <span style="background:var(--cr);border:1px solid var(--bd);border-radius:999px;padding:3px 9px;font-size:11px;color:var(--dk)">${(t.refeicoes?.length||0)} refeições</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="abrirAplicarTemplate('${t.id}','${t.nome.replace(/'/g,'')}')" style="flex:1;background:var(--am);border:none;border-radius:var(--rs);padding:8px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">🚀 Aplicar</button>
+          <button onclick="editarTemplate('${t.id}')" style="background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 12px;font-size:12px;font-weight:500;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer">✏️</button>
+          <button onclick="excluirTemplate('${t.id}')" style="background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 12px;font-size:12px;font-family:'Poppins',sans-serif;color:var(--ro);cursor:pointer">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+function abrirModalTemplate(dados=null){
+  _tplRefeicoes=dados?.refeicoes||[];
+  _tplEditandoId=dados?.id||null;
+  document.getElementById('tpl-nome').value=dados?.nome||'';
+  document.getElementById('tpl-kcal').value=dados?.kcal_total||'';
+  document.getElementById('tpl-desc').value=dados?.descricao||'';
+  document.getElementById('modal-template-titulo').textContent=dados?'✏️ Editar modelo':'📁 Novo modelo de plano';
+  if(dados?.categoria)document.getElementById('tpl-categoria').value=dados.categoria;
+  if(dados?.tipo_dieta)document.getElementById('tpl-tipo').value=dados.tipo_dieta;
+  renderRefeicoesTpl();
+  document.getElementById('modal-template').classList.add('open');
+}
+
+function fecharModalTemplate(){document.getElementById('modal-template').classList.remove('open');}
+
+function adicionarRefeicaoTemplate(){
+  const n=_tplRefeicoes.length+1;
+  const emojis=['☀️','🍎','🍽️','🥜','🌙','🥗'];
+  const nomes=['Café da manhã','Lanche da manhã','Almoço','Lanche da tarde','Jantar','Ceia'];
+  const horas=['07:00','10:00','12:30','16:00','19:30','21:00'];
+  _tplRefeicoes.push({ordem:n,emoji:emojis[n-1]||'🍽️',nome:nomes[n-1]||'Refeição '+n,horario:horas[n-1]||'12:00',kcal:'',descricao:''});
+  renderRefeicoesTpl();
+}
+
+function renderRefeicoesTpl(){
+  document.getElementById('tpl-refeicoes-lista').innerHTML=_tplRefeicoes.map((r,i)=>`
+    <div style="background:var(--cr);border-radius:var(--rs);padding:12px;margin-bottom:8px;border:1px solid var(--bd)">
+      <div style="display:grid;grid-template-columns:40px 1fr 80px 80px auto;gap:8px;align-items:center;margin-bottom:8px">
+        <input value="${r.emoji}" oninput="_tplRefeicoes[${i}].emoji=this.value" style="text-align:center;background:white;border:1px solid var(--bd);border-radius:6px;padding:6px;font-size:16px;width:40px">
+        <input value="${r.nome}" placeholder="Nome da refeição" oninput="_tplRefeicoes[${i}].nome=this.value" style="background:white;border:1px solid var(--bd);border-radius:6px;padding:7px 10px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;width:100%">
+        <input type="time" value="${r.horario}" oninput="_tplRefeicoes[${i}].horario=this.value" style="background:white;border:1px solid var(--bd);border-radius:6px;padding:7px 8px;font-size:12px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;width:100%">
+        <input type="number" value="${r.kcal}" placeholder="kcal" oninput="_tplRefeicoes[${i}].kcal=this.value" style="background:white;border:1px solid var(--bd);border-radius:6px;padding:7px 8px;font-size:12px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;width:100%">
+        <button onclick="_tplRefeicoes.splice(${i},1);renderRefeicoesTpl()" style="background:none;border:none;cursor:pointer;color:var(--ro);font-size:16px;padding:4px">✕</button>
+      </div>
+      <textarea placeholder="Descrição dos alimentos e quantidades..." oninput="_tplRefeicoes[${i}].descricao=this.value" style="width:100%;background:white;border:1px solid var(--bd);border-radius:6px;padding:8px 10px;font-size:12.5px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:50px">${r.descricao}</textarea>
+    </div>`).join('');
+}
+
+async function salvarTemplate(){
+  const nome=document.getElementById('tpl-nome').value.trim();
+  if(!nome){showToast('Dê um nome ao modelo.');return;}
+  const row={
+    nome,
+    categoria:document.getElementById('tpl-categoria').value,
+    tipo_dieta:document.getElementById('tpl-tipo').value,
+    kcal_total:parseInt(document.getElementById('tpl-kcal').value)||null,
+    descricao:document.getElementById('tpl-desc').value,
+    refeicoes:_tplRefeicoes,
+  };
+  let error;
+  if(_tplEditandoId){
+    ({error}=await sb.from('templates_plano').update(row).eq('id',_tplEditandoId));
+  } else {
+    ({error}=await sb.from('templates_plano').insert(row));
+  }
+  if(error){showToast('Erro: '+error.message);return;}
+  fecharModalTemplate();
+  showToast((_tplEditandoId?'Modelo atualizado':'Modelo salvo')+' com sucesso! 📁');
+  carregarTemplates();
+}
+
+async function editarTemplate(id){
+  const {data}=await sb.from('templates_plano').select('*').eq('id',id).single();
+  if(data)abrirModalTemplate(data);
+}
+
+async function excluirTemplate(id){
+  if(!confirm('Excluir este modelo?'))return;
+  await sb.from('templates_plano').delete().eq('id',id);
+  showToast('Modelo excluído.');
+  carregarTemplates();
+}
+
+function abrirAplicarTemplate(id,nome){
+  _tplAplicandoId=id;
+  document.getElementById('modal-aplicar-sub').textContent='Aplicar modelo: '+nome;
+  const sel=document.getElementById('aplicar-paciente-sel');
+  sel.innerHTML='<option value="">Selecione o paciente...</option>'+
+    todosPacientes.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
+  document.getElementById('modal-aplicar-template').classList.add('open');
+}
+
+function fecharModalAplicarTemplate(){document.getElementById('modal-aplicar-template').classList.remove('open');}
+
+async function aplicarTemplate(){
+  const pacId=document.getElementById('aplicar-paciente-sel').value;
+  if(!pacId){showToast('Selecione um paciente.');return;}
+  const {data:tpl}=await sb.from('templates_plano').select('*').eq('id',_tplAplicandoId).single();
+  if(!tpl)return;
+  await _salvarPlanoNoBanco(pacId,{
+    titulo:tpl.nome,
+    tipo_dieta:tpl.tipo_dieta,
+    kcal_total:tpl.kcal_total,
+    refeicoes:(tpl.refeicoes||[]).map((r,i)=>({...r,ordem:i+1})),
+  });
+  fecharModalAplicarTemplate();
+  showToast('Modelo aplicado ao paciente! 🥗');
+}
+
+// Salvar plano gerado como template
+async function salvarComoTemplate(plano){
+  const nome=prompt('Nome do modelo:',plano.titulo||'Novo modelo');
+  if(!nome)return;
+  await sb.from('templates_plano').insert({
+    nome,categoria:'Outro',tipo_dieta:plano.tipo_dieta,
+    kcal_total:plano.kcal_total,refeicoes:plano.refeicoes,
+    descricao:'Gerado por IA em '+new Date().toLocaleDateString('pt-BR'),
+  });
+  showToast('Salvo como modelo! Acesse em Modelos de dieta 📁');
 }
 
 function showPage(pg,btn){
