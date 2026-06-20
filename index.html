@@ -619,10 +619,14 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
           <div class="fsec" id="plano-anotacao-box">
             <div class="fsec-hd"><span class="fsec-title">⚙️ Configurar geração com IA</span><button class="fsec-action" onclick="toggleAnotacaoPlano()" id="btn-toggle-config">Recolher ▲</button></div>
             <div id="plano-anotacao-body" class="fsec-body">
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+                <div class="mfield"><label>Objetivo</label><select id="ficha-ia-obj"><option value="Perda de peso">Perda de peso</option><option value="Ganho de massa">Ganho de massa</option><option value="Manutenção">Manutenção</option><option value="Reeducação alimentar">Reeducação alimentar</option></select></div>
                 <div class="mfield"><label>Calorias alvo (kcal)</label><input type="number" id="ficha-ia-kcal" placeholder="1800" value="1800"></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
                 <div class="mfield"><label>Nº de refeições</label><select id="ficha-ia-nrefeicoes"><option value="5">5 refeições</option><option value="6">6 refeições</option><option value="4">4 refeições</option></select></div>
                 <div class="mfield"><label>Primeira refeição</label><input type="time" id="ficha-ia-horario" value="07:00"></div>
+                <div class="mfield"><label>Restrições alimentares</label><input type="text" id="ficha-ia-restrict" placeholder="sem glúten, sem lactose..."></div>
               </div>
               <div style="font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--dm);margin-bottom:8px">Tipo de dieta</div>
               <div class="tag-grp" id="ficha-ia-tipo-grp" style="margin-bottom:14px">
@@ -634,13 +638,13 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
                 <button class="tag-pill" onclick="toggleTagFicha(this)">Cetogênica</button>
               </div>
               <div class="mfield" style="margin-bottom:12px">
-                <label>Anotações e preferências do paciente</label>
-                <textarea id="plano-anotacao-txt" placeholder="Ex: não come peixe, prefere jantar leve, treina às 18h, intolerante à lactose..." style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:11px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:70px;display:block;transition:border-color .2s"></textarea>
+                <label>Observações e preferências</label>
+                <textarea id="plano-anotacao-txt" placeholder="Ex: não come peixe, prefere jantar leve, treina às 18h, intolerante à lactose..." style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:11px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:60px;display:block;transition:border-color .2s"></textarea>
               </div>
               <div style="display:flex;justify-content:flex-end;gap:8px">
-                <button class="btn-cancel" onclick="salvarAnotacaoPlano()">💾 Salvar anotações</button>
+                <button class="btn-cancel" onclick="salvarAnotacaoPlano()">💾 Salvar preferências</button>
               </div>
-              <div id="plano-anotacao-salva" style="display:none;margin-top:10px;background:#E8F5E9;border-radius:var(--rs);padding:10px 14px;font-size:12.5px;color:#2E7D32">✅ Salvo! Usado na próxima geração com IA.</div>
+              <div id="plano-anotacao-salva" style="display:none;margin-top:10px;background:#E8F5E9;border-radius:var(--rs);padding:10px 14px;font-size:12.5px;color:#2E7D32">✅ Salvo!</div>
             </div>
           </div>
           <!-- Plano atual -->
@@ -1305,6 +1309,11 @@ async function abrirFicha(id){
 
   // Anotação do plano
   document.getElementById('plano-anotacao-txt').value=p.anotacao_plano||'';
+  // Pré-preencher campos IA com dados do paciente
+  const objSel=document.getElementById('ficha-ia-obj');
+  if(objSel&&p.objetivo){const opts=[...objSel.options];const match=opts.find(o=>o.value===p.objetivo);if(match)objSel.value=p.objetivo;}
+  if(document.getElementById('ficha-ia-restrict')&&p.restricoes)document.getElementById('ficha-ia-restrict').value=p.restricoes;
+  if(ult?.get_calorico&&document.getElementById('ficha-ia-kcal'))document.getElementById('ficha-ia-kcal').value=ult.get_calorico;
   // Toggle de acesso
   const ativo=p.portal_ativo!==false;
   setToggleAcesso(ativo);
@@ -2069,7 +2078,8 @@ async function gerarPlanoIAFicha(){
 
   const basePayload={
     nome:p?.nome,sexo:p?.sexo,idade,
-    objetivo:p?.objetivo,restricoes:p?.restricoes,
+    objetivo:document.getElementById('ficha-ia-obj')?.value||p?.objetivo,
+    restricoes:document.getElementById('ficha-ia-restrict')?.value||p?.restricoes,
     anotacoes:document.getElementById('plano-anotacao-txt').value||p?.anotacao_plano,
     kcal_alvo:parseInt(document.getElementById('ficha-ia-kcal').value)||ult?.get_calorico||1800,
     tmb:ult?.tmb,get:ult?.get_calorico,
