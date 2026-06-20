@@ -461,6 +461,7 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
           <button class="ftab active" onclick="showTab('resumo',this)">📋 Resumo</button>
           <button class="ftab" onclick="showTab('antropo',this)">📏 Antropometria</button>
           <button class="ftab" onclick="showTab('plano',this)">🥗 Plano</button>
+          <button class="ftab" onclick="showTab('fotos',this)">📸 Fotos</button>
           <button class="ftab" onclick="showTab('notas',this)">📝 Prontuário</button>
           <button class="ftab" onclick="showTab('diario',this)">📓 Diário</button>
         </div>
@@ -475,14 +476,24 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
               <div class="fdata-item"><div class="fdi-label">E-mail</div><div class="fdi-value" id="fd-email" style="font-size:12px">—</div></div>
               <div class="fdata-item"><div class="fdi-label">Atendimento</div><div class="fdi-value" id="fd-tipo">—</div></div>
             </div>
-            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-              <div>
-                <div class="fdi-label" style="margin-bottom:3px">Acesso ao portal</div>
-                <div style="font-size:12px;color:var(--dm)">Redefina a senha de acesso do paciente ao portal</div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+                <div>
+                  <div class="fdi-label" style="margin-bottom:3px">Acesso ao portal</div>
+                  <div style="font-size:12px;color:var(--dm)">Controle o acesso do paciente ao portal</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <button onclick="abrirModalSenha()" style="background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer;display:flex;align-items:center;gap:5px">
+                    🔑 Resetar senha
+                  </button>
+                  <div style="display:flex;align-items:center;gap:8px;background:var(--cr);border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 14px">
+                    <span style="font-size:12px;font-weight:600;color:var(--dm)" id="acesso-label">Acesso ativo</span>
+                    <div id="toggle-acesso" onclick="toggleAcessoPaciente()" style="width:40px;height:22px;border-radius:999px;background:var(--am);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0">
+                      <div id="toggle-bolinha" style="width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:3px;right:3px;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <button onclick="abrirModalSenha()" style="background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:9px 16px;font-size:12.5px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px" onmouseover="this.style.borderColor='var(--am)';this.style.color='var(--dk)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--dm)'">
-                🔑 Resetar senha
-              </button>
             </div>
             </div>
           </div>
@@ -603,9 +614,104 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
         </div>
 
         <div id="ftab-plano" class="ftab-content">
-          <div class="fsec"><div class="fsec-hd"><span class="fsec-title" id="plano-titulo">Plano alimentar</span><button class="fsec-action" onclick="showToast('Em breve!')">Editar</button></div>
+          <!-- Anotações da nutricionista sobre o plano -->
+          <div class="fsec" id="plano-anotacao-box">
+            <div class="fsec-hd"><span class="fsec-title">✏️ Anotações sobre o plano</span><button class="fsec-action" onclick="toggleAnotacaoPlano()">Recolher ▲</button></div>
+            <div id="plano-anotacao-body" class="fsec-body">
+              <textarea id="plano-anotacao-txt" placeholder="Ex: paciente tem intolerância à lactose confirmada, prefere jantar leve, não come peixe..." style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:11px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:80px;display:block;margin-bottom:10px;transition:border-color .2s"></textarea>
+              <div style="display:flex;justify-content:flex-end;gap:8px">
+                <button class="btn-salvar" onclick="salvarAnotacaoPlano()">Salvar anotações</button>
+              </div>
+              <div id="plano-anotacao-salva" style="display:none;margin-top:10px;background:#E8F5E9;border-radius:var(--rs);padding:10px 14px;font-size:12.5px;color:#2E7D32">✅ Anotações salvas! Serão usadas pela IA na próxima geração.</div>
+            </div>
+          </div>
+          <!-- Plano atual -->
+          <div class="fsec">
+            <div class="fsec-hd">
+              <span class="fsec-title" id="plano-titulo">Plano alimentar</span>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="fsec-action" onclick="gerarPlanoIAFicha()" style="background:linear-gradient(135deg,var(--am),var(--pe));border:none;border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">✨ Gerar com IA</button>
+              </div>
+            </div>
             <div class="fsec-body" style="padding:0" id="plano-refeicoes">
-              <div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano ativo.<br>Use <strong>Gerar Plano com IA</strong>.</p></div>
+              <div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano ativo.<br>Clique em <strong>✨ Gerar com IA</strong>.</p></div>
+            </div>
+          </div>
+          <!-- Resultado IA inline -->
+          <div id="plano-ia-resultado" style="display:none">
+            <div class="fsec">
+              <div class="fsec-hd"><span class="fsec-title">✨ Plano gerado pela IA</span><span style="font-size:11px;color:var(--dm)" id="plano-ia-meta"></span></div>
+              <div class="fsec-body" style="padding:0" id="plano-ia-refeicoes"></div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:20px;padding:0 4px">
+              <button class="btn-cancel" onclick="document.getElementById('plano-ia-resultado').style.display='none'">Descartar</button>
+              <button class="btn-salvar" onclick="salvarPlanoIA()">💾 Salvar este plano</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="ftab-fotos" class="ftab-content">
+          <div class="fsec">
+            <div class="fsec-hd"><span class="fsec-title">📸 Adicionar foto</span></div>
+            <div class="fsec-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+                <div class="mfield"><label>Data da foto</label><input type="date" id="foto-data"></div>
+                <div class="mfield"><label>Tipo</label>
+                  <select id="foto-tipo">
+                    <option value="Frente">Frente</option>
+                    <option value="Costas">Costas</option>
+                    <option value="Lateral esquerda">Lateral esquerda</option>
+                    <option value="Lateral direita">Lateral direita</option>
+                    <option value="Outra">Outra</option>
+                  </select>
+                </div>
+              </div>
+              <div id="foto-drop-area" onclick="document.getElementById('foto-input').click()" style="border:2px dashed var(--bd);border-radius:var(--r);padding:32px;text-align:center;cursor:pointer;background:var(--cr);transition:all .2s;margin-bottom:14px" ondragover="event.preventDefault();this.style.borderColor='var(--am)'" ondragleave="this.style.borderColor='var(--bd)'" ondrop="handleFotoDrop(event)">
+                <div style="font-size:32px;margin-bottom:8px">📷</div>
+                <div style="font-size:13px;font-weight:600;color:var(--dk)">Clique ou arraste a foto aqui</div>
+                <div style="font-size:11.5px;color:var(--dm);margin-top:4px">JPG, PNG ou WEBP · máx 5MB</div>
+                <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="previewFoto(this)">
+              </div>
+              <div id="foto-preview" style="display:none;margin-bottom:14px;text-align:center">
+                <img id="foto-preview-img" style="max-height:200px;border-radius:var(--r);border:1px solid var(--bd);max-width:100%">
+                <div style="font-size:11px;color:var(--dm);margin-top:6px" id="foto-preview-nome"></div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:8px">
+                <button class="btn-cancel" onclick="limparFoto()">Limpar</button>
+                <button class="btn-salvar" id="btn-salvar-foto" onclick="salvarFoto()" disabled>💾 Salvar foto</button>
+              </div>
+            </div>
+          </div>
+          <div class="fsec">
+            <div class="fsec-hd">
+              <span class="fsec-title">Galeria de fotos</span>
+              <div style="display:flex;gap:6px">
+                <button class="tag-pill sel" onclick="filtrarFotos('todas',this)" style="font-size:11px;padding:3px 10px">Todas</button>
+                <button class="tag-pill" onclick="filtrarFotos('Frente',this)" style="font-size:11px;padding:3px 10px">Frente</button>
+                <button class="tag-pill" onclick="filtrarFotos('Costas',this)" style="font-size:11px;padding:3px 10px">Costas</button>
+                <button class="tag-pill" onclick="filtrarFotos('Lateral esquerda',this)" style="font-size:11px;padding:3px 10px">Lateral</button>
+              </div>
+            </div>
+            <div class="fsec-body">
+              <div id="fotos-comparativo" style="display:none;margin-bottom:20px">
+                <div style="font-size:12px;font-weight:600;color:var(--dk);margin-bottom:10px">🔄 Comparativo antes / depois</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <div style="text-align:center">
+                    <img id="foto-antes-img" style="width:100%;border-radius:var(--r);border:1px solid var(--bd);max-height:280px;object-fit:cover">
+                    <div style="font-size:11px;color:var(--dm);margin-top:6px" id="foto-antes-label"></div>
+                  </div>
+                  <div style="text-align:center">
+                    <img id="foto-depois-img" style="width:100%;border-radius:var(--r);border:1px solid var(--bd);max-height:280px;object-fit:cover">
+                    <div style="font-size:11px;color:var(--dm);margin-top:6px" id="foto-depois-label"></div>
+                  </div>
+                </div>
+              </div>
+              <div id="fotos-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+                <div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--dm)">
+                  <div style="font-size:32px;margin-bottom:8px;opacity:.4">📸</div>
+                  <div style="font-size:13px">Nenhuma foto ainda. Adicione a primeira acima.</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -638,10 +744,22 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 
       <!-- AGENDA -->
       <div id="page-agenda" style="display:none">
-        <div class="pg-hd"><h2>Agenda</h2><p>Consultas agendadas</p></div>
-        <div class="card">
-          <div class="card-hd"><span class="card-ttl">Próximas consultas</span><button class="fsec-action" onclick="showToast('Em breve: agendar consulta!')">+ Agendar</button></div>
-          <div id="lista-consultas"><div class="empty-state" style="padding:32px"><div class="es-ico">📅</div><h3>Nenhuma consulta agendada</h3><p>As consultas aparecerão aqui quando forem cadastradas.</p></div></div>
+        <div class="pg-hd"><h2>Agenda</h2><p>Consultas e datas importantes</p></div>
+        <div style="display:grid;grid-template-columns:1fr 340px;gap:18px">
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">Próximas consultas</span><button class="fsec-action" onclick="showToast('Em breve: agendar consulta!')">+ Agendar</button></div>
+            <div id="lista-consultas"><div class="empty-state" style="padding:32px"><div class="es-ico">📅</div><h3>Nenhuma consulta agendada</h3><p>As consultas aparecerão aqui quando forem cadastradas.</p></div></div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:16px">
+              <div class="card-hd"><span class="card-ttl">🎂 Aniversários do mês</span></div>
+              <div id="lista-aniversarios-mes"><div style="padding:16px;font-size:12.5px;color:var(--dm);text-align:center">Carregando...</div></div>
+            </div>
+            <div class="card">
+              <div class="card-hd"><span class="card-ttl">🎉 Próximos aniversários</span></div>
+              <div id="lista-aniversarios-proximos"><div style="padding:16px;font-size:12.5px;color:var(--dm);text-align:center">Carregando...</div></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -722,6 +840,24 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
         <textarea id="pac-diario-txt" placeholder="Descreva o que comeu, horários, como se sentiu..."></textarea>
         <input type="number" step="0.1" placeholder="Seu peso hoje (kg) — opcional" id="pac-peso-input" style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:10px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;margin-bottom:10px;display:block">
         <button class="btn-salvar" onclick="salvarDiarioPaciente()">Salvar diário</button>
+      </div>
+    </div>
+    <div class="pac-section-title" id="pac-evolucao-title" style="display:none">Minha evolução 📊</div>
+    <div id="pac-evolucao-section" style="display:none">
+      <div class="pac-card" style="margin-bottom:14px">
+        <div class="pac-card-hd">
+          <span class="pac-card-ttl">Comparativo de medidas</span>
+          <span class="pac-card-sub" id="pac-evolucao-datas">—</span>
+        </div>
+        <div style="padding:16px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+            <button class="tag-pill sel" onclick="mudarGraficoPac('peso',this)" style="font-size:11px;padding:4px 10px">Peso</button>
+            <button class="tag-pill" onclick="mudarGraficoPac('gordura',this)" style="font-size:11px;padding:4px 10px">% Gordura</button>
+            <button class="tag-pill" onclick="mudarGraficoPac('perimetros',this)" style="font-size:11px;padding:4px 10px">Medidas</button>
+          </div>
+          <canvas id="chart-pac-evolucao" height="220"></canvas>
+          <div id="pac-deltas" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px"></div>
+        </div>
       </div>
     </div>
     <div style="height:32px"></div>
@@ -877,6 +1013,7 @@ async function entrarComSessao(user){
     await carregarDashboard();
     await carregarPacientes();
     await carregarSelectIA();
+    carregarAniversarios();
   } else {
     document.getElementById('app-pac').style.display='block';
     await carregarPortalPaciente(user.id);
@@ -1010,6 +1147,15 @@ async function abrirFicha(id){
   document.getElementById('diario-lista').innerHTML=dHtml;
   document.getElementById('ficha-diario-resumo').innerHTML=diario&&diario.length>0?`<div class="diario-item" style="padding-top:0;border:none"><div class="diario-data">${new Date(diario[0].criado_em).toLocaleDateString('pt-BR')}</div><div class="diario-content"><p>${diario[0].texto||'—'}</p><div class="dc-sub">${diario[0].peso_dia?'⚖️ Peso: <strong>'+diario[0].peso_dia+' kg</strong>':''}</div></div></div>`:'<div style="color:var(--dm);font-size:13px">Nenhum registro ainda.</div>';
 
+  // Anotação do plano
+  document.getElementById('plano-anotacao-txt').value=p.anotacao_plano||'';
+  // Toggle de acesso
+  const ativo=p.portal_ativo!==false;
+  setToggleAcesso(ativo);
+  // Fotos
+  await carregarFotos(id);
+  // Data padrão do form de foto
+  document.getElementById('foto-data').value=new Date().toISOString().split('T')[0];
   showTab('resumo',document.querySelector('.ftab'));
   document.querySelectorAll('[id^="page-"]').forEach(el=>el.style.display='none');
   document.getElementById('page-ficha').style.display='block';
@@ -1034,10 +1180,19 @@ async function salvarNota(){
 async function carregarPortalPaciente(userId){
   const {data:pac}=await sb.from('pacientes').select('*,avaliacoes(peso,imc,data_avaliacao),planos(id,titulo,tipo_dieta,kcal_total,status,refeicoes(ordem,nome,horario,emoji,kcal,descricao)),consultas(data_hora,tipo,status)').eq('user_id',userId).single();
   if(!pac)return;
+  // Verificar bloqueio
+  if(pac.portal_ativo===false){
+    await sb.auth.signOut();
+    document.getElementById('app-pac').style.display='none';
+    document.getElementById('login-screen').style.display='flex';
+    showToast('Seu acesso está temporariamente suspenso. Entre em contato com a nutricionista.');
+    return;
+  }
   document.getElementById('pac-ola').textContent='Olá, '+pac.nome.split(' ')[0]+'! 👋';
   window._pacienteId=pac.id;
   const avals=pac.avaliacoes?.sort((a,b)=>new Date(b.data_avaliacao)-new Date(a.data_avaliacao));
   if(avals&&avals[0]){document.getElementById('pac-peso').textContent=avals[0].peso?avals[0].peso+'kg':'—';document.getElementById('pac-imc').textContent=avals[0].imc||'—';}
+  await carregarGraficoPaciente(pac.id);
   const plano=pac.planos?.find(p=>p.status==='Ativo');
   if(plano){
     document.getElementById('pac-plano-sub').textContent=(plano.kcal_total||'—')+' kcal · '+(plano.tipo_dieta||'');
@@ -1230,6 +1385,408 @@ async function carregarSelectIA(){
 
 function toggleTag(el){document.querySelectorAll('.tag-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
 
+// ── BLOQUEIO DE ACESSO ─────────────────────────────────
+async function toggleAcessoPaciente(){
+  if(!pacienteAtualId)return;
+  const toggle=document.getElementById('toggle-acesso');
+  const bolinha=document.getElementById('toggle-bolinha');
+  const label=document.getElementById('acesso-label');
+  const ativo=toggle.dataset.ativo==='true';
+  const novoStatus=!ativo;
+  toggle.dataset.ativo=String(novoStatus);
+  toggle.style.background=novoStatus?'var(--am)':'#D0C9BC';
+  bolinha.style.right=novoStatus?'3px':'21px';
+  label.textContent=novoStatus?'Acesso ativo':'Acesso bloqueado';
+  label.style.color=novoStatus?'var(--dm)':'var(--ro)';
+  await sb.from('pacientes').update({portal_ativo:novoStatus}).eq('id',pacienteAtualId);
+  showToast(novoStatus?'Acesso ao portal reativado ✅':'Acesso ao portal bloqueado 🔒');
+}
+
+function setToggleAcesso(ativo){
+  const toggle=document.getElementById('toggle-acesso');
+  const bolinha=document.getElementById('toggle-bolinha');
+  const label=document.getElementById('acesso-label');
+  toggle.dataset.ativo=String(ativo);
+  toggle.style.background=ativo?'var(--am)':'#D0C9BC';
+  bolinha.style.right=ativo?'3px':'21px';
+  label.textContent=ativo?'Acesso ativo':'Acesso bloqueado';
+  label.style.color=ativo?'var(--dm)':'var(--ro)';
+}
+
+// ── FOTOS ──────────────────────────────────────────────
+let _fotoFile=null;
+let _todasFotos=[];
+
+function previewFoto(input){
+  const file=input.files[0];
+  if(!file)return;
+  if(file.size>5*1024*1024){showToast('Foto muito grande. Máx 5MB.');return;}
+  _fotoFile=file;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('foto-preview-img').src=e.target.result;
+    document.getElementById('foto-preview-nome').textContent=file.name+' ('+Math.round(file.size/1024)+' KB)';
+    document.getElementById('foto-preview').style.display='block';
+    document.getElementById('btn-salvar-foto').disabled=false;
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleFotoDrop(e){
+  e.preventDefault();
+  document.getElementById('foto-drop-area').style.borderColor='var(--bd)';
+  const file=e.dataTransfer.files[0];
+  if(file&&file.type.startsWith('image/')){
+    document.getElementById('foto-input').files;
+    const dt=new DataTransfer();dt.items.add(file);
+    document.getElementById('foto-input').files=dt.files;
+    previewFoto(document.getElementById('foto-input'));
+  }
+}
+
+function limparFoto(){
+  _fotoFile=null;
+  document.getElementById('foto-input').value='';
+  document.getElementById('foto-preview').style.display='none';
+  document.getElementById('btn-salvar-foto').disabled=true;
+}
+
+async function salvarFoto(){
+  if(!_fotoFile||!pacienteAtualId){showToast('Selecione uma foto.');return;}
+  const btn=document.getElementById('btn-salvar-foto');
+  btn.textContent='Salvando...';btn.disabled=true;
+  const data=document.getElementById('foto-data').value||new Date().toISOString().split('T')[0];
+  const tipo=document.getElementById('foto-tipo').value;
+  const ext=_fotoFile.name.split('.').pop();
+  const path=`${pacienteAtualId}/${data}_${tipo.replace(/ /g,'_')}_${Date.now()}.${ext}`;
+
+  const {error:upErr}=await sb.storage.from('fotos-pacientes').upload(path,_fotoFile,{contentType:_fotoFile.type});
+  if(upErr){showToast('Erro no upload: '+upErr.message);btn.textContent='💾 Salvar foto';btn.disabled=false;return;}
+
+  const {data:urlData}=sb.storage.from('fotos-pacientes').getPublicUrl(path);
+  await sb.from('fotos_pacientes').insert({paciente_id:pacienteAtualId,url:urlData.publicUrl,path,tipo,data_foto:data});
+
+  showToast('Foto salva! 📸');
+  limparFoto();
+  btn.textContent='💾 Salvar foto';
+  await carregarFotos(pacienteAtualId);
+}
+
+async function carregarFotos(id){
+  const {data:fotos}=await sb.from('fotos_pacientes').select('*').eq('paciente_id',id).order('data_foto',{ascending:false});
+  _todasFotos=fotos||[];
+  renderFotos(_todasFotos);
+}
+
+function filtrarFotos(tipo,btn){
+  document.querySelectorAll('#ftab-fotos .tag-pill').forEach(p=>p.classList.remove('sel'));
+  btn.classList.add('sel');
+  renderFotos(tipo==='todas'?_todasFotos:_todasFotos.filter(f=>f.tipo===tipo));
+}
+
+function renderFotos(fotos){
+  if(!fotos||fotos.length===0){
+    document.getElementById('fotos-comparativo').style.display='none';
+    document.getElementById('fotos-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--dm)"><div style="font-size:32px;margin-bottom:8px;opacity:.4">📸</div><div style="font-size:13px">Nenhuma foto nesta categoria.</div></div>';
+    return;
+  }
+
+  // Comparativo: mais antiga vs mais recente
+  if(fotos.length>=2){
+    const antes=fotos[fotos.length-1];
+    const depois=fotos[0];
+    document.getElementById('foto-antes-img').src=antes.url;
+    document.getElementById('foto-antes-label').textContent='Antes · '+antes.data_foto.split('-').reverse().join('/')+' · '+antes.tipo;
+    document.getElementById('foto-depois-img').src=depois.url;
+    document.getElementById('foto-depois-label').textContent='Atual · '+depois.data_foto.split('-').reverse().join('/')+' · '+depois.tipo;
+    document.getElementById('fotos-comparativo').style.display='block';
+  } else {
+    document.getElementById('fotos-comparativo').style.display='none';
+  }
+
+  document.getElementById('fotos-grid').innerHTML=fotos.map(f=>`
+    <div style="position:relative;border-radius:var(--r);overflow:hidden;cursor:pointer;border:1px solid var(--bd)" onclick="verFotoGrande('${f.url}')">
+      <img src="${f.url}" style="width:100%;height:160px;object-fit:cover;display:block">
+      <div style="padding:8px;background:white">
+        <div style="font-size:11px;font-weight:600;color:var(--dk)">${f.tipo}</div>
+        <div style="font-size:10px;color:var(--dm)">${f.data_foto.split('-').reverse().join('/')}</div>
+      </div>
+    </div>`).join('');
+}
+
+function verFotoGrande(url){
+  const d=document.createElement('div');
+  d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out';
+  d.onclick=()=>d.remove();
+  d.innerHTML=`<img src="${url}" style="max-width:90vw;max-height:90vh;border-radius:var(--r);box-shadow:0 8px 40px rgba(0,0,0,.5)">`;
+  document.body.appendChild(d);
+}
+
+// ── PLANO IA NA FICHA ──────────────────────────────────
+function toggleAnotacaoPlano(){
+  const body=document.getElementById('plano-anotacao-body');
+  const btn=document.querySelector('#plano-anotacao-box .fsec-action');
+  const vis=body.style.display!=='none';
+  body.style.display=vis?'none':'block';
+  btn.textContent=vis?'Expandir ▼':'Recolher ▲';
+}
+
+async function salvarAnotacaoPlano(){
+  if(!pacienteAtualId)return;
+  const txt=document.getElementById('plano-anotacao-txt').value.trim();
+  await sb.from('pacientes').update({anotacao_plano:txt}).eq('id',pacienteAtualId);
+  document.getElementById('plano-anotacao-salva').style.display='block';
+  setTimeout(()=>document.getElementById('plano-anotacao-salva').style.display='none',3000);
+  showToast('Anotações salvas!');
+}
+
+async function gerarPlanoIAFicha(){
+  if(!pacienteAtualId)return;
+  const btn=document.querySelector('#ftab-plano .fsec-action');
+  btn.textContent='⏳ Gerando...';btn.disabled=true;
+
+  const {data:p}=await sb.from('pacientes').select('nome,sexo,data_nascimento,objetivo,restricoes,anotacao_plano').eq('id',pacienteAtualId).single();
+  const {data:avals}=await sb.from('avaliacoes').select('peso,altura,imc,tmb,get_calorico').eq('paciente_id',pacienteAtualId).order('data_avaliacao',{ascending:false}).limit(1);
+  const ult=avals?.[0];
+
+  let idade=null;
+  if(p?.data_nascimento){
+    idade=Math.floor((new Date()-new Date(p.data_nascimento))/(365.25*24*60*60*1000));
+  }
+
+  // Chamar Edge Function gerar-plano-ia (TACO + Gemini no servidor, key segura)
+  try{
+    const payload={
+      nome:p?.nome,sexo:p?.sexo,idade,
+      objetivo:p?.objetivo,restricoes:p?.restricoes,
+      anotacoes:p?.anotacao_plano,
+      kcal_alvo:ult?.get_calorico||1800,
+      tmb:ult?.tmb,get:ult?.get_calorico,
+    };
+    const r=await fetch(`${SUPA_URL}/functions/v1/gerar-plano-ia`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify(payload)
+    });
+    const data=await r.json();
+    if(data.erro)throw new Error(data.erro);
+    const plano=data.plano;
+    window._planoIAGerado=plano;
+    mostrarPlanoIAResultado(plano);
+  }catch(e){
+    // Fallback simulado
+    const plano={titulo:'Plano '+( p?.objetivo||'equilibrado'),kcal_total:1800,tipo_dieta:'Equilibrada',refeicoes:[
+      {ordem:1,emoji:'☀️',nome:'Café da manhã',horario:'07:00',kcal:350,descricao:'Pão integral (50g), ovo mexido (2 un.), mamão formosa (120g), café sem açúcar'},
+      {ordem:2,emoji:'🍎',nome:'Lanche da manhã',horario:'10:00',kcal:180,descricao:'Iogurte grego natural (170g), granola caseira (25g)'},
+      {ordem:3,emoji:'🍽️',nome:'Almoço',horario:'12:30',kcal:580,descricao:'Arroz integral (120g), feijão (80g), frango grelhado (120g), salada à vontade, azeite (1 col. chá)'},
+      {ordem:4,emoji:'🥜',nome:'Lanche da tarde',horario:'16:00',kcal:200,descricao:'Mix de castanhas (30g), 1 fruta da estação'},
+      {ordem:5,emoji:'🌙',nome:'Jantar',horario:'19:30',kcal:490,descricao:'Sopa de legumes com frango (300ml), torrada integral (2 un.)'},
+    ]};
+    window._planoIAGerado=plano;
+    mostrarPlanoIAResultado(plano);
+  }
+
+  btn.textContent='✨ Gerar com IA';btn.disabled=false;
+}
+
+function mostrarPlanoIAResultado(plano){
+  document.getElementById('plano-ia-meta').textContent=plano.kcal_total+' kcal · '+plano.tipo_dieta;
+  document.getElementById('plano-ia-refeicoes').innerHTML=plano.refeicoes.map(r=>`
+    <div class="plano-resumo-item">
+      <div class="pri-time">${r.emoji||'🍽️'} ${r.horario||'—'}</div>
+      <div><div class="pri-nome">${r.nome}</div><div class="pri-desc">${r.descricao}</div><div class="pri-kcal">≈ ${r.kcal||'—'} kcal</div></div>
+    </div>`).join('');
+  document.getElementById('plano-ia-resultado').style.display='block';
+  document.getElementById('plano-ia-resultado').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+async function salvarPlanoIA(){
+  if(!window._planoIAGerado||!pacienteAtualId)return;
+  const p=window._planoIAGerado;
+  // Desativar planos anteriores
+  await sb.from('planos').update({status:'Inativo'}).eq('paciente_id',pacienteAtualId);
+  // Criar novo plano
+  const {data:novoPlano,error}=await sb.from('planos').insert({
+    paciente_id:pacienteAtualId,titulo:p.titulo,tipo_dieta:p.tipo_dieta,
+    kcal_total:p.kcal_total,status:'Ativo',gerado_por_ia:true
+  }).select().single();
+  if(error){showToast('Erro ao salvar plano.');return;}
+  // Salvar refeições
+  for(const r of p.refeicoes){
+    await sb.from('refeicoes').insert({plano_id:novoPlano.id,ordem:r.ordem,emoji:r.emoji,nome:r.nome,horario:r.horario,kcal:r.kcal,descricao:r.descricao});
+  }
+  document.getElementById('plano-ia-resultado').style.display='none';
+  showToast('Plano salvo com sucesso! 🥗');
+  await abrirFicha(pacienteAtualId);
+  showTab('plano',document.querySelectorAll('.ftab')[2]);
+}
+
+// ── ANIVERSÁRIOS ──────────────────────────────────────
+async function carregarAniversarios(){
+  const {data:pacs}=await sb.from('pacientes').select('id,nome,data_nascimento').not('data_nascimento','is',null);
+  if(!pacs||pacs.length===0){
+    document.getElementById('lista-aniversarios-mes').innerHTML='<div style="padding:16px;font-size:12.5px;color:var(--dm);text-align:center">Nenhum aniversário cadastrado</div>';
+    document.getElementById('lista-aniversarios-proximos').innerHTML='<div style="padding:16px;font-size:12.5px;color:var(--dm);text-align:center">—</div>';
+    return;
+  }
+
+  const hoje=new Date();
+  const mesAtual=hoje.getMonth();
+  const diaAtual=hoje.getDate();
+
+  // Aniversários do mês atual
+  const doMes=pacs.filter(p=>{
+    const nasc=new Date(p.data_nascimento);
+    return nasc.getMonth()===mesAtual;
+  }).map(p=>{
+    const nasc=new Date(p.data_nascimento);
+    const dia=nasc.getDate();
+    const anos=hoje.getFullYear()-nasc.getFullYear();
+    const hoje2=dia===diaAtual;
+    return {p,dia,anos,hoje2};
+  }).sort((a,b)=>a.dia-b.dia);
+
+  if(doMes.length>0){
+    document.getElementById('lista-aniversarios-mes').innerHTML=doMes.map(({p,dia,anos,hoje2})=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #F5EFE4;cursor:pointer" onclick="abrirFicha('${p.id}')">
+        <div style="width:36px;height:36px;border-radius:50%;background:${hoje2?'linear-gradient(135deg,var(--am),var(--pe))':'var(--cr)'};border:2px solid ${hoje2?'var(--am)':'var(--bd)'};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:${hoje2?'#fff':'var(--dm)'};flex-shrink:0">${dia}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--dk)">${hoje2?'🎂 ':''} ${p.nome.split(' ')[0]}</div>
+          <div style="font-size:11px;color:var(--dm)">${hoje2?'Hoje! ':''}${anos} anos</div>
+        </div>
+        ${hoje2?'<span style="background:#FEF5D4;color:#B8860B;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px">Hoje!</span>':''}
+      </div>`).join('');
+  } else {
+    document.getElementById('lista-aniversarios-mes').innerHTML='<div style="padding:16px;font-size:12.5px;color:var(--dm);text-align:center">Nenhum aniversário este mês</div>';
+  }
+
+  // Próximos 30 dias (excluindo mês atual)
+  const proximos=pacs.map(p=>{
+    const nasc=new Date(p.data_nascimento);
+    const proxAniv=new Date(hoje.getFullYear(),nasc.getMonth(),nasc.getDate());
+    if(proxAniv<hoje) proxAniv.setFullYear(hoje.getFullYear()+1);
+    const diff=Math.ceil((proxAniv-hoje)/(1000*60*60*24));
+    const anos=proxAniv.getFullYear()-nasc.getFullYear();
+    return {p,proxAniv,diff,anos};
+  }).filter(x=>x.diff>0&&x.diff<=60).sort((a,b)=>a.diff-b.diff).slice(0,6);
+
+  if(proximos.length>0){
+    document.getElementById('lista-aniversarios-proximos').innerHTML=proximos.map(({p,proxAniv,diff,anos})=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #F5EFE4;cursor:pointer" onclick="abrirFicha('${p.id}')">
+        <div style="font-size:11px;font-weight:600;background:var(--cr);border-radius:7px;padding:5px 7px;text-align:center;color:var(--dk);min-width:40px;flex-shrink:0;line-height:1.3">
+          ${proxAniv.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).replace('.','')}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--dk)">${p.nome.split(' ')[0]}</div>
+          <div style="font-size:11px;color:var(--dm)">${diff===1?'Amanhã!':diff+' dias · '}${anos} anos</div>
+        </div>
+        ${diff<=3?`<span style="background:#E8F5E9;color:#388E3C;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px">${diff===1?'Amanhã':'Em breve'}</span>`:''}
+      </div>`).join('');
+  } else {
+    document.getElementById('lista-aniversarios-proximos').innerHTML='<div style="padding:16px;font-size:12.5px;color:var(--dm);text-align:center">Nenhum nos próximos 60 dias</div>';
+  }
+
+  // Banner no dashboard se tiver aniversário hoje
+  const hoje_aniv=doMes.filter(x=>x.hoje2);
+  if(hoje_aniv.length>0){
+    const nomes=hoje_aniv.map(x=>x.p.nome.split(' ')[0]).join(' e ');
+    showToast(`🎂 Aniversário hoje: ${nomes}!`);
+  }
+}
+
+// ── GRÁFICO PACIENTE ──────────────────────────────────
+let chartPac=null;
+
+async function carregarGraficoPaciente(pacienteId){
+  const {data:avals}=await sb.from('avaliacoes').select('*').eq('paciente_id',pacienteId).order('data_avaliacao',{ascending:false}).limit(10);
+  if(!avals||avals.length<2){
+    document.getElementById('pac-evolucao-title').style.display='none';
+    document.getElementById('pac-evolucao-section').style.display='none';
+    return;
+  }
+  window._pac_avals=avals;
+  document.getElementById('pac-evolucao-title').style.display='block';
+  document.getElementById('pac-evolucao-section').style.display='block';
+  const fmtD=d=>d?d.split('-').reverse().slice(0,2).join('/'):'';
+  document.getElementById('pac-evolucao-datas').textContent=
+    fmtD(avals[avals.length-1].data_avaliacao)+' → '+fmtD(avals[0].data_avaliacao);
+  renderGraficoPac('peso');
+}
+
+function mudarGraficoPac(tipo,btn){
+  document.querySelectorAll('#pac-evolucao-section .tag-pill').forEach(p=>p.classList.remove('sel'));
+  btn.classList.add('sel');
+  renderGraficoPac(tipo);
+}
+
+function renderGraficoPac(tipo){
+  const avals=window._pac_avals;
+  if(!avals||avals.length<2)return;
+  // Ordena do mais antigo para o mais recente para o gráfico de linha
+  const sorted=[...avals].reverse();
+  const labels=sorted.map(a=>a.data_avaliacao?a.data_avaliacao.split('-').reverse().slice(0,2).join('/'):'');
+  const ctx=document.getElementById('chart-pac-evolucao').getContext('2d');
+  if(chartPac)chartPac.destroy();
+
+  let datasets=[];let deltasHtml='';
+  const primeiro=sorted[0];const ultimo=sorted[sorted.length-1];
+
+  if(tipo==='peso'){
+    datasets=[
+      {label:'Peso (kg)',data:sorted.map(a=>a.peso||null),borderColor:'#F9CD54',backgroundColor:'rgba(249,205,84,0.15)',tension:.4,fill:true,pointBackgroundColor:'#F9CD54',pointRadius:5},
+      {label:'Massa Magra (kg)',data:sorted.map(a=>a.massa_magra||null),borderColor:'#6BBF8E',backgroundColor:'rgba(107,191,142,0.1)',tension:.4,fill:false,pointBackgroundColor:'#6BBF8E',pointRadius:4},
+    ];
+    const dp=ultimo.peso&&primeiro.peso?(ultimo.peso-primeiro.peso).toFixed(1):null;
+    const dm=ultimo.massa_magra&&primeiro.massa_magra?(ultimo.massa_magra-primeiro.massa_magra).toFixed(1):null;
+    deltasHtml=pacDeltaCard('⚖️ Peso',dp,'kg',true)+pacDeltaCard('💪 Massa magra',dm,'kg',false)
+      +(ultimo.imc?`<div style="background:white;border:1px solid var(--bd);border-radius:var(--rs);padding:12px;text-align:center"><div style="font-size:10px;color:#B0A898;font-weight:600;margin-bottom:2px">IMC atual</div><div style="font-size:20px;font-weight:700;color:var(--dk)">${ultimo.imc}</div><div style="font-size:10px;color:var(--dm)">${ultimo.imc_classificacao||''}</div></div>`:'');
+
+  } else if(tipo==='gordura'){
+    datasets=[
+      {label:'% Gordura',data:sorted.map(a=>a.percentual_gordura||null),borderColor:'#FAB87F',backgroundColor:'rgba(250,184,127,0.15)',tension:.4,fill:true,pointBackgroundColor:'#FAB87F',pointRadius:5},
+    ];
+    const dg=ultimo.percentual_gordura&&primeiro.percentual_gordura?(ultimo.percentual_gordura-primeiro.percentual_gordura).toFixed(1):null;
+    deltasHtml=pacDeltaCard('% Gordura',dg,'%',true)
+      +(ultimo.gordura_classificacao?`<div style="background:white;border:1px solid var(--bd);border-radius:var(--rs);padding:12px;text-align:center"><div style="font-size:10px;color:#B0A898;font-weight:600;margin-bottom:2px">Classificação</div><div style="font-size:14px;font-weight:700;color:var(--dk)">${ultimo.gordura_classificacao}</div></div>`:'');
+
+  } else if(tipo==='perimetros'){
+    const medidas=[['Cintura','cintura','#9AA9C7'],['Quadril','quadril','#FAB87F'],['Braço','braco','#C5D9A6']];
+    datasets=medidas.filter(([,k])=>sorted.some(a=>a[k])).map(([l,k,c])=>({
+      label:l+' (cm)',data:sorted.map(a=>a[k]||null),borderColor:c,backgroundColor:'transparent',tension:.4,fill:false,pointRadius:4,pointBackgroundColor:c
+    }));
+    deltasHtml=medidas.map(([l,k])=>{
+      const d=ultimo[k]&&primeiro[k]?(ultimo[k]-primeiro[k]).toFixed(1):null;
+      return d?pacDeltaCard(l,d,'cm',true):'';
+    }).join('');
+  }
+
+  chartPac=new Chart(ctx,{
+    type:'line',
+    data:{labels,datasets},
+    options:{
+      responsive:true,
+      interaction:{intersect:false,mode:'index'},
+      plugins:{legend:{position:'top',labels:{font:{family:'Poppins',size:11},boxWidth:12}},title:{display:false}},
+      scales:{
+        y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins',size:10}}},
+        x:{grid:{display:false},ticks:{font:{family:'Poppins',size:10}}}
+      }
+    }
+  });
+  document.getElementById('pac-deltas').innerHTML=deltasHtml;
+}
+
+function pacDeltaCard(label,delta,unit,menorEMelhor){
+  if(!delta)return'';
+  const v=parseFloat(delta);
+  const bom=menorEMelhor?v<0:v>0;
+  const cor=bom?'#6BBF8E':'#F59996';
+  const bg=bom?'#E8F5E9':'#FFEBEE';
+  return `<div style="background:${bg};border:1px solid ${cor};border-radius:var(--rs);padding:10px;text-align:center">
+    <div style="font-size:10px;color:#666;font-weight:600;margin-bottom:3px">${label}</div>
+    <div style="font-size:18px;font-weight:700;color:${cor}">${v>0?'+':''}${delta} ${unit}</div>
+  </div>`;
+}
+
 function simularIA(){
   const btn=document.getElementById('btn-gerar');
   btn.textContent='⏳ Gerando plano...';btn.disabled=true;
@@ -1255,6 +1812,7 @@ function showPage(pg,btn){
   if(btn)btn.classList.add('active');
   const titles={dashboard:'Dashboard',pacientes:'Pacientes',agenda:'Agenda',planos:'Planos Alimentares',evolucao:'Evolução',ia:'Gerar Plano com IA'};
   document.getElementById('tb-title').textContent=titles[pg]||pg;
+  if(pg==='agenda')carregarAniversarios();
   fecharMenu();
 }
 
