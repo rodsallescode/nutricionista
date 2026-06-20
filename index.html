@@ -494,14 +494,102 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
         </div>
 
         <div id="ftab-antropo" class="ftab-content">
-          <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Histórico de avaliações</span><button class="fsec-action" onclick="showToast('Em breve!')">+ Nova medida</button></div>
-            <div class="fsec-body" style="padding:0">
+
+          <!-- FORMULARIO NOVA AVALIACAO -->
+          <div class="fsec">
+            <div class="fsec-hd">
+              <span class="fsec-title">📏 Nova avaliação antropométrica</span>
+              <button class="fsec-action" onclick="toggleFormAntro()" id="btn-toggle-antro">Recolher ▲</button>
+            </div>
+            <div id="form-antro-body" class="fsec-body">
+              <div style="background:#FEF5D4;border-radius:var(--rs);padding:10px 14px;margin-bottom:16px;font-size:12px;color:#856404;border:1px solid #f0c040">
+                ✨ Os cálculos (IMC, % gordura, massa magra, RCQ, TMB, GET) são feitos automaticamente no servidor via Edge Function.
+              </div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">Dados básicos</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+                <div class="mfield"><label>Data *</label><input type="date" id="ant-data"></div>
+                <div class="mfield"><label>Peso (kg) *</label><input type="number" id="ant-peso" placeholder="68.5" step="0.1"></div>
+                <div class="mfield"><label>Altura (cm)</label><input type="number" id="ant-altura" placeholder="165"></div>
+                <div class="mfield"><label>Nível de atividade</label>
+                  <select id="ant-atividade">
+                    <option value="sedentario">Sedentário</option>
+                    <option value="leve">Leve (1-3x/sem)</option>
+                    <option value="moderado" selected>Moderado (3-5x/sem)</option>
+                    <option value="intenso">Intenso (6-7x/sem)</option>
+                    <option value="muito_intenso">Muito intenso</option>
+                  </select>
+                </div>
+              </div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">Perimetros (cm)</div>
+              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px">
+                <div class="mfield"><label>Pescoço</label><input type="number" id="ant-pescoco" placeholder="36" step="0.1"></div>
+                <div class="mfield"><label>Tórax</label><input type="number" id="ant-torax" placeholder="90" step="0.1"></div>
+                <div class="mfield"><label>Cintura</label><input type="number" id="ant-cintura" placeholder="72" step="0.1"></div>
+                <div class="mfield"><label>Abdômen</label><input type="number" id="ant-abdomen" placeholder="82" step="0.1"></div>
+                <div class="mfield"><label>Quadril</label><input type="number" id="ant-quadril" placeholder="98" step="0.1"></div>
+                <div class="mfield"><label>Braço relaxado</label><input type="number" id="ant-braco" placeholder="28" step="0.1"></div>
+                <div class="mfield"><label>Braço contraído</label><input type="number" id="ant-braco-c" placeholder="31" step="0.1"></div>
+                <div class="mfield"><label>Antebraço</label><input type="number" id="ant-antebraco" placeholder="24" step="0.1"></div>
+                <div class="mfield"><label>Coxa</label><input type="number" id="ant-coxa" placeholder="55" step="0.1"></div>
+                <div class="mfield"><label>Panturrilha</label><input type="number" id="ant-panturrilha" placeholder="36" step="0.1"></div>
+              </div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">Dobras cutâneas (mm)</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+                <div class="mfield"><label>Tricipital</label><input type="number" id="ant-tricipital" placeholder="18" step="0.1"></div>
+                <div class="mfield"><label>Bicipital</label><input type="number" id="ant-bicipital" placeholder="10" step="0.1"></div>
+                <div class="mfield"><label>Subescapular</label><input type="number" id="ant-subescapular" placeholder="14" step="0.1"></div>
+                <div class="mfield"><label>Suprailíaca</label><input type="number" id="ant-suprailiaca" placeholder="16" step="0.1"></div>
+                <div class="mfield"><label>Supraespinal</label><input type="number" id="ant-supraespinal" placeholder="12" step="0.1"></div>
+                <div class="mfield"><label>Abdominal</label><input type="number" id="ant-abdominal" placeholder="20" step="0.1"></div>
+                <div class="mfield"><label>Coxa medial</label><input type="number" id="ant-dobra-coxa" placeholder="22" step="0.1"></div>
+                <div class="mfield"><label>Panturrilha medial</label><input type="number" id="ant-dobra-pant" placeholder="15" step="0.1"></div>
+              </div>
+              <div class="mfield" style="margin-bottom:16px">
+                <label>Observações</label>
+                <textarea id="ant-obs" placeholder="Ex: paciente em período menstrual, retorno pós-férias..." style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:10px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:60px"></textarea>
+              </div>
+              <div id="ant-resultados" style="display:none;background:var(--cr);border-radius:var(--r);padding:16px;margin-bottom:16px;border:1px solid var(--bd)">
+                <div style="font-size:12px;font-weight:700;color:var(--dk);margin-bottom:12px">⚡ Resultados calculados</div>
+                <div id="ant-res-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:10px">
+                <button class="btn-cancel" onclick="limparFormAntro()">Limpar</button>
+                <button class="btn-salvar" onclick="salvarAvaliacao()">💾 Salvar avaliação</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- GRAFICO COMPARATIVO -->
+          <div class="fsec" id="grafico-section" style="display:none">
+            <div class="fsec-hd">
+              <span class="fsec-title">📊 Comparativo: última vs anterior</span>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="tag-pill sel" onclick="mudarGrafico('peso',this)">Peso</button>
+                <button class="tag-pill" onclick="mudarGrafico('gordura',this)">% Gordura</button>
+                <button class="tag-pill" onclick="mudarGrafico('perimetros',this)">Perimetros</button>
+                <button class="tag-pill" onclick="mudarGrafico('dobras',this)">Dobras</button>
+              </div>
+            </div>
+            <div class="fsec-body">
+              <canvas id="chart-antro" height="260"></canvas>
+              <div id="chart-deltas" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px"></div>
+            </div>
+          </div>
+
+          <!-- TABELA HISTORICO -->
+          <div class="fsec">
+            <div class="fsec-hd"><span class="fsec-title">Histórico completo</span></div>
+            <div class="fsec-body" style="padding:0;overflow-x:auto">
               <table class="antro-table">
-                <thead><tr><th>Data</th><th>Peso (kg)</th><th>Altura (cm)</th><th>IMC</th><th>% Gordura</th><th>Massa magra</th><th>Δ Peso</th></tr></thead>
-                <tbody id="antro-tbody"><tr><td colspan="7" style="text-align:center;color:var(--dm);padding:20px">Nenhuma avaliação registrada</td></tr></tbody>
+                <thead><tr>
+                  <th>Data</th><th>Peso</th><th>IMC</th><th>% Gord.</th>
+                  <th>M.Magra</th><th>Cintura</th><th>Quadril</th><th>RCQ</th><th>TMB</th><th>Delta Peso</th>
+                </tr></thead>
+                <tbody id="antro-tbody"><tr><td colspan="10" style="text-align:center;color:var(--dm);padding:20px">Nenhuma avaliação registrada</td></tr></tbody>
               </table>
             </div>
           </div>
+
         </div>
 
         <div id="ftab-plano" class="ftab-content">
@@ -685,6 +773,7 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 const SUPA_URL='https://lkckywsrnwueehjuydxl.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrY2t5d3Nybnd1ZWVoanV5ZHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjMyNTIsImV4cCI6MjA5NzUzOTI1Mn0.nDN07ZVQB8tfh24o2itXAZzD5v20s9T-JRwRWtze850';
@@ -851,23 +940,10 @@ async function abrirFicha(id){
   document.getElementById('fd-restrict').textContent=p.restricoes||'Sem restrições';
   document.getElementById('fd-obs').textContent=p.observacoes||'Sem observações';
 
-  const {data:avals}=await sb.from('avaliacoes').select('*').eq('paciente_id',id).order('data_avaliacao',{ascending:false});
-  if(avals&&avals.length>0){
-    const ult=avals[0];
-    document.getElementById('ficha-peso').textContent=ult.peso?ult.peso+'kg':'—';
-    document.getElementById('ficha-imc').textContent=ult.imc||'—';
-    const meses=Math.floor((new Date()-new Date(p.criado_em))/(1000*60*60*24*30));
-    document.getElementById('ficha-tempo').textContent=meses===0?'Novo':meses+'m';
-    document.getElementById('antro-tbody').innerHTML=avals.map((a,i)=>{
-      const prev=avals[i+1];
-      const delta=prev&&a.peso&&prev.peso?(a.peso-prev.peso).toFixed(1):null;
-      const dh=i===avals.length-1?`<span class="delta-ok">Inicial</span>`:delta?`<span class="${parseFloat(delta)<0?'delta-pos':''}">${parseFloat(delta)>0?'+':''}${delta}</span>`:'—';
-      return `<tr><td>${new Date(a.data_avaliacao).toLocaleDateString('pt-BR')}</td><td>${a.peso||'—'}</td><td>${a.altura||'—'}</td><td>${a.imc||'—'}</td><td>${a.percentual_gordura?a.percentual_gordura+'%':'—'}</td><td>${a.massa_magra?a.massa_magra+' kg':'—'}</td><td>${dh}</td></tr>`;
-    }).join('');
-  } else {
-    ['ficha-peso','ficha-imc','ficha-tempo'].forEach(id=>document.getElementById(id).textContent='—');
-    document.getElementById('antro-tbody').innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--dm);padding:20px">Nenhuma avaliação registrada</td></tr>';
-  }
+  // Carregar avaliações via função dedicada
+  const meses=Math.floor((new Date()-new Date(p.criado_em))/(1000*60*60*24*30));
+  document.getElementById('ficha-tempo').textContent=meses===0?'Novo':meses+'m';
+  await carregarAvaliacoes(id);
 
   const {data:planos}=await sb.from('planos').select('*,refeicoes(*)').eq('paciente_id',id).eq('status','Ativo').limit(1);
   const plano=planos?.[0];
@@ -1076,6 +1152,327 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')fazerLogin();
   if(e.key==='Escape')fecharModal();
 });
+
+// ── ANTROPOMETRIA ──────────────────────────────────────
+let chartAntro=null;
+let avals_cache=[];
+
+function toggleFormAntro(){
+  const body=document.getElementById('form-antro-body');
+  const btn=document.getElementById('btn-toggle-antro');
+  const vis=body.style.display!=='none';
+  body.style.display=vis?'none':'block';
+  btn.textContent=vis?'Expandir ▼':'Recolher ▲';
+}
+
+function limparFormAntro(){
+  ['ant-data','ant-peso','ant-altura','ant-pescoco','ant-torax','ant-cintura','ant-abdomen',
+   'ant-quadril','ant-braco','ant-braco-c','ant-antebraco','ant-coxa','ant-panturrilha',
+   'ant-tricipital','ant-bicipital','ant-subescapular','ant-suprailiaca','ant-supraespinal',
+   'ant-abdominal','ant-dobra-coxa','ant-dobra-pant','ant-obs'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.getElementById('ant-resultados').style.display='none';
+}
+
+async function salvarAvaliacao(){
+  const peso=document.getElementById('ant-peso').value;
+  const data=document.getElementById('ant-data').value;
+  if(!peso||!data){showToast('Preencha pelo menos Data e Peso.');return;}
+  if(!pacienteAtualId){showToast('Erro: nenhum paciente selecionado.');return;}
+
+  // Buscar dados do paciente para calculos
+  const {data:pac}=await sb.from('pacientes').select('sexo,data_nascimento').eq('id',pacienteAtualId).single();
+  let idade=null;
+  if(pac?.data_nascimento){
+    const nasc=new Date(pac.data_nascimento);
+    idade=Math.floor((new Date()-nasc)/(365.25*24*60*60*1000));
+  }
+
+  const payload={
+    peso:+peso,
+    altura_cm:+document.getElementById('ant-altura').value||null,
+    sexo:pac?.sexo||null,
+    idade,
+    nivel_atividade:document.getElementById('ant-atividade').value,
+    cintura:+document.getElementById('ant-cintura').value||null,
+    quadril:+document.getElementById('ant-quadril').value||null,
+    pescoco:+document.getElementById('ant-pescoco').value||null,
+    torax:+document.getElementById('ant-torax').value||null,
+    abdomen:+document.getElementById('ant-abdomen').value||null,
+    braco:+document.getElementById('ant-braco').value||null,
+    braco_contraido:+document.getElementById('ant-braco-c').value||null,
+    antebraco:+document.getElementById('ant-antebraco').value||null,
+    coxa:+document.getElementById('ant-coxa').value||null,
+    panturrilha:+document.getElementById('ant-panturrilha').value||null,
+    dobra_tricipital:+document.getElementById('ant-tricipital').value||null,
+    dobra_bicipital:+document.getElementById('ant-bicipital').value||null,
+    dobra_subescapular:+document.getElementById('ant-subescapular').value||null,
+    dobra_suprailiaca:+document.getElementById('ant-suprailiaca').value||null,
+    dobra_supraespinal:+document.getElementById('ant-supraespinal').value||null,
+    dobra_abdominal:+document.getElementById('ant-abdominal').value||null,
+    dobra_coxa:+document.getElementById('ant-dobra-coxa').value||null,
+    dobra_panturrilha:+document.getElementById('ant-dobra-pant').value||null,
+  };
+  // Remove nulls
+  Object.keys(payload).forEach(k=>{if(!payload[k])delete payload[k];});
+
+  // Chamar Edge Function
+  let calc={};
+  try{
+    const r=await fetch(`${SUPA_URL}/functions/v1/calculos-nutricionais`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify(payload)
+    });
+    calc=await r.json();
+  }catch(e){
+    // Se Edge Function nao disponivel, calcula localmente
+    if(payload.peso&&payload.altura_cm){
+      const h=payload.altura_cm/100;
+      calc.imc=+(payload.peso/(h*h)).toFixed(1);
+    }
+  }
+
+  // Mostrar resultados
+  if(Object.keys(calc).length>0&&!calc.erro){
+    const items=[
+      ['IMC',calc.imc,calc.imc_class],
+      ['% Gordura',calc.percentual_gordura?calc.percentual_gordura+'%':null,calc.gordura_class],
+      ['Massa Magra',calc.massa_magra?calc.massa_magra+' kg':null,null],
+      ['Massa Gorda',calc.massa_gorda?calc.massa_gorda+' kg':null,null],
+      ['RCQ',calc.rcq,calc.rcq_class],
+      ['RCE',calc.rce,calc.rce_class],
+      ['TMB',calc.tmb?calc.tmb+' kcal':null,null],
+      ['GET',calc.get?calc.get+' kcal':null,null],
+      ['Soma Dobras',calc.soma_dobras?calc.soma_dobras+' mm':null,null],
+      ['Risco CV',null,calc.risco_cv],
+    ].filter(([,v,c])=>v||c);
+
+    document.getElementById('ant-res-grid').innerHTML=items.map(([l,v,c])=>`
+      <div style="background:white;border-radius:var(--rs);padding:10px;border:1px solid var(--bd)">
+        <div style="font-size:10px;font-weight:600;color:#B0A898;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${l}</div>
+        <div style="font-size:15px;font-weight:700;color:var(--dk)">${v||'—'}</div>
+        ${c?`<div style="font-size:10.5px;color:var(--dm);margin-top:2px">${c}</div>`:''}
+      </div>`).join('');
+    document.getElementById('ant-resultados').style.display='block';
+  }
+
+  // Salvar no banco
+  const row={
+    paciente_id:pacienteAtualId,
+    data_avaliacao:data,
+    peso:+peso,
+    altura:payload.altura_cm||null,
+    imc:calc.imc||null,
+    percentual_gordura:calc.percentual_gordura||null,
+    massa_magra:calc.massa_magra||null,
+    massa_gorda:calc.massa_gorda||null,
+    rcq:calc.rcq||null,
+    rce:calc.rce||null,
+    tmb:calc.tmb||null,
+    get_calorico:calc.get||null,
+    imc_classificacao:calc.imc_class||null,
+    gordura_classificacao:calc.gordura_class||null,
+    risco_cv:calc.risco_cv||null,
+    cintura:payload.cintura||null,
+    quadril:payload.quadril||null,
+    pescoco:payload.pescoco||null,
+    torax:payload.torax||null,
+    abdomen:payload.abdomen||null,
+    braco:payload.braco||null,
+    braco_contraido:payload.braco_contraido||null,
+    antebraco:payload.antebraco||null,
+    coxa:payload.coxa||null,
+    panturrilha:payload.panturrilha||null,
+    dobra_tricipital:payload.dobra_tricipital||null,
+    dobra_bicipital:payload.dobra_bicipital||null,
+    dobra_subescapular:payload.dobra_subescapular||null,
+    dobra_suprailiaca:payload.dobra_suprailiaca||null,
+    dobra_supraespinal:payload.dobra_supraespinal||null,
+    dobra_abdominal:payload.dobra_abdominal||null,
+    dobra_coxa:payload.dobra_coxa||null,
+    dobra_panturrilha:payload.dobra_panturrilha||null,
+    soma_dobras:calc.soma_dobras||null,
+    observacoes:document.getElementById('ant-obs').value||null,
+  };
+  // Remove undefined/null keys
+  Object.keys(row).forEach(k=>{if(row[k]===null||row[k]===undefined)delete row[k];});
+
+  const {error}=await sb.from('avaliacoes').insert(row);
+  if(error){showToast('Erro ao salvar: '+error.message);return;}
+
+  showToast('Avaliação salva! ✅');
+  await carregarAvaliacoes(pacienteAtualId);
+}
+
+async function carregarAvaliacoes(id){
+  const {data}=await sb.from('avaliacoes').select('*').eq('paciente_id',id).order('data_avaliacao',{ascending:false});
+  avals_cache=data||[];
+
+  // Atualizar hero
+  if(avals_cache.length>0){
+    const ult=avals_cache[0];
+    document.getElementById('ficha-peso').textContent=ult.peso?ult.peso+'kg':'—';
+    document.getElementById('ficha-imc').textContent=ult.imc||'—';
+  }
+
+  // Tabela histórico
+  if(avals_cache.length>0){
+    document.getElementById('antro-tbody').innerHTML=avals_cache.map((a,i)=>{
+      const prev=avals_cache[i+1];
+      const delta=prev&&a.peso&&prev.peso?(a.peso-prev.peso).toFixed(1):null;
+      const neg=delta&&parseFloat(delta)<0;
+      const dh=i===avals_cache.length-1
+        ?'<span style="color:var(--az);font-size:11px;font-weight:600">Inicial</span>'
+        :delta?`<span style="color:${neg?'#6BBF8E':'#F59996'};font-weight:600;font-size:11px">${parseFloat(delta)>0?'+':''}${delta}</span>`:'—';
+      const fmtData=a.data_avaliacao?a.data_avaliacao.split('-').reverse().join('/'):'—';
+      return `<tr>
+        <td>${fmtData}</td>
+        <td>${a.peso?a.peso+' kg':'—'}</td>
+        <td><strong>${a.imc||'—'}</strong>${a.imc_classificacao?`<br><span style="font-size:10px;color:var(--dm)">${a.imc_classificacao}</span>`:''}
+        </td>
+        <td>${a.percentual_gordura?a.percentual_gordura+'%':'—'}</td>
+        <td>${a.massa_magra?a.massa_magra+' kg':'—'}</td>
+        <td>${a.cintura?a.cintura+' cm':'—'}</td>
+        <td>${a.quadril?a.quadril+' cm':'—'}</td>
+        <td>${a.rcq||'—'}</td>
+        <td>${a.tmb?a.tmb+' kcal':'—'}</td>
+        <td>${dh}</td>
+      </tr>`;
+    }).join('');
+  } else {
+    document.getElementById('antro-tbody').innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--dm);padding:20px">Nenhuma avaliação registrada</td></tr>';
+  }
+
+  // Gráfico
+  if(avals_cache.length>=2){
+    document.getElementById('grafico-section').style.display='block';
+    renderGrafico('peso');
+  } else {
+    document.getElementById('grafico-section').style.display='none';
+  }
+}
+
+function mudarGrafico(tipo,btn){
+  document.querySelectorAll('#grafico-section .tag-pill').forEach(p=>p.classList.remove('sel'));
+  btn.classList.add('sel');
+  renderGrafico(tipo);
+}
+
+function renderGrafico(tipo){
+  if(avals_cache.length<2)return;
+  const atual=avals_cache[0];
+  const anterior=avals_cache[1];
+  const fmtD=d=>d?d.split('-').reverse().slice(0,2).join('/'):'';
+  const labels=[`Anterior (${fmtD(anterior.data_avaliacao)})`,`Atual (${fmtD(atual.data_avaliacao)})`];
+
+  let dados=[];let titulo='';let cor1='';let cor2='';let deltasHtml='';
+
+  if(tipo==='peso'){
+    titulo='Evolução do peso e composição corporal';
+    dados=[
+      {label:'Peso (kg)',data:[anterior.peso||0,atual.peso||0],bg:['rgba(249,205,84,0.7)','rgba(249,205,84,1)'],border:['#f0c040','#f0c040']},
+      {label:'Massa Magra (kg)',data:[anterior.massa_magra||0,atual.massa_magra||0],bg:['rgba(197,217,166,0.7)','rgba(197,217,166,1)'],border:['#8BBF6E','#8BBF6E']},
+      {label:'Massa Gorda (kg)',data:[anterior.massa_gorda||0,atual.massa_gorda||0],bg:['rgba(245,153,150,0.7)','rgba(245,153,150,1)'],border:['#F59996','#F59996']},
+    ];
+    const dp=atual.peso&&anterior.peso?(atual.peso-anterior.peso).toFixed(1):null;
+    const dm=atual.massa_magra&&anterior.massa_magra?(atual.massa_magra-anterior.massa_magra).toFixed(1):null;
+    const dg=atual.massa_gorda&&anterior.massa_gorda?(atual.massa_gorda-anterior.massa_gorda).toFixed(1):null;
+    deltasHtml=deltaCard('⚖️ Peso',dp,'kg')+deltaCard('💪 Massa Magra',dm,'kg')+deltaCard('🫧 Massa Gorda',dg,'kg')
+      +(atual.imc?`<div style="background:white;border:1px solid var(--bd);border-radius:var(--rs);padding:12px 16px;flex:1;min-width:120px"><div style="font-size:10px;color:#B0A898;font-weight:600">IMC Atual</div><div style="font-size:18px;font-weight:700;margin-top:4px">${atual.imc}</div><div style="font-size:11px;color:var(--dm)">${atual.imc_classificacao||''}</div></div>`:'');
+
+  } else if(tipo==='gordura'){
+    titulo='% de Gordura Corporal';
+    dados=[{label:'% Gordura',data:[anterior.percentual_gordura||0,atual.percentual_gordura||0],bg:['rgba(245,153,150,0.6)','rgba(245,153,150,1)'],border:['#F59996','#F59996']}];
+    const dg=atual.percentual_gordura&&anterior.percentual_gordura?(atual.percentual_gordura-anterior.percentual_gordura).toFixed(1):null;
+    deltasHtml=deltaCard('% Gordura',dg,'%')
+      +(atual.gordura_classificacao?`<div style="background:white;border:1px solid var(--bd);border-radius:var(--rs);padding:12px 16px;flex:1;min-width:120px"><div style="font-size:10px;color:#B0A898;font-weight:600">Classificação</div><div style="font-size:14px;font-weight:700;margin-top:4px">${atual.gordura_classificacao}</div></div>`:'')
+      +(atual.risco_cv?`<div style="background:white;border:1px solid var(--bd);border-radius:var(--rs);padding:12px 16px;flex:1;min-width:120px"><div style="font-size:10px;color:#B0A898;font-weight:600">Risco CV</div><div style="font-size:14px;font-weight:700;margin-top:4px">${atual.risco_cv}</div></div>`:'');
+
+  } else if(tipo==='perimetros'){
+    titulo='Comparativo de Perímetros (cm)';
+    const campos=[['Cintura','cintura'],['Quadril','quadril'],['Braço','braco'],['Antebraço','antebraco'],['Coxa','coxa'],['Panturrilha','panturrilha'],['Pescoço','pescoco'],['Tórax','torax']];
+    const valAnterior=campos.map(([,k])=>anterior[k]||0);
+    const valAtual=campos.map(([,k])=>atual[k]||0);
+    const labelsCampos=campos.map(([l])=>l);
+    renderBarChart(labelsCampos,valAnterior,valAtual,`Anterior (${fmtD(anterior.data_avaliacao)})`,`Atual (${fmtD(atual.data_avaliacao)})`,titulo);
+    deltasHtml=campos.map(([l,k])=>{
+      const d=atual[k]&&anterior[k]?(atual[k]-anterior[k]).toFixed(1):null;
+      return d?deltaCard(l,d,'cm'):'';
+    }).join('');
+    document.getElementById('chart-deltas').innerHTML=deltasHtml;
+    return;
+
+  } else if(tipo==='dobras'){
+    titulo='Comparativo de Dobras Cutâneas (mm)';
+    const campos=[['Tricipital','dobra_tricipital'],['Bicipital','dobra_bicipital'],['Subescapular','dobra_subescapular'],['Suprailíaca','dobra_suprailiaca'],['Supraespinal','dobra_supraespinal'],['Abdominal','dobra_abdominal'],['Coxa','dobra_coxa'],['Panturrilha','dobra_panturrilha']];
+    const valA=campos.map(([,k])=>anterior[k]||0);
+    const valB=campos.map(([,k])=>atual[k]||0);
+    renderBarChart(campos.map(([l])=>l),valA,valB,`Anterior`,`Atual`,titulo);
+    deltasHtml=campos.map(([l,k])=>{const d=atual[k]&&anterior[k]?(atual[k]-anterior[k]).toFixed(1):null;return d?deltaCard(l,d,'mm'):'';}).join('');
+    document.getElementById('chart-deltas').innerHTML=deltasHtml;
+    return;
+  }
+
+  // Gráfico de barras agrupadas (peso/gordura)
+  const ctx=document.getElementById('chart-antro').getContext('2d');
+  if(chartAntro)chartAntro.destroy();
+  chartAntro=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:dados.map(d=>({
+        label:d.label,
+        data:d.data,
+        backgroundColor:d.bg,
+        borderColor:d.border,
+        borderWidth:2,
+        borderRadius:8,
+      }))
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{position:'top',labels:{font:{family:'Poppins',size:12}}},title:{display:true,text:titulo,font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
+      scales:{y:{beginAtZero:false,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins'}}},x:{grid:{display:false},ticks:{font:{family:'Poppins'}}}}
+    }
+  });
+  document.getElementById('chart-deltas').innerHTML=deltasHtml;
+}
+
+function renderBarChart(labels,valA,valB,labelA,labelB,titulo){
+  const ctx=document.getElementById('chart-antro').getContext('2d');
+  if(chartAntro)chartAntro.destroy();
+  chartAntro=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:labelA,data:valA,backgroundColor:'rgba(154,169,199,0.7)',borderColor:'#9AA9C7',borderWidth:2,borderRadius:6},
+        {label:labelB,data:valB,backgroundColor:'rgba(249,205,84,0.85)',borderColor:'#f0c040',borderWidth:2,borderRadius:6},
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{position:'top',labels:{font:{family:'Poppins',size:12}}},title:{display:true,text:titulo,font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
+      scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins'}}},x:{grid:{display:false},ticks:{font:{family:'Poppins',size:10}}}}
+    }
+  });
+}
+
+function deltaCard(label,delta,unit){
+  if(!delta)return'';
+  const v=parseFloat(delta);
+  const neg=v<0;
+  // Para gordura e dobras, negativo = bom. Para massa magra, positivo = bom.
+  const bom=(label.includes('Gordura')||label.includes('Gorda')||label.includes('Dobra')||label.includes('dobra'))?neg:!neg;
+  const cor=bom?'#6BBF8E':'#F59996';
+  const bgCor=bom?'#E8F5E9':'#FFEBEE';
+  return `<div style="background:${bgCor};border:1px solid ${cor};border-radius:var(--rs);padding:12px 16px;flex:1;min-width:120px;text-align:center">
+    <div style="font-size:10px;color:#666;font-weight:600;margin-bottom:4px">${label}</div>
+    <div style="font-size:20px;font-weight:700;color:${cor}">${v>0?'+':''}${delta} ${unit}</div>
+  </div>`;
+}
 </script>
 </body>
 </html>
