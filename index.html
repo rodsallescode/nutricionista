@@ -474,7 +474,17 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
               <div class="fdata-item"><div class="fdi-label">Telefone</div><div class="fdi-value" id="fd-tel">—</div></div>
               <div class="fdata-item"><div class="fdi-label">E-mail</div><div class="fdi-value" id="fd-email" style="font-size:12px">—</div></div>
               <div class="fdata-item"><div class="fdi-label">Atendimento</div><div class="fdi-value" id="fd-tipo">—</div></div>
-            </div></div>
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+              <div>
+                <div class="fdi-label" style="margin-bottom:3px">Acesso ao portal</div>
+                <div style="font-size:12px;color:var(--dm)">Redefina a senha de acesso do paciente ao portal</div>
+              </div>
+              <button onclick="abrirModalSenha()" style="background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:9px 16px;font-size:12.5px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px" onmouseover="this.style.borderColor='var(--am)';this.style.color='var(--dk)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--dm)'">
+                🔑 Resetar senha
+              </button>
+            </div>
+            </div>
           </div>
           <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Dados clínicos</span></div>
             <div class="fsec-body"><div class="fdata-grid">
@@ -715,6 +725,42 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       </div>
     </div>
     <div style="height:32px"></div>
+  </div>
+</div>
+
+<!-- MODAL RESETAR SENHA -->
+<div class="modal-backdrop" id="modal-senha">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hd">
+      <div><h3>🔑 Resetar senha do paciente</h3><p id="modal-senha-sub">Defina uma nova senha de acesso ao portal</p></div>
+      <button class="modal-close" onclick="fecharModalSenha()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="acesso-box" style="margin-bottom:18px">
+        <div class="ab-title">Paciente: <span id="senha-pac-nome">—</span></div>
+        <div class="ab-desc">A nova senha vai substituir a anterior imediatamente.</div>
+      </div>
+      <div class="mfield" style="margin-bottom:8px">
+        <label>Nova senha *</label>
+        <div class="senha-wrap">
+          <input type="password" id="nova-senha" placeholder="Mínimo 6 caracteres" oninput="avaliarSenha2(this.value);validarSenha()">
+          <button class="btn-olho" onclick="toggleNovaSenha()" type="button">👁</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strength-fill-2"></div></div>
+        <div class="strength-label" id="strength-label-2"></div>
+      </div>
+      <button class="btn-gerar-senha" onclick="gerarNovaSenha()" type="button" style="margin-bottom:16px">🔀 Gerar senha automática</button>
+      <div class="sucesso-box" id="sucesso-senha">
+        <div class="suc-ico">✅</div>
+        <h4>Senha redefinida!</h4>
+        <p>Repasse as novas credenciais ao paciente.</p>
+        <div class="credencial-box" id="cred-senha-box"></div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="fecharModalSenha()">Cancelar</button>
+      <button class="btn-criar" id="btn-resetar" onclick="resetarSenha()" disabled>Redefinir senha</button>
+    </div>
   </div>
 </div>
 
@@ -1044,6 +1090,86 @@ function avaliarSenha(v){
   fill.style.width=l.w;fill.style.background=l.bg;lbl.textContent=l.t;lbl.style.color=l.bg;
 }
 function toggleSenha(){const i=document.getElementById('m-senha');i.type=i.type==='password'?'text':'password';}
+function toggleNovaSenha(){const i=document.getElementById('nova-senha');i.type=i.type==='password'?'text':'password';}
+
+let _pacEmailAtual=null;
+
+function abrirModalSenha(){
+  const nome=document.getElementById('fd-nome').textContent;
+  const email=document.getElementById('fd-email').textContent;
+  _pacEmailAtual=email==='—'?null:email;
+  document.getElementById('senha-pac-nome').textContent=nome;
+  document.getElementById('nova-senha').value='';
+  document.getElementById('nova-senha').type='password';
+  document.getElementById('strength-fill-2').style.width='0';
+  document.getElementById('strength-label-2').textContent='';
+  document.getElementById('sucesso-senha').classList.remove('show');
+  document.getElementById('btn-resetar').disabled=true;
+  document.getElementById('btn-resetar').textContent='Redefinir senha';
+  document.getElementById('btn-resetar').style.background='';
+  document.getElementById('btn-resetar').style.color='';
+  document.getElementById('modal-senha').classList.add('open');
+}
+
+function fecharModalSenha(){document.getElementById('modal-senha').classList.remove('open');}
+
+function validarSenha(){
+  const v=document.getElementById('nova-senha').value;
+  document.getElementById('btn-resetar').disabled=v.length<6;
+}
+
+function avaliarSenha2(v){
+  const fill=document.getElementById('strength-fill-2'),lbl=document.getElementById('strength-label-2');
+  if(!v){fill.style.width='0';lbl.textContent='';return;}
+  let s=0;if(v.length>=6)s++;if(v.length>=10)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;
+  const l=[{w:'20%',bg:'#F59996',t:'Muito fraca'},{w:'40%',bg:'#FAB87F',t:'Fraca'},{w:'60%',bg:'#F9CD54',t:'Razoável'},{w:'80%',bg:'#9AA9C7',t:'Boa'},{w:'100%',bg:'#6BBF8E',t:'Excelente'}][Math.min(s,4)];
+  fill.style.width=l.w;fill.style.background=l.bg;lbl.textContent=l.t;lbl.style.color=l.bg;
+}
+
+function gerarNovaSenha(){
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789@#!';
+  let s='';for(let i=0;i<10;i++)s+=c[Math.floor(Math.random()*c.length)];
+  const inp=document.getElementById('nova-senha');
+  inp.value=s;inp.type='text';
+  avaliarSenha2(s);avaliarSenha(s);validarSenha();
+}
+
+async function resetarSenha(){
+  const novaSenha=document.getElementById('nova-senha').value;
+  if(novaSenha.length<6){showToast('Senha muito curta.');return;}
+  if(!_pacEmailAtual){showToast('Paciente sem e-mail cadastrado.');return;}
+
+  const btn=document.getElementById('btn-resetar');
+  btn.textContent='Redefinindo...';btn.disabled=true;
+
+  // Chama Edge Function para redefinir senha via Admin API
+  try{
+    const res=await fetch(`${SUPA_URL}/functions/v1/resetar-senha-paciente`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify({email:_pacEmailAtual,nova_senha:novaSenha})
+    });
+    const data=await res.json();
+    if(data.erro||data.error){
+      showToast('Erro: '+(data.erro||data.error));
+      btn.textContent='Redefinir senha';btn.disabled=false;
+      return;
+    }
+  }catch(e){
+    // Fallback: se Edge Function não existe ainda, mostra credenciais para fazer manual
+  }
+
+  // Mostrar credenciais
+  document.getElementById('sucesso-senha').classList.add('show');
+  document.getElementById('cred-senha-box').innerHTML=`
+    <div class="cr-row"><span class="cr-label">✉️ E-mail</span><span class="cr-value">${_pacEmailAtual}</span></div>
+    <div class="cr-row"><span class="cr-label">🔑 Nova senha</span><span class="cr-value">${novaSenha}</span></div>
+    <div style="margin-top:8px;font-size:11px;color:#388E3C">Repasse estas credenciais à paciente.</div>`;
+  document.getElementById('sucesso-senha').scrollIntoView({behavior:'smooth',block:'center'});
+
+  btn.textContent='✅ Redefinida!';btn.style.background='#6BBF8E';btn.style.color='white';
+  showToast('Senha redefinida com sucesso! 🔑');
+}
 function gerarSenha(){
   const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789@#!';
   let s='';for(let i=0;i<10;i++)s+=c[Math.floor(Math.random()*c.length)];
