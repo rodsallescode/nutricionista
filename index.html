@@ -928,13 +928,24 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 // ── SUPABASE ──
 const SUPA_URL  = 'https://lckywsrnwueehujuydxl.supabase.co';
 const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrY2t5d3Nybnd1ZWVoanV5ZHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjMyNTIsImV4cCI6MjA5NzUzOTI1Mn0.nDN07ZVQB8tfh24o2itXAZzD5v20s9T-JRwRWtze850';
-const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    flowType: 'implicit'
+  }
+});
 
 let perfil = 'nutri';
 let usuarioAtual = null;
 
-// Verifica sessão ativa ao carregar a página
+// Verifica sessão e limpa hash de erro
 window.addEventListener('DOMContentLoaded', async () => {
+  if(window.location.hash.includes('error=')) {
+    history.replaceState(null, '', window.location.pathname);
+    showToast('Link expirado. Faça login normalmente.');
+  }
   const { data: { session } } = await sb.auth.getSession();
   if (session) entrarComSessao(session.user);
 });
@@ -965,7 +976,10 @@ async function fazerLogin(){
   btn.textContent = perfil==='nutri' ? 'Entrar na plataforma' : 'Acessar meu plano';
 
   if(error){
-    showToast('E-mail ou senha incorretos.');
+    console.error('Erro login:', error);
+    if(error.message.includes('Invalid login')) showToast('E-mail ou senha incorretos.');
+    else if(error.message.includes('Email not confirmed')) showToast('Confirme o e-mail primeiro ou peça ao admin.');
+    else showToast('Erro: ' + error.message);
     return;
   }
 
