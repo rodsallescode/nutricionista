@@ -1434,7 +1434,9 @@ async function abrirFicha(id){
   const objSel=document.getElementById('ficha-ia-obj');
   if(objSel&&p.objetivo){const opts=[...objSel.options];const match=opts.find(o=>o.value===p.objetivo);if(match)objSel.value=p.objetivo;}
   if(document.getElementById('ficha-ia-restrict')&&p.restricoes)document.getElementById('ficha-ia-restrict').value=p.restricoes;
-  if(ult?.get_calorico&&document.getElementById('ficha-ia-kcal'))document.getElementById('ficha-ia-kcal').value=ult.get_calorico;
+  // Preencher kcal alvo com GET do paciente se disponível (avals_cache já foi carregado)
+  const ultAval=avals_cache?.[0];
+  if(ultAval?.get_calorico&&document.getElementById('ficha-ia-kcal'))document.getElementById('ficha-ia-kcal').value=ultAval.get_calorico;
   // Toggle de acesso
   const ativo=p.portal_ativo!==false;
   setToggleAcesso(ativo);
