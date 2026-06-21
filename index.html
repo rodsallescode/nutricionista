@@ -670,16 +670,14 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
               <div id="plano-anotacao-salva" style="display:none;margin-top:10px;background:#E8F5E9;border-radius:var(--rs);padding:10px 14px;font-size:12.5px;color:#2E7D32">✅ Salvo!</div>
             </div>
           </div>
-          <!-- Plano atual -->
+          <!-- Planos do paciente -->
           <div class="fsec">
             <div class="fsec-hd">
-              <span class="fsec-title" id="plano-titulo">Plano alimentar</span>
-              <div style="display:flex;gap:8px;align-items:center">
-                <button class="fsec-action" onclick="gerarPlanoIAFicha()" style="background:linear-gradient(135deg,var(--am),var(--pe));border:none;border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">✨ Gerar 2 opções com IA</button>
-              </div>
+              <span class="fsec-title">Planos alimentares</span>
+              <button class="fsec-action" onclick="gerarPlanoIAFicha()" style="background:linear-gradient(135deg,var(--am),var(--pe));border:none;border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">✨ Gerar 2 opções com IA</button>
             </div>
-            <div class="fsec-body" style="padding:0" id="plano-refeicoes">
-              <div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano ativo.<br>Clique em <strong>✨ Gerar com IA</strong>.</p></div>
+            <div id="plano-blocos-lista" style="padding:0">
+              <div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano cadastrado.<br>Clique em <strong>✨ Gerar com IA</strong>.</p></div>
             </div>
           </div>
           <!-- Resultado IA inline: 2 opções -->
@@ -703,8 +701,9 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
                 <div style="padding:8px 16px;font-size:11px;color:var(--pe);font-weight:600" id="ficha-ia-meta-b"></div>
               </div>
             </div>
-            <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:20px;padding:0 4px">
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:20px;padding:0 4px;flex-wrap:wrap">
               <button class="btn-cancel" onclick="document.getElementById('plano-ia-resultado').style.display='none'">Descartar</button>
+              <button class="btn-cancel" id="btn-salvar-ambos-ficha" onclick="salvarAmbosPlanos()" style="border-color:var(--az);color:#1565C0">💾 Salvar os 2 planos</button>
               <button class="btn-salvar" id="btn-salvar-ficha-ia" onclick="salvarPlanoIA()" disabled>💾 Salvar opção selecionada</button>
             </div>
           </div>
@@ -950,7 +949,8 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 
             <div style="display:flex;gap:10px;justify-content:flex-end">
               <button class="btn-cancel" onclick="document.getElementById('resultado-ia').style.display='none'">Descartar</button>
-              <button class="btn-gerar" id="btn-salvar-ia-menu" onclick="salvarPlanoIAMenu()" style="width:auto;padding:12px 28px" disabled>💾 Salvar plano selecionado</button>
+              <button class="btn-cancel" onclick="salvarAmbosIAMenu()" style="border-color:var(--az);color:#1565C0">💾 Salvar os 2</button>
+              <button class="btn-gerar" id="btn-salvar-ia-menu" onclick="salvarPlanoIAMenu()" style="width:auto;padding:12px 28px" disabled>💾 Salvar selecionado</button>
             </div>
           </div>
 
@@ -1451,15 +1451,8 @@ async function abrirFicha(id){
   document.getElementById('ficha-tempo').textContent=meses===0?'Novo':meses+'m';
   await carregarAvaliacoes(id);
 
-  const {data:planos}=await sb.from('planos').select('*,refeicoes(*)').eq('paciente_id',id).eq('status','Ativo').limit(1);
-  const plano=planos?.[0];
-  if(plano){
-    document.getElementById('plano-titulo').textContent=plano.titulo+(plano.kcal_total?' · '+plano.kcal_total+' kcal':'');
-    const refs=plano.refeicoes?.sort((a,b)=>a.ordem-b.ordem)||[];
-    document.getElementById('plano-refeicoes').innerHTML=refs.length>0?refs.map(r=>`<div class="plano-resumo-item"><div class="pri-time">${r.emoji||'🍽️'} ${r.horario?r.horario.slice(0,5):'—'}</div><div><div class="pri-nome">${r.nome}</div><div class="pri-desc">${r.descricao||'—'}</div><div class="pri-kcal">≈ ${r.kcal||'—'} kcal</div></div></div>`).join(''):'<div class="empty-state" style="padding:24px"><p>Nenhuma refeição cadastrada.</p></div>';
-  } else {
-    document.getElementById('plano-refeicoes').innerHTML='<div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano ativo. Use <strong>Gerar Plano com IA</strong>.</p></div>';
-  }
+  // Carregar todos os planos do paciente em blocos
+  await carregarPlanosDosPaciente(id);
 
   const notasCls={Consulta:'nt-consulta',Retorno:'nt-retorno','Observação':'nt-obs'};
   const {data:notas}=await sb.from('notas').select('*').eq('paciente_id',id).order('criado_em',{ascending:false});
@@ -1564,7 +1557,7 @@ async function carregarPortalPaciente(userId){
   const avals=pac.avaliacoes?.sort((a,b)=>new Date(b.data_avaliacao)-new Date(a.data_avaliacao));
   if(avals&&avals[0]){document.getElementById('pac-peso').textContent=avals[0].peso?avals[0].peso+'kg':'—';document.getElementById('pac-imc').textContent=avals[0].imc||'—';}
   await carregarGraficoPaciente(pac.id);
-  const plano=pac.planos?.find(p=>p.status==='Ativo');
+  const plano=pac.planos?.find(p=>p.status==='Ativo')||pac.planos?.[0];
   if(plano){
     document.getElementById('pac-plano-sub').textContent=(plano.kcal_total||'—')+' kcal · '+(plano.tipo_dieta||'');
     const refs=plano.refeicoes?.sort((a,b)=>a.ordem-b.ordem)||[];
@@ -2560,11 +2553,23 @@ async function salvarPlanoIAMenu(){
   const pacId=document.getElementById('ia-paciente').value;
   if(!pacId||!_opcaoMenuSelecionada){showToast('Selecione paciente e opção.');return;}
   const plano=_planosIAMenu[_opcaoMenuSelecionada];
-  await _salvarPlanoNoBanco(pacId,plano);
+  await sb.from('planos').update({status:'Inativo'}).eq('paciente_id',pacId);
+  await _salvarPlanoNoBanco(pacId,plano,true);
   document.getElementById('resultado-ia').style.display='none';
   document.getElementById('ia-placeholder').style.display='block';
   _opcaoMenuSelecionada=null;
   showToast('Plano salvo no perfil do paciente! 🥗');
+}
+
+async function salvarAmbosIAMenu(){
+  const pacId=document.getElementById('ia-paciente').value;
+  if(!pacId||!_planosIAMenu.a||!_planosIAMenu.b){showToast('Gere os planos primeiro.');return;}
+  await sb.from('planos').update({status:'Inativo'}).eq('paciente_id',pacId);
+  await _salvarPlanoNoBanco(pacId,_planosIAMenu.a,true);
+  await _salvarPlanoNoBanco(pacId,{..._planosIAMenu.b,titulo:_planosIAMenu.b.titulo+' (Alternativo)'},false);
+  document.getElementById('resultado-ia').style.display='none';
+  document.getElementById('ia-placeholder').style.display='block';
+  showToast('Ambos os planos salvos! 🥗');
 }
 
 // ── IA FICHA: gerar 2 opções dentro do perfil ────────
@@ -2635,12 +2640,113 @@ function selecionarOpcaoFicha(opcao){
 async function salvarPlanoIA(){
   if(!pacienteAtualId||!_opcaoFichaSelecionada){showToast('Selecione uma opção.');return;}
   const plano=_planosIAFicha[_opcaoFichaSelecionada];
-  await _salvarPlanoNoBanco(pacienteAtualId,plano);
+  // Primeiro plano salvo como Ativo, desativa os outros
+  await sb.from('planos').update({status:'Inativo'}).eq('paciente_id',pacienteAtualId);
+  await _salvarPlanoNoBanco(pacienteAtualId,plano,true);
   document.getElementById('plano-ia-resultado').style.display='none';
   _opcaoFichaSelecionada=null;
-  showToast('Plano salvo! 🥗');
-  await abrirFicha(pacienteAtualId);
+  showToast('Plano salvo como ativo! 🥗');
+  await carregarPlanosDosPaciente(pacienteAtualId);
   showTab('plano',document.querySelectorAll('.ftab')[2]);
+}
+
+async function salvarAmbosPlanos(){
+  if(!pacienteAtualId||!_planosIAFicha.a||!_planosIAFicha.b){showToast('Gere os planos primeiro.');return;}
+  // Inativar planos existentes
+  await sb.from('planos').update({status:'Inativo'}).eq('paciente_id',pacienteAtualId);
+  // Salvar A como ativo, B como alternativo
+  await _salvarPlanoNoBanco(pacienteAtualId,_planosIAFicha.a,true);
+  await _salvarPlanoNoBanco(pacienteAtualId,{..._planosIAFicha.b,titulo:_planosIAFicha.b.titulo+' (Alternativo)'},false);
+  document.getElementById('plano-ia-resultado').style.display='none';
+  showToast('Ambos os planos salvos! 🥗');
+  await carregarPlanosDosPaciente(pacienteAtualId);
+  showTab('plano',document.querySelectorAll('.ftab')[2]);
+}
+
+async function _salvarPlanoNoBanco(pacId,plano,ativo=true){
+  const {data:novo,error}=await sb.from('planos').insert({
+    paciente_id:pacId,
+    titulo:plano.titulo,
+    tipo_dieta:plano.tipo_dieta,
+    kcal_total:plano.kcal_total,
+    status:ativo?'Ativo':'Salvo',
+    gerado_por_ia:true
+  }).select().single();
+  if(error)throw error;
+  for(const r of plano.refeicoes){
+    await sb.from('refeicoes').insert({
+      plano_id:novo.id,ordem:r.ordem,emoji:r.emoji,
+      nome:r.nome,horario:r.horario,kcal:r.kcal,descricao:r.descricao
+    });
+  }
+  return novo;
+}
+
+async function carregarPlanosDosPaciente(id){
+  const {data:planos}=await sb.from('planos').select('*,refeicoes(*)').eq('paciente_id',id).order('criado_em',{ascending:false});
+  const el=document.getElementById('plano-blocos-lista');
+  if(!el)return;
+  if(!planos||planos.length===0){
+    el.innerHTML='<div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano cadastrado.<br>Clique em <strong>✨ Gerar com IA</strong>.</p></div>';
+    return;
+  }
+  el.innerHTML=planos.map((p,i)=>{
+    const refs=p.refeicoes?.sort((a,b)=>a.ordem-b.ordem)||[];
+    const isAtivo=p.status==='Ativo';
+    const dataFmt=new Date(p.criado_em).toLocaleDateString('pt-BR');
+    return `<div style="border-bottom:1px solid var(--bd)">
+      <!-- Cabeçalho do bloco -->
+      <div onclick="toggleBloco('bloco-${p.id}')" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:white;transition:background .15s" onmouseover="this.style.background='var(--cr)'" onmouseout="this.style.background='white'">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+            <span style="font-size:13.5px;font-weight:600;color:var(--dk)">${p.titulo}</span>
+            ${isAtivo?'<span style="background:#E8F5E9;color:#388E3C;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px">● Ativo</span>':'<span style="background:var(--cr);color:var(--dm);font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--bd)">Salvo</span>'}
+            ${p.gerado_por_ia?'<span style="background:#FEF5D4;color:#B8860B;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px">✨ IA</span>':''}
+          </div>
+          <div style="font-size:11.5px;color:var(--dm)">${p.tipo_dieta||'—'} · ${p.kcal_total||'—'} kcal · ${refs.length} refeições · ${dataFmt}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${!isAtivo?`<button onclick="event.stopPropagation();ativarPlano('${p.id}')" style="background:var(--am);border:none;border-radius:var(--rs);padding:5px 10px;font-size:11px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">Ativar</button>`:''}
+          <button onclick="event.stopPropagation();excluirPlano('${p.id}')" style="background:none;border:1px solid var(--bd);border-radius:var(--rs);padding:5px 8px;font-size:12px;color:var(--ro);cursor:pointer">🗑️</button>
+          <span id="arrow-${p.id}" style="font-size:12px;color:var(--dm);transition:transform .2s">▼</span>
+        </div>
+      </div>
+      <!-- Detalhes expansíveis -->
+      <div id="bloco-${p.id}" style="display:${i===0?'block':'none'}">
+        ${refs.map(r=>`<div class="plano-resumo-item"><div class="pri-time">${r.emoji||'🍽️'} ${r.horario?r.horario.slice(0,5):'—'}</div><div><div class="pri-nome">${r.nome}</div><div class="pri-desc">${r.descricao||'—'}</div><div class="pri-kcal">≈ ${r.kcal||'—'} kcal</div></div></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  // Rotacionar seta do primeiro bloco
+  if(planos.length>0){
+    const arrow=document.getElementById('arrow-'+planos[0].id);
+    if(arrow)arrow.style.transform='rotate(180deg)';
+  }
+}
+
+function toggleBloco(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const open=el.style.display!=='none';
+  el.style.display=open?'none':'block';
+  const pid=id.replace('bloco-','');
+  const arrow=document.getElementById('arrow-'+pid);
+  if(arrow)arrow.style.transform=open?'rotate(0deg)':'rotate(180deg)';
+}
+
+async function ativarPlano(id){
+  await sb.from('planos').update({status:'Inativo'}).eq('paciente_id',pacienteAtualId);
+  await sb.from('planos').update({status:'Ativo'}).eq('id',id);
+  showToast('Plano ativado! ✅');
+  await carregarPlanosDosPaciente(pacienteAtualId);
+}
+
+async function excluirPlano(id){
+  if(!confirm('Excluir este plano?'))return;
+  await sb.from('refeicoes').delete().eq('plano_id',id);
+  await sb.from('planos').delete().eq('id',id);
+  showToast('Plano excluído.');
+  await carregarPlanosDosPaciente(pacienteAtualId);
 }
 
 async function _salvarPlanoNoBanco(pacId,plano){
