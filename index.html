@@ -465,6 +465,7 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
               <span class="fh-badge" id="ficha-obj">—</span>
               <span class="fh-badge" id="ficha-tipo">—</span>
               <span class="fh-badge" id="ficha-status">—</span>
+              <button onclick="abrirModalEvento(null,'consulta',pacienteAtualId)" style="background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.5);border-radius:999px;padding:3px 12px;font-size:11px;color:#fff;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif">🩺 Agendar consulta</button>
             </div>
           </div>
           <div class="ficha-hero-stats">
@@ -524,6 +525,13 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
               <div class="fdi-label" style="margin-bottom:6px">Observações clínicas</div>
               <div style="font-size:13px;color:var(--dk);line-height:1.7;background:var(--cr);border-radius:var(--rs);padding:12px" id="fd-obs">—</div>
             </div></div>
+          </div>
+          <div class="fsec">
+            <div class="fsec-hd">
+              <span class="fsec-title">📅 Consultas agendadas</span>
+              <button class="fsec-action" onclick="abrirModalEvento(null,'consulta',pacienteAtualId)">+ Agendar</button>
+            </div>
+            <div class="fsec-body" id="ficha-consultas-lista"><div style="color:var(--dm);font-size:13px">Nenhuma consulta agendada.</div></div>
           </div>
           <div class="fsec"><div class="fsec-hd"><span class="fsec-title">Último registro do paciente</span></div>
             <div class="fsec-body" id="ficha-diario-resumo"><div style="color:var(--dm);font-size:13px">Nenhum registro ainda.</div></div>
@@ -798,7 +806,10 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       <div id="page-agenda" style="display:none">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
           <div class="pg-hd" style="margin:0"><h2 style="margin:0">Agenda</h2><p style="margin:0">Clique em qualquer dia para adicionar um evento</p></div>
-          <button class="btn-new" onclick="abrirModalEvento()">+ Novo evento</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn-cancel" onclick="abrirModalEvento(null,'consulta')" style="background:white;border:1.5px solid var(--am);border-radius:var(--rs);padding:8px 14px;font-size:12.5px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">🩺 Agendar consulta</button>
+            <button class="btn-new" onclick="abrirModalEvento()">+ Outro evento</button>
+          </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start">
 
@@ -1048,14 +1059,9 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       <button class="modal-close" onclick="fecharModalEvento()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="mrow full"><div class="mfield"><label>Título *</label><input type="text" id="evento-titulo" placeholder="Ex: Consulta com Maria, Reunião, Aniversário..."></div></div>
       <div class="mrow">
-        <div class="mfield"><label>Data *</label><input type="date" id="evento-data"></div>
-        <div class="mfield"><label>Horário</label><input type="time" id="evento-hora" value="09:00"></div>
-      </div>
-      <div class="mrow">
-        <div class="mfield"><label>Tipo</label>
-          <select id="evento-tipo">
+        <div class="mfield"><label>Tipo *</label>
+          <select id="evento-tipo" onchange="toggleCamposConsulta()">
             <option value="consulta">🩺 Consulta</option>
             <option value="retorno">🔄 Retorno</option>
             <option value="evento">📌 Evento pessoal</option>
@@ -1063,15 +1069,51 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
             <option value="outro">📝 Outro</option>
           </select>
         </div>
-        <div class="mfield"><label>Paciente (opcional)</label>
+        <div class="mfield"><label>Paciente</label>
           <select id="evento-paciente"><option value="">Sem vínculo</option></select>
         </div>
       </div>
-      <div class="mrow full"><div class="mfield"><label>Observações</label><textarea id="evento-obs" placeholder="Detalhes adicionais..." style="min-height:60px"></textarea></div></div>
+      <!-- Campos específicos de consulta -->
+      <div id="campos-consulta">
+        <div class="mrow full"><div class="mfield"><label>Título da consulta</label><input type="text" id="evento-titulo" placeholder="Ex: Primeira consulta, Retorno 30 dias..."></div></div>
+        <div class="mrow">
+          <div class="mfield"><label>Data *</label><input type="date" id="evento-data"></div>
+          <div class="mfield"><label>Horário *</label><input type="time" id="evento-hora" value="09:00"></div>
+        </div>
+        <div class="mrow">
+          <div class="mfield"><label>Duração</label>
+            <select id="evento-duracao">
+              <option value="30">30 minutos</option>
+              <option value="45">45 minutos</option>
+              <option value="60" selected>1 hora</option>
+              <option value="90">1h30</option>
+            </select>
+          </div>
+          <div class="mfield"><label>Modalidade</label>
+            <select id="evento-modalidade">
+              <option value="Presencial">Presencial</option>
+              <option value="Online">Online</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- Campos para outros eventos -->
+      <div id="campos-outro" style="display:none">
+        <div class="mrow full"><div class="mfield"><label>Título *</label><input type="text" id="evento-titulo-outro" placeholder="Descrição do evento..."></div></div>
+        <div class="mrow">
+          <div class="mfield"><label>Data *</label><input type="date" id="evento-data-outro"></div>
+          <div class="mfield"><label>Horário</label><input type="time" id="evento-hora-outro" value="09:00"></div>
+        </div>
+      </div>
+      <div class="mrow full"><div class="mfield"><label>Observações</label><textarea id="evento-obs" placeholder="Detalhes adicionais..." style="min-height:55px"></textarea></div></div>
+      <!-- Confirmação visual -->
+      <div id="evento-confirmacao" style="display:none;background:#E8F5E9;border-radius:var(--rs);padding:12px 14px;font-size:12.5px;color:#2E7D32;margin-top:8px">
+        ✅ <span id="evento-confirmacao-txt"></span>
+      </div>
     </div>
     <div class="modal-ft">
       <button class="btn-cancel" onclick="fecharModalEvento()">Cancelar</button>
-      <button class="btn-criar" onclick="salvarEvento()">💾 Salvar evento</button>
+      <button class="btn-criar" onclick="salvarEvento()">📅 Agendar</button>
     </div>
   </div>
 </div>
@@ -1422,6 +1464,47 @@ async function abrirFicha(id){
   const notasCls={Consulta:'nt-consulta',Retorno:'nt-retorno','Observação':'nt-obs'};
   const {data:notas}=await sb.from('notas').select('*').eq('paciente_id',id).order('criado_em',{ascending:false});
   document.getElementById('notas-lista').innerHTML=notas&&notas.length>0?notas.map(n=>`<div class="nota-item"><div class="nota-data">${new Date(n.criado_em).toLocaleString('pt-BR')}</div><div class="nota-texto">${n.texto}</div><span class="nota-tag ${notasCls[n.tipo]||'nt-obs'}">${n.tipo}</span></div>`).join(''):'<div style="color:var(--dm);font-size:13px">Nenhuma anotação ainda.</div>';
+
+  // Carregar consultas do paciente
+  const {data:consultas_pac}=await sb.from('consultas').select('*').eq('paciente_id',id).order('data_hora',{ascending:true});
+  const agoraISO=new Date().toISOString();
+  const futuras=(consultas_pac||[]).filter(c=>c.data_hora>=agoraISO&&c.status==='Agendada');
+  const passadas=(consultas_pac||[]).filter(c=>c.data_hora<agoraISO).slice(-3).reverse();
+  const fichaConsEl=document.getElementById('ficha-consultas-lista');
+  if(fichaConsEl){
+    if(!consultas_pac||consultas_pac.length===0){
+      fichaConsEl.innerHTML='<div style="color:var(--dm);font-size:13px">Nenhuma consulta registrada.</div>';
+    } else {
+      fichaConsEl.innerHTML=(futuras.length>0?'<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#B0A898;margin-bottom:8px">Próximas</div>':'')+
+        futuras.map(c=>{
+          const d=new Date(c.data_hora);
+          const diff=Math.ceil((d-new Date())/(1000*60*60*24));
+          return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F5EFE4">
+            <div style="background:var(--am);border-radius:8px;padding:6px 10px;text-align:center;flex-shrink:0;min-width:44px">
+              <div style="font-size:13px;font-weight:700;color:var(--dk)">${d.getDate()}</div>
+              <div style="font-size:9px;text-transform:uppercase;font-weight:600;color:var(--dk)">${d.toLocaleString('pt-BR',{month:'short'})}</div>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:var(--dk)">${c.tipo}</div>
+              <div style="font-size:11px;color:var(--dm)">${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} · ${c.modalidade||'Presencial'} · ${diff===0?'Hoje':diff===1?'Amanhã':diff+' dias'}</div>
+            </div>
+            <span style="background:#E8F5E9;color:#388E3C;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px">${c.status}</span>
+          </div>`;
+        }).join('')+
+        (passadas.length>0?'<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#B0A898;margin:12px 0 8px">Histórico</div>':'')+
+        passadas.map(c=>{
+          const d=new Date(c.data_hora);
+          return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F5EFE4;opacity:.6">
+            <div style="background:var(--cr);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;text-align:center;flex-shrink:0;min-width:44px">
+              <div style="font-size:13px;font-weight:700;color:var(--dk)">${d.getDate()}</div>
+              <div style="font-size:9px;text-transform:uppercase;font-weight:600;color:var(--dk)">${d.toLocaleString('pt-BR',{month:'short'})}</div>
+            </div>
+            <div><div style="font-size:13px;font-weight:600;color:var(--dk)">${c.tipo}</div>
+            <div style="font-size:11px;color:var(--dm)">${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} · ${c.modalidade||'Presencial'}</div></div>
+          </div>`;
+        }).join('');
+    }
+  }
 
   const {data:diario}=await sb.from('diario').select('*').eq('paciente_id',id).order('criado_em',{ascending:false}).limit(10);
   const dHtml=diario&&diario.length>0?diario.map(d=>`<div class="diario-item"><div class="diario-data">${new Date(d.criado_em).toLocaleDateString('pt-BR')}<br><span style="font-weight:400;font-size:10px">${new Date(d.criado_em).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span></div><div class="diario-content"><p>${d.texto||'—'}</p><div class="dc-sub">${d.peso_dia?'⚖️ Peso: <strong>'+d.peso_dia+' kg</strong>':''}</div></div></div>`).join(''):'<div style="color:var(--dm);font-size:13px">Nenhum registro ainda.</div>';
@@ -2115,35 +2198,91 @@ function renderProximosEventos(){
 }
 
 // ── MODAL EVENTO ───────────────────────────────────────
-function abrirModalEvento(dataPreenchida=null){
+function toggleCamposConsulta(){
+  const tipo=document.getElementById('evento-tipo').value;
+  const isConsulta=tipo==='consulta'||tipo==='retorno';
+  document.getElementById('campos-consulta').style.display=isConsulta?'block':'none';
+  document.getElementById('campos-outro').style.display=isConsulta?'none':'block';
+  document.querySelector('#modal-evento .btn-criar').textContent=isConsulta?'📅 Agendar':'💾 Salvar evento';
+}
+
+function abrirModalEvento(dataPreenchida=null, tipoInicial='consulta', pacienteId=null){
   document.getElementById('evento-titulo').value='';
+  document.getElementById('evento-titulo-outro').value='';
   document.getElementById('evento-obs').value='';
-  document.getElementById('evento-data').value=dataPreenchida||new Date().toISOString().split('T')[0];
+  document.getElementById('evento-confirmacao').style.display='none';
+  const dataDefault=dataPreenchida||new Date().toISOString().split('T')[0];
+  document.getElementById('evento-data').value=dataDefault;
+  document.getElementById('evento-data-outro').value=dataDefault;
   document.getElementById('evento-hora').value='09:00';
-  document.getElementById('evento-tipo').value='consulta';
+  document.getElementById('evento-hora-outro').value='09:00';
+  document.getElementById('evento-tipo').value=tipoInicial;
   // Preencher select de pacientes
   const sel=document.getElementById('evento-paciente');
   sel.innerHTML='<option value="">Sem vínculo</option>'+todosPacientes.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
+  if(pacienteId)sel.value=pacienteId;
+  toggleCamposConsulta();
   document.getElementById('modal-evento').classList.add('open');
   setTimeout(()=>document.getElementById('evento-titulo').focus(),100);
 }
 function fecharModalEvento(){document.getElementById('modal-evento').classList.remove('open');}
 
 async function salvarEvento(){
-  const titulo=document.getElementById('evento-titulo').value.trim();
-  const data=document.getElementById('evento-data').value;
-  if(!titulo||!data){showToast('Preencha título e data.');return;}
-  const hora=document.getElementById('evento-hora').value||'00:00';
   const tipo=document.getElementById('evento-tipo').value;
+  const isConsulta=tipo==='consulta'||tipo==='retorno';
+  const data=isConsulta?document.getElementById('evento-data').value:document.getElementById('evento-data-outro').value;
+  const hora=isConsulta?document.getElementById('evento-hora').value:document.getElementById('evento-hora-outro').value;
+  const tituloEl=isConsulta?document.getElementById('evento-titulo'):document.getElementById('evento-titulo-outro');
   const pacId=document.getElementById('evento-paciente').value||null;
   const obs=document.getElementById('evento-obs').value||null;
-  const {error}=await sb.from('eventos_agenda').insert({
-    titulo,tipo,data_hora:data+'T'+hora+':00',paciente_id:pacId,observacoes:obs
-  });
-  if(error){showToast('Erro: '+error.message);return;}
-  fecharModalEvento();
-  showToast('Evento adicionado! 📅');
+
+  if(!data){showToast('Preencha a data.');return;}
+
+  // Gerar título automático para consultas sem título
+  let titulo=tituloEl.value.trim();
+  if(!titulo&&isConsulta&&pacId){
+    const pac=todosPacientes.find(p=>p.id===pacId);
+    titulo=(tipo==='retorno'?'Retorno':'Consulta')+(pac?' — '+pac.nome.split(' ')[0]:'');
+  } else if(!titulo){
+    showToast('Preencha o título.');return;
+  }
+
+  const dataHora=data+'T'+(hora||'09:00')+':00';
+
+  // Se for consulta ou retorno, salvar na tabela consultas
+  if(isConsulta){
+    const duracao=parseInt(document.getElementById('evento-duracao').value)||60;
+    const modalidade=document.getElementById('evento-modalidade').value;
+    const {error}=await sb.from('consultas').insert({
+      paciente_id:pacId,
+      tipo:tipo==='retorno'?'Retorno':'Consulta',
+      data_hora:dataHora,
+      duracao_min:duracao,
+      modalidade,
+      observacoes:obs,
+      status:'Agendada'
+    });
+    if(error){showToast('Erro: '+error.message);return;}
+  } else {
+    // Outros eventos vão para eventos_agenda
+    const {error}=await sb.from('eventos_agenda').insert({
+      titulo,tipo,data_hora:dataHora,paciente_id:pacId,observacoes:obs
+    });
+    if(error){showToast('Erro: '+error.message);return;}
+  }
+
+  // Mostrar confirmação
+  const d=new Date(dataHora);
+  const dataFmt=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  const horaFmt=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('evento-confirmacao-txt').textContent=
+    `${titulo} agendado(a) para ${dataFmt} às ${horaFmt}`;
+  document.getElementById('evento-confirmacao').style.display='block';
+
+  showToast(isConsulta?'Consulta agendada! 🩺':'Evento salvo! 📅');
   await carregarCalendario();
+
+  setTimeout(()=>fecharModalEvento(),2000);
 }
 
 async function excluirEvento(id){
@@ -2161,8 +2300,9 @@ async function excluirEvento(id){
 async function carregarAniversarios(){
   const {data:pacs}=await sb.from('pacientes').select('id,nome,data_nascimento').not('data_nascimento','is',null);
   if(!pacs||pacs.length===0){
-    document.getElementById('lista-aniversarios-mes').innerHTML='<div style="padding:16px;font-size:12.5px;color:var(--dm);text-align:center">Nenhum aniversário cadastrado</div>';
-    document.getElementById('lista-aniversarios-proximos').innerHTML='<div style="padding:16px;font-size:12.5px;color:var(--dm);text-align:center">—</div>';
+    const _elMes=document.getElementById('lista-aniversarios-mes');
+    if(_elMes)_elMes.innerHTML='<div style="padding:14px;font-size:12.5px;color:var(--dm);text-align:center">Nenhum aniversário cadastrado</div>';
+    document.getElementById('lista-aniversarios-proximos').innerHTML='<div style="padding:14px;font-size:12.5px;color:var(--dm);text-align:center">—</div>';
     return;
   }
 
@@ -2183,7 +2323,8 @@ async function carregarAniversarios(){
   }).sort((a,b)=>a.dia-b.dia);
 
   if(doMes.length>0){
-    document.getElementById('lista-aniversarios-mes').innerHTML=doMes.map(({p,dia,anos,hoje2})=>`
+    const _elMes2=document.getElementById('lista-aniversarios-mes');
+    if(_elMes2)_elMes2.innerHTML=doMes.map(({p,dia,anos,hoje2})=>`
       <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #F5EFE4;cursor:pointer" onclick="abrirFicha('${p.id}')">
         <div style="width:36px;height:36px;border-radius:50%;background:${hoje2?'linear-gradient(135deg,var(--am),var(--pe))':'var(--cr)'};border:2px solid ${hoje2?'var(--am)':'var(--bd)'};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:${hoje2?'#fff':'var(--dm)'};flex-shrink:0">${dia}</div>
         <div style="flex:1">
@@ -2193,7 +2334,8 @@ async function carregarAniversarios(){
         ${hoje2?'<span style="background:#FEF5D4;color:#B8860B;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px">Hoje!</span>':''}
       </div>`).join('');
   } else {
-    document.getElementById('lista-aniversarios-mes').innerHTML='<div style="padding:16px;font-size:12.5px;color:var(--dm);text-align:center">Nenhum aniversário este mês</div>';
+    const _elMes3=document.getElementById('lista-aniversarios-mes');
+    if(_elMes3)_elMes3.innerHTML='<div style="padding:14px;font-size:12.5px;color:var(--dm);text-align:center">Nenhum aniversário este mês</div>';
   }
 
   // Próximos aniversários — ordenados por proximidade real (qualquer mês)
