@@ -1437,7 +1437,7 @@ async function abrirFicha(id){
   document.getElementById('ficha-tipo').textContent=p.tipo_atendimento||'—';
   document.getElementById('ficha-status').textContent=p.status||'—';
   document.getElementById('fd-nome').textContent=p.nome;
-  document.getElementById('fd-nasc').textContent=p.data_nascimento?new Date(p.data_nascimento).toLocaleDateString('pt-BR'):'—';
+  document.getElementById('fd-nasc').textContent=p.data_nascimento?p.data_nascimento.split('-').reverse().join('/'):'—';
   document.getElementById('fd-sexo').textContent=p.sexo||'—';
   document.getElementById('fd-tel').textContent=p.telefone||'—';
   document.getElementById('fd-email').textContent=p.email||'—';
