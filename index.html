@@ -1120,6 +1120,50 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
   </div>
 </div>
 
+<!-- MODAL DETALHES EVENTO -->
+<div class="modal-backdrop" id="modal-detalhe-evento">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hd">
+      <div>
+        <h3 id="det-titulo" style="font-size:16px;font-weight:700;color:var(--dk)">Consulta</h3>
+        <p id="det-data" style="font-size:12px;color:var(--dm);margin-top:3px">—</p>
+      </div>
+      <button class="modal-close" onclick="fecharDetalheEvento()">✕</button>
+    </div>
+    <div class="modal-body" style="padding:16px 24px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div style="background:var(--cr);border-radius:var(--rs);padding:12px">
+          <div class="fdi-label">Tipo</div><div class="fdi-value" id="det-tipo">—</div>
+        </div>
+        <div style="background:var(--cr);border-radius:var(--rs);padding:12px">
+          <div class="fdi-label">Horário</div><div class="fdi-value" id="det-hora">—</div>
+        </div>
+        <div style="background:var(--cr);border-radius:var(--rs);padding:12px">
+          <div class="fdi-label">Duração</div><div class="fdi-value" id="det-duracao">—</div>
+        </div>
+        <div style="background:var(--cr);border-radius:var(--rs);padding:12px">
+          <div class="fdi-label">Modalidade</div><div class="fdi-value" id="det-modalidade">—</div>
+        </div>
+      </div>
+      <div id="det-paciente-box" style="background:#FEF5D4;border-radius:var(--rs);padding:12px;margin-bottom:12px;display:none;cursor:pointer" onclick="irParaPaciente()">
+        <div class="fdi-label">Paciente</div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div class="fdi-value" id="det-paciente">—</div>
+          <span style="font-size:11px;color:var(--pe);font-weight:600">Ver ficha →</span>
+        </div>
+      </div>
+      <div id="det-obs-box" style="display:none">
+        <div class="fdi-label" style="margin-bottom:6px">Observações</div>
+        <div id="det-obs" style="font-size:13px;color:var(--dk);background:var(--cr);border-radius:var(--rs);padding:12px;line-height:1.6">—</div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" id="det-btn-excluir" onclick="excluirConsulta()" style="color:var(--ro);border-color:var(--ro)">🗑️ Excluir</button>
+      <button class="btn-cancel" onclick="fecharDetalheEvento()">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL TEMPLATE -->
 <div class="modal-backdrop" id="modal-template">
   <div class="modal" style="max-width:640px">
@@ -2061,7 +2105,7 @@ async function carregarCalendario(){
   for(const c of cons||[]){
     const dia=c.data_hora.split('T')[0];
     if(!calEventos[dia])calEventos[dia]=[];
-    calEventos[dia].push({titulo:c.pacientes?.nome+' — '+c.tipo,tipo:'consulta',fonte:'consulta',data_hora:c.data_hora});
+    calEventos[dia].push({_id:c.id,titulo:c.pacientes?.nome+' — '+c.tipo,tipo:c.tipo,fonte:'consulta',data_hora:c.data_hora,paciente_id:c.paciente_id,paciente_nome:c.pacientes?.nome,duracao_min:c.duracao_min,modalidade:c.modalidade,observacoes:c.observacoes,status:c.status});
   }
 
   renderCalendario();
@@ -2139,17 +2183,19 @@ function selecionarDia(dataStr,dia){
   let html='';
   for(const e of evts){
     const h=e.data_hora?new Date(e.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
-    html+=`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #F5EFE4">
+    const clique=e.fonte==='consulta'?`onclick="abrirDetalheConsulta('${e._id}')"`:`onclick="abrirDetalheEvento(${JSON.stringify(e).replace(/"/g,'&quot;')})"`;
+    html+=`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #F5EFE4;cursor:pointer" ${clique}>
       ${h?`<span style="font-size:11px;font-weight:600;color:var(--dm);min-width:34px">${h}</span>`:''}
       <span class="cal-evento-mini ${TIPO_COR[e.tipo]||'ev-outro'}" style="font-size:11px;padding:3px 8px">${e.titulo||'Evento'}</span>
-      ${e.fonte==='evento'?`<button onclick="excluirEvento('${e.id}')" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--ro);font-size:12px">✕</button>`:''}
+      <span style="margin-left:auto;font-size:11px;color:var(--dm)">›</span>
     </div>`;
   }
   for(const p of anivs){
-    const nasc=new Date(p.data_nascimento);
+    const nasc=new Date(p.data_nascimento+'T00:00:00');
     const anos=calAno-nasc.getFullYear();
-    html+=`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #F5EFE4">
+    html+=`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #F5EFE4;cursor:pointer" onclick="abrirFicha('${p.id}')">
       <span class="cal-evento-mini ev-aniversario" style="font-size:11px;padding:3px 8px">🎂 ${p.nome} — ${anos} anos</span>
+      <span style="margin-left:auto;font-size:11px;color:var(--dm)">›</span>
     </div>`;
   }
   if(!html)html='<div style="font-size:12.5px;color:var(--dm);padding:8px 0">Nenhum evento neste dia. <span style="color:var(--pe);cursor:pointer;font-weight:600" onclick="abrirModalEvento(calDiaSelecionado)">Adicionar →</span></div>';
@@ -2284,6 +2330,79 @@ async function excluirEvento(id){
   if(!confirm('Excluir este evento?'))return;
   await sb.from('eventos_agenda').delete().eq('id',id);
   showToast('Evento excluído.');
+  await carregarCalendario();
+  if(calDiaSelecionado){
+    const d=new Date(calDiaSelecionado+'T00:00:00');
+    selecionarDia(calDiaSelecionado,d.getDate());
+  }
+}
+
+// ── DETALHES DE EVENTO / CONSULTA ─────────────────────
+let _consultaDetalhada=null;
+
+function fecharDetalheEvento(){document.getElementById('modal-detalhe-evento').classList.remove('open');}
+
+function abrirDetalheEvento(e){
+  _consultaDetalhada=null;
+  document.getElementById('det-titulo').textContent=e.titulo||'Evento';
+  const d=new Date(e.data_hora);
+  document.getElementById('det-data').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('det-tipo').textContent=e.tipo||'Evento';
+  document.getElementById('det-hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('det-duracao').textContent='—';
+  document.getElementById('det-modalidade').textContent='—';
+  document.getElementById('det-paciente-box').style.display='none';
+  const obsBox=document.getElementById('det-obs-box');
+  if(e.observacoes){obsBox.style.display='block';document.getElementById('det-obs').textContent=e.observacoes;}
+  else obsBox.style.display='none';
+  document.getElementById('det-btn-excluir').onclick=()=>excluirEvento(e.id);
+  document.getElementById('modal-detalhe-evento').classList.add('open');
+}
+
+async function abrirDetalheConsulta(id){
+  const {data:c}=await sb.from('consultas').select('*,pacientes(id,nome)').eq('id',id).single();
+  if(!c)return;
+  _consultaDetalhada=c;
+  const d=new Date(c.data_hora);
+  document.getElementById('det-titulo').textContent=(c.pacientes?.nome||'Consulta')+' — '+c.tipo;
+  document.getElementById('det-data').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('det-tipo').textContent=c.tipo||'—';
+  document.getElementById('det-hora').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('det-duracao').textContent=c.duracao_min?c.duracao_min+' min':'—';
+  document.getElementById('det-modalidade').textContent=c.modalidade||'Presencial';
+  // Paciente
+  if(c.pacientes?.nome){
+    document.getElementById('det-paciente-box').style.display='block';
+    document.getElementById('det-paciente').textContent=c.pacientes.nome;
+  } else {
+    document.getElementById('det-paciente-box').style.display='none';
+  }
+  // Observações
+  const obsBox=document.getElementById('det-obs-box');
+  if(c.observacoes){obsBox.style.display='block';document.getElementById('det-obs').textContent=c.observacoes;}
+  else obsBox.style.display='none';
+  // Status badge no título
+  const statusCor=c.status==='Agendada'?'#388E3C':c.status==='Realizada'?'#1565C0':'#B0A898';
+  document.getElementById('det-data').innerHTML=
+    d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+
+    ` <span style="background:var(--cr);border:1px solid var(--bd);border-radius:999px;padding:2px 8px;font-size:10px;font-weight:600;color:${statusCor};margin-left:6px">${c.status||'Agendada'}</span>`;
+  document.getElementById('det-btn-excluir').onclick=()=>excluirConsulta(id);
+  document.getElementById('modal-detalhe-evento').classList.add('open');
+}
+
+function irParaPaciente(){
+  if(!_consultaDetalhada?.pacientes?.id)return;
+  fecharDetalheEvento();
+  abrirFicha(_consultaDetalhada.pacientes.id);
+  showPage('pacientes',document.querySelectorAll('.nav-btn')[1]);
+}
+
+async function excluirConsulta(id){
+  const cid=id||_consultaDetalhada?.id;
+  if(!cid||!confirm('Excluir esta consulta?'))return;
+  await sb.from('consultas').delete().eq('id',cid);
+  fecharDetalheEvento();
+  showToast('Consulta excluída.');
   await carregarCalendario();
   if(calDiaSelecionado){
     const d=new Date(calDiaSelecionado+'T00:00:00');
