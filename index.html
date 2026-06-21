@@ -1062,8 +1062,10 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       <div class="mrow">
         <div class="mfield"><label>Tipo *</label>
           <select id="evento-tipo" onchange="toggleCamposConsulta()">
-            <option value="consulta">🩺 Consulta</option>
-            <option value="retorno">🔄 Retorno</option>
+            <option value="Inicial">🩺 Consulta inicial</option>
+            <option value="Retorno">🔄 Retorno</option>
+            <option value="Online">💻 Online</option>
+            <option value="Entrega de plano">📋 Entrega de plano</option>
             <option value="evento">📌 Evento pessoal</option>
             <option value="lembrete">🔔 Lembrete</option>
             <option value="outro">📝 Outro</option>
@@ -2193,7 +2195,7 @@ function renderProximosEventos(){
 // ── MODAL EVENTO ───────────────────────────────────────
 function toggleCamposConsulta(){
   const tipo=document.getElementById('evento-tipo').value;
-  const isConsulta=tipo==='consulta'||tipo==='retorno';
+  const isConsulta=['Inicial','Retorno','Online','Entrega de plano'].includes(tipo);
   document.getElementById('campos-consulta').style.display=isConsulta?'block':'none';
   document.getElementById('campos-outro').style.display=isConsulta?'none':'block';
   document.querySelector('#modal-evento .btn-criar').textContent=isConsulta?'📅 Agendar':'💾 Salvar evento';
@@ -2222,7 +2224,7 @@ function fecharModalEvento(){document.getElementById('modal-evento').classList.r
 
 async function salvarEvento(){
   const tipo=document.getElementById('evento-tipo').value;
-  const isConsulta=tipo==='consulta'||tipo==='retorno';
+  const isConsulta=['Inicial','Retorno','Online','Entrega de plano'].includes(tipo);
   const data=isConsulta?document.getElementById('evento-data').value:document.getElementById('evento-data-outro').value;
   const hora=isConsulta?document.getElementById('evento-hora').value:document.getElementById('evento-hora-outro').value;
   const tituloEl=isConsulta?document.getElementById('evento-titulo'):document.getElementById('evento-titulo-outro');
@@ -2235,7 +2237,7 @@ async function salvarEvento(){
   let titulo=tituloEl.value.trim();
   if(!titulo&&isConsulta&&pacId){
     const pac=todosPacientes.find(p=>p.id===pacId);
-    titulo=(tipo==='retorno'?'Retorno':'Consulta')+(pac?' — '+pac.nome.split(' ')[0]:'');
+    titulo=tipo+(pac?' — '+pac.nome.split(' ')[0]:'');
   } else if(!titulo){
     showToast('Preencha o título.');return;
   }
