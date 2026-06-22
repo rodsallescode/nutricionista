@@ -3959,11 +3959,15 @@ function renderGrafico(tipo){
 
   if(tipo==='peso'){
     titulo='Evolução do peso e composição corporal';
-    dados=[
+    // Só incluir séries com dados reais nos dois registros
+    const seriesPeso=[
       {label:'Peso (kg)',data:[anterior.peso||0,atual.peso||0],bg:['rgba(249,205,84,0.7)','rgba(249,205,84,1)'],border:['#f0c040','#f0c040']},
-      {label:'Massa Magra (kg)',data:[anterior.massa_magra||0,atual.massa_magra||0],bg:['rgba(197,217,166,0.7)','rgba(197,217,166,1)'],border:['#8BBF6E','#8BBF6E']},
-      {label:'Massa Gorda (kg)',data:[anterior.massa_gorda||0,atual.massa_gorda||0],bg:['rgba(245,153,150,0.7)','rgba(245,153,150,1)'],border:['#F59996','#F59996']},
     ];
+    if(anterior.massa_magra&&atual.massa_magra)
+      seriesPeso.push({label:'Massa Magra (kg)',data:[anterior.massa_magra,atual.massa_magra],bg:['rgba(197,217,166,0.7)','rgba(197,217,166,1)'],border:['#8BBF6E','#8BBF6E']});
+    if(anterior.massa_gorda&&atual.massa_gorda)
+      seriesPeso.push({label:'Massa Gorda (kg)',data:[anterior.massa_gorda,atual.massa_gorda],bg:['rgba(245,153,150,0.7)','rgba(245,153,150,1)'],border:['#F59996','#F59996']});
+    dados=seriesPeso;
     const dp=atual.peso&&anterior.peso?(atual.peso-anterior.peso).toFixed(1):null;
     const dm=atual.massa_magra&&anterior.massa_magra?(atual.massa_magra-anterior.massa_magra).toFixed(1):null;
     const dg=atual.massa_gorda&&anterior.massa_gorda?(atual.massa_gorda-anterior.massa_gorda).toFixed(1):null;
@@ -4034,7 +4038,11 @@ function renderGrafico(tipo){
     options:{
       responsive:true,
       plugins:{legend:{position:'top',labels:{font:{family:'Poppins',size:12}}},title:{display:true,text:titulo,font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
-      scales:{y:{beginAtZero:false,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins'}}},x:{grid:{display:false},ticks:{font:{family:'Poppins'}}}}
+      scales:{
+        y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins'}}},
+        x:{grid:{display:false},ticks:{font:{family:'Poppins'}}}
+      },
+      datasets:{bar:{maxBarThickness:80,minBarLength:2}}
     }
   });
   document.getElementById('chart-deltas').innerHTML=deltasHtml;
@@ -4055,7 +4063,8 @@ function renderBarChart(labels,valA,valB,labelA,labelB,titulo){
     options:{
       responsive:true,
       plugins:{legend:{position:'top',labels:{font:{family:'Poppins',size:12}}},title:{display:true,text:titulo,font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
-      scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins'}}},x:{grid:{display:false},ticks:{font:{family:'Poppins',size:10}}}}
+      scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins'}}},x:{grid:{display:false},ticks:{font:{family:'Poppins',size:10}}}},
+      datasets:{bar:{maxBarThickness:80}}
     }
   });
 }
