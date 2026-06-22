@@ -565,18 +565,59 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 
         <div id="ftab-antropo" class="ftab-content">
 
-          <!-- FORMULARIO NOVA AVALIACAO -->
-          <div class="fsec">
-            <div class="fsec-hd">
-              <span class="fsec-title">📏 Nova avaliação antropométrica</span>
-              <button class="fsec-action" onclick="toggleFormAntro()" id="btn-toggle-antro">Recolher ▲</button>
+          <!-- HEADER: botão nova avaliação + seleção para comparar -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--dk)">Avaliações</div>
+              <div style="font-size:11px;color:var(--dm);margin-top:2px">Clique para expandir · Marque 2 para comparar</div>
             </div>
-            <div id="form-antro-body" class="fsec-body">
-              <div style="background:#FEF5D4;border-radius:var(--rs);padding:10px 14px;margin-bottom:16px;font-size:12px;color:#856404;border:1px solid #f0c040">
-                ✨ Os cálculos (IMC, % gordura, massa magra, RCQ, TMB, GET) são feitos automaticamente no servidor via Edge Function.
+            <button class="btn-new" onclick="abrirModalNovaAvaliacao()">+ Nova avaliação</button>
+          </div>
+
+          <!-- BARRA DE SELEÇÃO PARA COMPARAR -->
+          <div id="ant-sel-bar" style="display:none;background:#FEF5D4;border:1.5px solid var(--am);border-radius:var(--r);padding:12px 16px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <span style="font-size:12.5px;color:#856404;font-weight:500" id="ant-sel-texto">Selecione 2 avaliações para comparar</span>
+            <div style="display:flex;gap:8px">
+              <button onclick="desmarcarAvals()" style="background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:6px 12px;font-size:11px;cursor:pointer;font-family:'Poppins',sans-serif;color:var(--dm)">Desmarcar</button>
+              <button id="btn-comparar-avals" onclick="mostrarCompAvals()" disabled style="background:var(--am);border:none;border-radius:var(--rs);padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;color:var(--dk)">Comparar</button>
+            </div>
+          </div>
+
+          <!-- ÁREA DE COMPARAÇÃO -->
+          <div id="comp-avals-area" style="display:none;background:white;border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <div style="font-size:14px;font-weight:600;color:var(--dk)" id="comp-titulo">Comparativo</div>
+              <button onclick="fecharCompAvals()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--dm)">✕</button>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="comp-medida-tabs"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px" id="comp-kpis"></div>
+            <div style="position:relative;height:220px;width:100%"><canvas id="chart-comp-avals"></canvas></div>
+            <div id="comp-deltas-avals" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px"></div>
+          </div>
+
+          <!-- BLOCOS DE AVALIAÇÕES -->
+          <div id="avals-blocos"></div>
+
+          <!-- RESULTADOS VISUAIS APÓS SALVAR (modal results) -->
+          <div id="ant-resultados" style="display:none;margin:16px 0">
+            <div id="ant-res-visual"></div>
+          </div>
+
+        </div>
+
+        <!-- MODAL NOVA AVALIAÇÃO -->
+        <div class="modal-backdrop" id="modal-nova-aval" style="align-items:flex-start;padding:20px;overflow-y:auto">
+          <div class="modal" style="max-width:680px;margin:auto">
+            <div class="modal-hd">
+              <div><h3>📏 Nova avaliação antropométrica</h3><p>Preencha os dados disponíveis — só peso e data são obrigatórios</p></div>
+              <button class="modal-close" onclick="fecharModalNovaAvaliacao()">✕</button>
+            </div>
+            <div class="modal-body">
+              <div style="background:#FEF5D4;border-radius:var(--rs);padding:10px 14px;margin-bottom:16px;font-size:12px;color:#856404;border:1px solid var(--am)">
+                ✨ IMC, % gordura, massa magra, RCQ, TMB e GET calculados automaticamente
               </div>
-              <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">Dados básicos</div>
-              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+              <div class="modal-section">Dados básicos</div>
+              <div class="mrow">
                 <div class="mfield"><label>Data *</label><input type="date" id="ant-data"></div>
                 <div class="mfield"><label>Peso (kg) *</label><input type="number" id="ant-peso" placeholder="68.5" step="0.1"></div>
                 <div class="mfield"><label>Altura (cm)</label><input type="number" id="ant-altura" placeholder="165"></div>
@@ -590,8 +631,8 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
                   </select>
                 </div>
               </div>
-              <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">Perimetros (cm)</div>
-              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px">
+              <div class="modal-section">Perímetros (cm)</div>
+              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px">
                 <div class="mfield"><label>Pescoço</label><input type="number" id="ant-pescoco" placeholder="36" step="0.1"></div>
                 <div class="mfield"><label>Tórax</label><input type="number" id="ant-torax" placeholder="90" step="0.1"></div>
                 <div class="mfield"><label>Cintura</label><input type="number" id="ant-cintura" placeholder="72" step="0.1"></div>
@@ -603,8 +644,8 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
                 <div class="mfield"><label>Coxa</label><input type="number" id="ant-coxa" placeholder="55" step="0.1"></div>
                 <div class="mfield"><label>Panturrilha</label><input type="number" id="ant-panturrilha" placeholder="36" step="0.1"></div>
               </div>
-              <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">Dobras cutâneas (mm)</div>
-              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+              <div class="modal-section">Dobras cutâneas (mm)</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
                 <div class="mfield"><label>Tricipital</label><input type="number" id="ant-tricipital" placeholder="18" step="0.1"></div>
                 <div class="mfield"><label>Bicipital</label><input type="number" id="ant-bicipital" placeholder="10" step="0.1"></div>
                 <div class="mfield"><label>Subescapular</label><input type="number" id="ant-subescapular" placeholder="14" step="0.1"></div>
@@ -614,53 +655,15 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
                 <div class="mfield"><label>Coxa medial</label><input type="number" id="ant-dobra-coxa" placeholder="22" step="0.1"></div>
                 <div class="mfield"><label>Panturrilha medial</label><input type="number" id="ant-dobra-pant" placeholder="15" step="0.1"></div>
               </div>
-              <div class="mfield" style="margin-bottom:16px">
-                <label>Observações</label>
-                <textarea id="ant-obs" placeholder="Ex: paciente em período menstrual, retorno pós-férias..." style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:10px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:60px"></textarea>
-              </div>
-              <div id="ant-resultados" style="display:none;margin:16px 0">
-                <div id="ant-res-visual"></div>
-              </div>
-              <div style="display:flex;justify-content:flex-end;gap:10px">
-                <button class="btn-cancel" onclick="limparFormAntro()">Limpar</button>
-                <button class="btn-salvar" onclick="salvarAvaliacao()">💾 Salvar avaliação</button>
-              </div>
+              <div class="mrow full"><div class="mfield"><label>Observações</label>
+                <textarea id="ant-obs" placeholder="Ex: paciente em período menstrual, retorno pós-férias..." style="min-height:60px"></textarea>
+              </div></div>
+            </div>
+            <div class="modal-ft">
+              <button class="btn-cancel" onclick="fecharModalNovaAvaliacao()">Cancelar</button>
+              <button class="btn-criar" onclick="salvarAvaliacao()">💾 Salvar avaliação</button>
             </div>
           </div>
-
-          <!-- GRAFICO COMPARATIVO -->
-          <div class="fsec" id="grafico-section" style="display:none">
-            <div class="fsec-hd">
-              <span class="fsec-title">📊 Comparativo: última vs anterior</span>
-              <div style="display:flex;gap:6px;flex-wrap:wrap">
-                <button class="tag-pill sel" onclick="mudarGrafico('peso',this)">Peso</button>
-                <button class="tag-pill" onclick="mudarGrafico('gordura',this)">% Gordura</button>
-                <button class="tag-pill" onclick="mudarGrafico('perimetros',this)">Perimetros</button>
-                <button class="tag-pill" onclick="mudarGrafico('dobras',this)">Dobras</button>
-              </div>
-            </div>
-            <div class="fsec-body">
-              <div style="position:relative;height:260px;width:100%">
-                <canvas id="chart-antro"></canvas>
-              </div>
-              <div id="chart-deltas" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px"></div>
-            </div>
-          </div>
-
-          <!-- TABELA HISTORICO -->
-          <div class="fsec">
-            <div class="fsec-hd"><span class="fsec-title">Histórico completo</span></div>
-            <div class="fsec-body" style="padding:0;overflow-x:auto">
-              <table class="antro-table">
-                <thead><tr>
-                  <th>Data</th><th>Peso</th><th>IMC</th><th>% Gord.</th>
-                  <th>M.Magra</th><th>Cintura</th><th>Quadril</th><th>RCQ</th><th>TMB</th><th>Delta Peso</th>
-                </tr></thead>
-                <tbody id="antro-tbody"><tr><td colspan="10" style="text-align:center;color:var(--dm);padding:20px">Nenhuma avaliação registrada</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-
         </div>
 
         <div id="ftab-plano" class="ftab-content">
@@ -3927,13 +3930,21 @@ document.addEventListener('keydown',e=>{
 let chartAntro=null;
 let avals_cache=[];
 
-function toggleFormAntro(){
-  const body=document.getElementById('form-antro-body');
-  const btn=document.getElementById('btn-toggle-antro');
-  const vis=body.style.display!=='none';
-  body.style.display=vis?'none':'block';
-  btn.textContent=vis?'Expandir ▼':'Recolher ▲';
+function abrirModalNovaAvaliacao(){
+  document.getElementById('modal-nova-aval').classList.add('open');
+  document.getElementById('ant-data').value=new Date().toISOString().split('T')[0];
+  ['ant-peso','ant-altura','ant-pescoco','ant-torax','ant-cintura','ant-abdomen','ant-quadril',
+   'ant-braco','ant-braco-c','ant-antebraco','ant-coxa','ant-panturrilha',
+   'ant-tricipital','ant-bicipital','ant-subescapular','ant-suprailiaca','ant-supraespinal',
+   'ant-abdominal','ant-dobra-coxa','ant-dobra-pant','ant-obs'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.getElementById('ant-resultados').style.display='none';
 }
+function fecharModalNovaAvaliacao(){document.getElementById('modal-nova-aval').classList.remove('open');}
+
+// Legacy compat
+function toggleFormAntro(){}
 
 function limparFormAntro(){
   ['ant-data','ant-peso','ant-altura','ant-pescoco','ant-torax','ant-cintura','ant-abdomen',
@@ -4055,9 +4066,15 @@ async function salvarAvaliacao(){
   const {error}=await sb.from('avaliacoes').insert(row);
   if(error){showToast('Erro ao salvar: '+error.message);return;}
 
+  fecharModalNovaAvaliacao();
   showToast('Avaliação salva! ✅');
   await carregarAvaliacoes(pacienteAtualId);
 }
+
+// ── BLOCOS DE AVALIAÇÃO ────────────────────────────────
+let _avalsSelecionadas=[];
+let _avalAberto=null;
+let _chartCompAvals=null;
 
 async function carregarAvaliacoes(id){
   const {data}=await sb.from('avaliacoes').select('*').eq('paciente_id',id).order('data_avaliacao',{ascending:false});
@@ -4070,41 +4087,273 @@ async function carregarAvaliacoes(id){
     document.getElementById('ficha-imc').textContent=ult.imc||'—';
   }
 
-  // Tabela histórico
-  if(avals_cache.length>0){
-    document.getElementById('antro-tbody').innerHTML=avals_cache.map((a,i)=>{
-      const prev=avals_cache[i+1];
-      const delta=prev&&a.peso&&prev.peso?(a.peso-prev.peso).toFixed(1):null;
-      const neg=delta&&parseFloat(delta)<0;
-      const dh=i===avals_cache.length-1
-        ?'<span style="color:var(--az);font-size:11px;font-weight:600">Inicial</span>'
-        :delta?`<span style="color:${neg?'#6BBF8E':'#F59996'};font-weight:600;font-size:11px">${parseFloat(delta)>0?'+':''}${delta}</span>`:'—';
-      const fmtData=a.data_avaliacao?a.data_avaliacao.split('-').reverse().join('/'):'—';
-      return `<tr>
-        <td>${fmtData}</td>
-        <td>${a.peso?a.peso+' kg':'—'}</td>
-        <td><strong>${a.imc||'—'}</strong>${a.imc_classificacao?`<br><span style="font-size:10px;color:var(--dm)">${a.imc_classificacao}</span>`:''}
-        </td>
-        <td>${a.percentual_gordura?a.percentual_gordura+'%':'—'}</td>
-        <td>${a.massa_magra?a.massa_magra+' kg':'—'}</td>
-        <td>${a.cintura?a.cintura+' cm':'—'}</td>
-        <td>${a.quadril?a.quadril+' cm':'—'}</td>
-        <td>${a.rcq||'—'}</td>
-        <td>${a.tmb?a.tmb+' kcal':'—'}</td>
-        <td>${dh}</td>
-      </tr>`;
-    }).join('');
-  } else {
-    document.getElementById('antro-tbody').innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--dm);padding:20px">Nenhuma avaliação registrada</td></tr>';
+  renderAvalsBlocos();
+}
+
+function renderAvalsBlocos(){
+  const el=document.getElementById('avals-blocos');
+  if(!el)return;
+  if(!avals_cache||avals_cache.length===0){
+    el.innerHTML='<div class="empty-state" style="padding:40px"><div class="es-ico">📏</div><h3>Nenhuma avaliação registrada</h3><p>Clique em <strong>+ Nova avaliação</strong> para começar.</p></div>';
+    document.getElementById('ant-sel-bar').style.display='none';
+    return;
   }
 
-  // Gráfico
-  if(avals_cache.length>=2){
-    document.getElementById('grafico-section').style.display='block';
-    renderGrafico('peso');
-  } else {
-    document.getElementById('grafico-section').style.display='none';
+  el.innerHTML=avals_cache.map((a,i)=>{
+    const prev=avals_cache[i+1];
+    const delta=prev&&a.peso&&prev.peso?(a.peso-prev.peso).toFixed(1):null;
+    const neg=delta&&parseFloat(delta)<0;
+    const fmtData=a.data_avaliacao?a.data_avaliacao.split('-').reverse().join('/'):'—';
+    const dataP=a.data_avaliacao?a.data_avaliacao.split('-'):['','',''];
+    const isOpen=_avalAberto===a.id;
+    const isSel=_avalsSelecionadas.includes(a.id);
+    const isInicial=i===avals_cache.length-1;
+
+    return `<div style="background:white;border:${isSel?'2px solid var(--am)':'1px solid var(--bd)'};border-radius:var(--r);margin-bottom:10px;overflow:hidden;transition:box-shadow .15s" id="aval-bloco-${a.id}">
+      <!-- Cabeçalho do bloco -->
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer" onclick="toggleAvalBloco('${a.id}')">
+        <input type="checkbox" ${isSel?'checked':''} onclick="event.stopPropagation();toggleAvalSel('${a.id}')" style="width:16px;height:16px;cursor:pointer;accent-color:var(--am);flex-shrink:0">
+        <!-- Data -->
+        <div style="background:${isInicial?'var(--cr)':'#FEF5D4'};border-radius:8px;padding:7px 12px;text-align:center;flex-shrink:0;min-width:52px;border:1px solid ${isInicial?'var(--bd)':'#f0c040'}">
+          <div style="font-size:18px;font-weight:700;color:var(--dk);line-height:1">${dataP[2]||'—'}</div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;font-weight:600;color:${isInicial?'var(--dm)':'#856404'};margin-top:2px">${new Date(a.data_avaliacao+'T12:00:00').toLocaleString('pt-BR',{month:'short'}).replace('.','')}</div>
+        </div>
+        <!-- Métricas resumo -->
+        <div style="display:flex;gap:18px;flex:1;flex-wrap:wrap;align-items:center">
+          ${a.peso?`<div><div style="font-size:15px;font-weight:700;color:var(--dk)">${a.peso} kg</div><div style="font-size:10px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase">Peso</div></div>`:''}
+          ${a.imc?`<div><div style="font-size:15px;font-weight:700;color:var(--dk)">${a.imc}</div><div style="font-size:10px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase">IMC</div></div>`:''}
+          ${a.cintura?`<div><div style="font-size:15px;font-weight:700;color:var(--dk)">${a.cintura} cm</div><div style="font-size:10px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase">Cintura</div></div>`:''}
+          ${a.percentual_gordura?`<div><div style="font-size:15px;font-weight:700;color:var(--dk)">${a.percentual_gordura}%</div><div style="font-size:10px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase">Gordura</div></div>`:''}
+          ${a.tmb?`<div><div style="font-size:15px;font-weight:700;color:var(--dk)">${a.tmb}</div><div style="font-size:10px;color:var(--dm);letter-spacing:.5px;text-transform:uppercase">TMB kcal</div></div>`:''}
+        </div>
+        <!-- Badges -->
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+          ${isInicial?'<span style="background:#E3F2FD;color:#1565C0;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px">Inicial</span>':''}
+          ${delta?`<span style="background:${neg?'#E8F5E9':'#FFEBEE'};color:${neg?'#2E7D32':'#C62828'};font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px">${parseFloat(delta)>0?'+':''}${delta} kg</span>`:''}
+          ${a.imc_classificacao?`<span style="background:#F5EFE4;color:var(--dk);font-size:10px;font-weight:500;padding:2px 8px;border-radius:999px">${a.imc_classificacao}</span>`:''}
+          <span style="font-size:12px;color:var(--dm);transition:transform .2s;${isOpen?'transform:rotate(180deg)':''}">▼</span>
+        </div>
+      </div>
+
+      <!-- Corpo expansível com dados visuais -->
+      <div style="display:${isOpen?'block':'none'};border-top:1px solid var(--bd);padding:16px 18px">
+        ${renderAvalDetalhes(a)}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAvalDetalhes(a){
+  function card(label,valor,unit,badge,badgeCor){
+    if(!valor&&valor!==0)return'';
+    const corBadge={verde:'background:#E8F5E9;color:#2E7D32',amarelo:'background:#FFF8E1;color:#F57F17',vermelho:'background:#FFEBEE;color:#C62828',azul:'background:#E3F2FD;color:#1565C0',cinza:'background:#F5EFE4;color:#6B6B6C'}[badgeCor||'cinza'];
+    return `<div style="background:var(--cr);border-radius:10px;padding:14px;border:1px solid var(--bd);text-align:center">
+      <div style="font-size:9.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin-bottom:8px">${label}</div>
+      <div style="font-size:22px;font-weight:700;color:var(--dk);line-height:1;margin-bottom:4px">${valor}</div>
+      <div style="font-size:11px;color:var(--dm)">${unit}</div>
+      ${badge?`<div style="${corBadge};font-size:10px;font-weight:600;padding:2px 10px;border-radius:999px;margin-top:8px;display:inline-block">${badge}</div>`:''}
+    </div>`;
   }
+
+  const secao=(titulo)=>`<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">${titulo}</div>`;
+
+  let html='';
+
+  // Calculados
+  const calc=[
+    card('IMC',a.imc,'kg/m²',a.imc_classificacao,a.imc<18.5?'azul':a.imc<25?'verde':a.imc<30?'amarelo':'vermelho'),
+    card('% Gordura',a.percentual_gordura,'%',a.gordura_classificacao,a.gordura_classificacao?.includes('Normal')?'verde':'amarelo'),
+    card('Massa Magra',a.massa_magra,'kg','','cinza'),
+    card('Massa Gorda',a.massa_gorda,'kg','','cinza'),
+    card('RCQ',a.rcq,'',a.rcq_class,a.rcq_class?.includes('Baixo')?'verde':'amarelo'),
+    card('RCE',a.rce,'',a.rce_class,a.rce_class?.includes('Adequado')?'verde':'amarelo'),
+    card('TMB',a.tmb,'kcal/dia','Harris-Benedict','azul'),
+    card('GET',a.get_calorico,'kcal/dia','Necessidade estimada','amarelo'),
+    card('Soma dobras',a.soma_dobras,'mm','','cinza'),
+    card('Risco CV',a.risco_cv,'',a.risco_cv?.includes('Sem')?'Sem risco':a.risco_cv,a.risco_cv?.includes('Sem')?'verde':'vermelho'),
+  ].filter(Boolean);
+  if(calc.length>0){
+    html+=secao('Resultados calculados');
+    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:4px">${calc.join('')}</div>`;
+  }
+
+  // Perímetros
+  const perim=[
+    card('Pescoço',a.pescoco,'cm','','cinza'),
+    card('Tórax',a.torax,'cm','','cinza'),
+    card('Cintura',a.cintura,'cm','','cinza'),
+    card('Abdômen',a.abdomen,'cm','','cinza'),
+    card('Quadril',a.quadril,'cm','','cinza'),
+    card('Braço relax.',a.braco,'cm','','cinza'),
+    card('Braço contr.',a.braco_contraido,'cm','','cinza'),
+    card('Antebraço',a.antebraco,'cm','','cinza'),
+    card('Coxa',a.coxa,'cm','','cinza'),
+    card('Panturrilha',a.panturrilha,'cm','','cinza'),
+  ].filter(Boolean);
+  if(perim.length>0){
+    html+=secao('Perímetros (cm)');
+    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-bottom:4px">${perim.join('')}</div>`;
+  }
+
+  // Dobras
+  const dobras=[
+    card('Tricipital',a.dobra_tricipital,'mm','','cinza'),
+    card('Bicipital',a.dobra_bicipital,'mm','','cinza'),
+    card('Subescapular',a.dobra_subescapular,'mm','','cinza'),
+    card('Suprailíaca',a.dobra_suprailiaca,'mm','','cinza'),
+    card('Supraespinal',a.dobra_supraespinal,'mm','','cinza'),
+    card('Abdominal',a.dobra_abdominal,'mm','','cinza'),
+    card('Coxa medial',a.dobra_coxa,'mm','','cinza'),
+    card('Panturrilha',a.dobra_panturrilha,'mm','','cinza'),
+  ].filter(Boolean);
+  if(dobras.length>0){
+    html+=secao('Dobras cutâneas (mm)');
+    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-bottom:4px">${dobras.join('')}</div>`;
+  }
+
+  if(a.observacoes){
+    html+=`<div style="margin-top:14px;background:#F5EFE4;border-radius:var(--rs);padding:12px 14px;font-size:12.5px;color:var(--dk);line-height:1.6">
+      <div style="font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#B0A898;margin-bottom:4px">Observações</div>
+      ${a.observacoes}
+    </div>`;
+  }
+
+  return html||'<div style="color:var(--dm);font-size:13px">Nenhum dado detalhado registrado.</div>';
+}
+
+function toggleAvalBloco(id){
+  _avalAberto=_avalAberto===id?null:id;
+  renderAvalsBlocos();
+}
+
+function toggleAvalSel(id){
+  if(_avalsSelecionadas.includes(id)){
+    _avalsSelecionadas=_avalsSelecionadas.filter(x=>x!==id);
+  } else if(_avalsSelecionadas.length<2){
+    _avalsSelecionadas.push(id);
+  }
+  atualizarAvalSelBar();
+  renderAvalsBlocos();
+}
+
+function atualizarAvalSelBar(){
+  const bar=document.getElementById('ant-sel-bar');
+  const btn=document.getElementById('btn-comparar-avals');
+  const n=_avalsSelecionadas.length;
+  if(n>0){
+    bar.style.display='flex';
+    document.getElementById('ant-sel-texto').textContent=
+      n===1?'1 avaliação selecionada · selecione mais 1 para comparar':'2 avaliações selecionadas — pronto para comparar';
+  } else {
+    bar.style.display='none';
+  }
+  btn.disabled=n!==2;
+}
+
+function desmarcarAvals(){
+  _avalsSelecionadas=[];
+  atualizarAvalSelBar();
+  renderAvalsBlocos();
+  document.getElementById('comp-avals-area').style.display='none';
+}
+
+function fecharCompAvals(){
+  document.getElementById('comp-avals-area').style.display='none';
+}
+
+const COMP_MEDIDAS=[
+  {key:'peso',label:'Peso',unit:'kg',bom:'menor'},
+  {key:'imc',label:'IMC',unit:'kg/m²',bom:'menor'},
+  {key:'percentual_gordura',label:'% Gordura',unit:'%',bom:'menor'},
+  {key:'massa_magra',label:'M. Magra',unit:'kg',bom:'maior'},
+  {key:'massa_gorda',label:'M. Gorda',unit:'kg',bom:'menor'},
+  {key:'cintura',label:'Cintura',unit:'cm',bom:'menor'},
+  {key:'quadril',label:'Quadril',unit:'cm',bom:'qualquer'},
+  {key:'braco',label:'Braço',unit:'cm',bom:'maior'},
+  {key:'coxa',label:'Coxa',unit:'cm',bom:'maior'},
+  {key:'rcq',label:'RCQ',unit:'',bom:'menor'},
+  {key:'tmb',label:'TMB',unit:'kcal',bom:'qualquer'},
+  {key:'get_calorico',label:'GET',unit:'kcal',bom:'qualquer'},
+  {key:'soma_dobras',label:'Soma dobras',unit:'mm',bom:'menor'},
+];
+
+let _compMedidaAtiva='peso';
+
+function mostrarCompAvals(){
+  if(_avalsSelecionadas.length!==2)return;
+  const [a1,a2]=[avals_cache.find(a=>a.id===_avalsSelecionadas[0]),avals_cache.find(a=>a.id===_avalsSelecionadas[1])];
+  const ant=a1.data_avaliacao<a2.data_avaliacao?a1:a2;
+  const at=a1.data_avaliacao<a2.data_avaliacao?a2:a1;
+
+  const fmtD=d=>d?d.split('-').reverse().slice(0,2).join('/'):'';
+  document.getElementById('comp-titulo').textContent=`Comparativo: ${fmtD(ant.data_avaliacao)} vs ${fmtD(at.data_avaliacao)}`;
+
+  // Filtrar medidas com dados nos dois
+  const medsDisp=COMP_MEDIDAS.filter(m=>ant[m.key]!=null&&at[m.key]!=null);
+  document.getElementById('comp-medida-tabs').innerHTML=medsDisp.map(m=>
+    `<button onclick="_compMedidaAtiva='${m.key}';mostrarCompAvals()" style="border:1px solid var(--bd);background:${_compMedidaAtiva===m.key?'var(--am)':'white'};color:${_compMedidaAtiva===m.key?'var(--dk)':'var(--dm)'};border-radius:999px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:'Poppins',sans-serif">${m.label}</button>`
+  ).join('');
+
+  const med=medsDisp.find(m=>m.key===_compMedidaAtiva)||medsDisp[0];
+  if(!med){document.getElementById('comp-avals-area').style.display='block';return;}
+  _compMedidaAtiva=med.key;
+
+  const vAnt=+ant[med.key];
+  const vAt=+at[med.key];
+  const delta=+(vAt-vAnt).toFixed(1);
+  const bom=med.bom==='menor'?delta<=0:med.bom==='maior'?delta>=0:true;
+
+  // KPIs
+  document.getElementById('comp-kpis').innerHTML=`
+    <div style="background:var(--cr);border-radius:10px;padding:16px;text-align:center;border:1px solid var(--bd)">
+      <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin-bottom:8px">${fmtD(ant.data_avaliacao)} (anterior)</div>
+      <div style="font-size:28px;font-weight:700;color:var(--dk)">${vAnt}</div>
+      <div style="font-size:11px;color:var(--dm)">${med.unit}</div>
+    </div>
+    <div style="background:var(--cr);border-radius:10px;padding:16px;text-align:center;border:2px solid var(--am)">
+      <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#856404;margin-bottom:8px">${fmtD(at.data_avaliacao)} (atual)</div>
+      <div style="font-size:28px;font-weight:700;color:var(--dk)">${vAt}</div>
+      <div style="font-size:11px;color:var(--dm)">${med.unit}</div>
+    </div>`;
+
+  // Delta cards
+  const dCor=bom?'#2E7D32':'#C62828';
+  const dBg=bom?'#E8F5E9':'#FFEBEE';
+  document.getElementById('comp-deltas-avals').innerHTML=`
+    <div style="background:${dBg};border:1px solid ${dCor};border-radius:var(--rs);padding:12px 16px;flex:1;min-width:120px;text-align:center">
+      <div style="font-size:10px;color:${dCor};font-weight:600;margin-bottom:4px">Variação</div>
+      <div style="font-size:20px;font-weight:700;color:${dCor}">${delta>0?'+':''}${delta} ${med.unit}</div>
+    </div>
+    <div style="background:white;border:1px solid var(--bd);border-radius:var(--rs);padding:12px 16px;flex:1;min-width:120px;text-align:center">
+      <div style="font-size:10px;color:var(--dm);font-weight:600;margin-bottom:4px">Evolução</div>
+      <div style="font-size:16px;font-weight:700;color:var(--dk)">${bom?'✅ Positiva':'⚠️ Atenção'}</div>
+    </div>`;
+
+  // Gráfico
+  const ctx=document.getElementById('chart-comp-avals').getContext('2d');
+  if(_chartCompAvals)_chartCompAvals.destroy();
+  const max=Math.max(vAnt,vAt)*1.2||1;
+  _chartCompAvals=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:[fmtD(ant.data_avaliacao),fmtD(at.data_avaliacao)],
+      datasets:[{
+        data:[vAnt,vAt],
+        backgroundColor:['rgba(154,169,199,0.8)','rgba(249,205,84,0.9)'],
+        borderColor:['#9AA9C7','#f0c040'],
+        borderWidth:2,borderRadius:8,
+        barPercentage:0.4,categoryPercentage:0.6
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},title:{display:true,text:med.label+' ('+med.unit+')',font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
+      scales:{y:{beginAtZero:false,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins',size:11}}},x:{grid:{display:false},ticks:{font:{family:'Poppins',size:11}}}}
+    }
+  });
+
+  document.getElementById('comp-avals-area').style.display='block';
+  document.getElementById('comp-avals-area').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function mudarGrafico(tipo,btn){
