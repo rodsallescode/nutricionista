@@ -318,6 +318,14 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
 .ev-lembrete{background:#FCE4EC;color:#C62828}
 .ev-aniversario{background:#F3E5F5;color:#7B1FA2}
 .ev-outro{background:var(--cr);color:var(--dm)}
+.alerta-restricao{background:#FFF3CD;border:2px solid #F59600;border-radius:var(--r);padding:14px 18px;margin-bottom:14px;display:none}
+.alerta-restricao.show{display:block}
+.alerta-restricao .ar-titulo{font-size:13px;font-weight:700;color:#856404;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.alerta-restricao .ar-item{font-size:12.5px;color:#856404;padding:3px 0;display:flex;align-items:flex-start;gap:6px;line-height:1.4}
+.alerta-item-grave{background:#FFE4E4;border:2px solid var(--ro);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;display:none}
+.alerta-item-grave.show{display:block}
+.alerta-item-grave .ar-titulo{font-size:13px;font-weight:700;color:#C62828;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.alerta-item-grave .ar-item{font-size:12.5px;color:#C62828;padding:3px 0}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--dk);color:#fff;padding:12px 22px;border-radius:var(--rs);font-size:13px;font-weight:500;box-shadow:var(--shb);opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -693,7 +701,9 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
                   <span style="font-size:13px;font-weight:700;color:var(--dk)">Opção A</span>
                   <span id="ficha-badge-a" style="display:none;background:var(--am);border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700;color:var(--dk)">✓</span>
                 </div>
-                <div id="ficha-ia-refeicoes-a" style="padding:0"></div>
+                <div id="alerta-ficha-a" class="alerta-restricao" style="margin:10px 10px 0"></div>
+              <div id="alerta-grave-ficha-a" class="alerta-item-grave" style="margin:10px 10px 0"></div>
+              <div id="ficha-ia-refeicoes-a" style="padding:0"></div>
                 <div style="padding:8px 16px;font-size:11px;color:var(--pe);font-weight:600" id="ficha-ia-meta-a"></div>
               </div>
               <div style="background:white;border:2px solid var(--bd);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s" id="ficha-card-b" onclick="selecionarOpcaoFicha('b')">
@@ -701,7 +711,9 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
                   <span style="font-size:13px;font-weight:700;color:var(--dk)">Opção B</span>
                   <span id="ficha-badge-b" style="display:none;background:var(--am);border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700;color:var(--dk)">✓</span>
                 </div>
-                <div id="ficha-ia-refeicoes-b" style="padding:0"></div>
+                <div id="alerta-ficha-b" class="alerta-restricao" style="margin:10px 10px 0"></div>
+              <div id="alerta-grave-ficha-b" class="alerta-item-grave" style="margin:10px 10px 0"></div>
+              <div id="ficha-ia-refeicoes-b" style="padding:0"></div>
                 <div style="padding:8px 16px;font-size:11px;color:var(--pe);font-weight:600" id="ficha-ia-meta-b"></div>
               </div>
             </div>
@@ -938,7 +950,9 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
                   <div style="font-size:13px;font-weight:700;color:var(--dk)">Opção A</div>
                   <div id="badge-opcao-a" style="display:none;background:var(--am);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--dk)">✓ Selecionada</div>
                 </div>
-                <div id="ia-resultado-a"><div class="plano-vazio" style="padding:20px"><div class="ico" style="font-size:24px">🥗</div>Aguardando...</div></div>
+                <div id="alerta-ia-a" class="alerta-restricao" style="margin:10px 10px 0"></div>
+              <div id="alerta-grave-a" class="alerta-item-grave" style="margin:10px 10px 0"></div>
+              <div id="ia-resultado-a"><div class="plano-vazio" style="padding:20px"><div class="ico" style="font-size:24px">🥗</div>Aguardando...</div></div>
               </div>
 
               <!-- Opção B -->
@@ -947,7 +961,9 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
                   <div style="font-size:13px;font-weight:700;color:var(--dk)">Opção B</div>
                   <div id="badge-opcao-b" style="display:none;background:var(--am);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--dk)">✓ Selecionada</div>
                 </div>
-                <div id="ia-resultado-b"><div class="plano-vazio" style="padding:20px"><div class="ico" style="font-size:24px">🥗</div>Aguardando...</div></div>
+                <div id="alerta-ia-b" class="alerta-restricao" style="margin:10px 10px 0"></div>
+              <div id="alerta-grave-b" class="alerta-item-grave" style="margin:10px 10px 0"></div>
+              <div id="ia-resultado-b"><div class="plano-vazio" style="padding:20px"><div class="ico" style="font-size:24px">🥗</div>Aguardando...</div></div>
               </div>
             </div>
 
@@ -1904,6 +1920,92 @@ async function carregarSelectIA(){
 
 function toggleTag(el){document.querySelectorAll('.tag-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
 
+// ── SISTEMA DE ALERTAS DE RESTRIÇÃO ───────────────────
+
+// Mapeamento de restrições para palavras-chave nos alimentos
+const RESTRICOES_MAP = {
+  // Alérgenos graves (vermelhos)
+  'glúten':        {palavras:['trigo','centeio','cevada','aveia','pão','macarrão','massa','biscoito','bolo','farinha','cuscuz','tapioca de trigo'],grave:true,msg:'contém GLÚTEN'},
+  'gluten':        {palavras:['trigo','centeio','cevada','aveia','pão','macarrão','massa','biscoito','bolo','farinha'],grave:true,msg:'contém GLÚTEN'},
+  'lactose':       {palavras:['leite','queijo','iogurte','manteiga','creme de leite','requeijão','ricota','whey','caseína'],grave:true,msg:'contém LACTOSE'},
+  'leite':         {palavras:['leite','queijo','iogurte','manteiga','creme de leite','requeijão','ricota'],grave:true,msg:'contém LEITE'},
+  'amendoim':      {palavras:['amendoim','pasta de amendoim'],grave:true,msg:'contém AMENDOIM'},
+  'ovo':           {palavras:['ovo','clara de ovo','gema'],grave:true,msg:'contém OVO'},
+  'frutos do mar': {palavras:['camarão','caranguejo','lagosta','mexilhão','mariscos','frutos do mar'],grave:true,msg:'contém FRUTOS DO MAR'},
+  'peixe':         {palavras:['salmão','atum','tilápia','bacalhau','sardinha','peixe','anchova'],grave:true,msg:'contém PEIXE'},
+  'soja':          {palavras:['soja','tofu','edamame','proteína de soja'],grave:true,msg:'contém SOJA'},
+  'nozes':         {palavras:['nozes','amêndoa','castanha','avelã','pistache','macadâmia','pecã'],grave:true,msg:'contém OLEAGINOSAS'},
+  // Restrições alimentares (amarelos)
+  'vegetarian':    {palavras:['frango','carne','boi','bovina','porco','peixe','salmão','atum','tilápia','camarão','bacon','presunto','salsicha','linguiça'],grave:false,msg:'contém CARNE/PEIXE'},
+  'vegano':        {palavras:['frango','carne','boi','bovina','porco','peixe','leite','queijo','iogurte','ovo','mel','manteiga','requeijão'],grave:false,msg:'não é VEGANO'},
+  'sem carne':     {palavras:['frango','carne','boi','bovina','porco','bacon','presunto','salsicha','linguiça'],grave:false,msg:'contém CARNE'},
+  'sem frango':    {palavras:['frango','galinha','peito de frango','coxa de frango'],grave:false,msg:'contém FRANGO'},
+  'sem porco':     {palavras:['porco','bacon','presunto','linguiça','salsicha','pernil','costela de porco'],grave:false,msg:'contém CARNE DE PORCO'},
+  'diabetes':      {palavras:['açúcar','mel','rapadura','doce','refrigerante','suco industrializado','sorvete','bolo','biscoito doce'],grave:false,msg:'alto teor de AÇÚCAR'},
+  'hipertensão':   {palavras:['sal','embutido','presunto','salsicha','linguiça','bacon','enlatado','shoyu','molho de soja'],grave:false,msg:'alto teor de SÓDIO'},
+  'colesterol':    {palavras:['gema','manteiga','bacon','carne vermelha','camarão','fígado','queijo amarelo'],grave:false,msg:'alto em COLESTEROL'},
+};
+
+function verificarRestricoes(restricoesStr, descricaoPlano) {
+  if (!restricoesStr || restricoesStr === 'nenhuma' || restricoesStr === 'Nenhuma') return { graves: [], avisos: [] };
+
+  const restricoes = restricoesStr.toLowerCase();
+  const descricao = descricaoPlano.toLowerCase();
+  const graves = [];
+  const avisos = [];
+
+  for (const [chave, config] of Object.entries(RESTRICOES_MAP)) {
+    if (!restricoes.includes(chave)) continue;
+    const encontrados = config.palavras.filter(p => descricao.includes(p.toLowerCase()));
+    if (encontrados.length > 0) {
+      const item = { restricao: chave.toUpperCase(), msg: config.msg, alimentos: [...new Set(encontrados)] };
+      if (config.grave) graves.push(item);
+      else avisos.push(item);
+    }
+  }
+
+  return { graves, avisos };
+}
+
+function extrairTextoPlano(plano) {
+  if (!plano?.refeicoes) return '';
+  return plano.refeicoes.map(r => r.descricao || '').join(' ').toLowerCase();
+}
+
+function renderAlerta(elAlerta, elGrave, restricoesStr, plano) {
+  const texto = extrairTextoPlano(plano);
+  const { graves, avisos } = verificarRestricoes(restricoesStr, texto);
+
+  // Limpar
+  elAlerta.classList.remove('show');
+  elAlerta.innerHTML = '';
+  elGrave.classList.remove('show');
+  elGrave.innerHTML = '';
+
+  if (graves.length > 0) {
+    elGrave.innerHTML = `<div class="ar-titulo">🚨 ATENÇÃO — Alérgenos detectados no plano!</div>` +
+      graves.map(g => `<div class="ar-item">⛔ Paciente com restrição a <strong>${g.restricao}</strong>: "${g.alimentos.join('", "')}" ${g.msg}</div>`).join('');
+    elGrave.classList.add('show');
+  }
+
+  if (avisos.length > 0) {
+    elAlerta.innerHTML = `<div class="ar-titulo">⚠️ Atenção — Restrições alimentares detectadas</div>` +
+      avisos.map(a => `<div class="ar-item">⚠️ Restrição a <strong>${a.restricao}</strong>: "${a.alimentos.join('", "')}" ${a.msg}</div>`).join('');
+    elAlerta.classList.add('show');
+  }
+
+  return graves.length + avisos.length;
+}
+
+// Verificar ao adicionar item no montador manual
+function verificarItemMontador(nomeItem, restricoesStr) {
+  if (!restricoesStr || restricoesStr === 'nenhuma') return null;
+  const { graves, avisos } = verificarRestricoes(restricoesStr, nomeItem);
+  if (graves.length > 0) return { tipo: 'grave', msg: `⛔ ALÉRGENO: Este alimento ${graves[0].msg} e o paciente tem restrição!` };
+  if (avisos.length > 0) return { tipo: 'aviso', msg: `⚠️ Atenção: Este alimento ${avisos[0].msg} — verifique com a paciente` };
+  return null;
+}
+
 // ── MONTADOR DE PLANO MANUAL ───────────────────────────
 let _tacoCache=[];
 let _tacoSelecionado=null;
@@ -2064,6 +2166,23 @@ function adicionarItemTACO(){
     lip:+((_tacoSelecionado.lip||0)*f).toFixed(1),
     qtd,tacoId:_tacoSelecionado.id
   };
+  // Verificar restrições antes de adicionar
+  const restricoesPac=document.getElementById('fd-restrict')?.textContent||'';
+  const alertaItem=restricoesPac&&restricoesPac!=='Sem restrições'?verificarItemMontador(item.nome,restricoesPac):null;
+
+  if(alertaItem){
+    if(alertaItem.tipo==='grave'){
+      // Alerta grave: pede confirmação
+      if(!confirm(alertaItem.msg+`\n\nDeseja adicionar mesmo assim?`)){
+        showToast('Item não adicionado.');
+        return;
+      }
+    } else {
+      // Aviso: mostra toast mas adiciona
+      showToast(alertaItem.msg);
+    }
+  }
+
   _montRefeicoes[refIdx].itens.push(item);
   renderMontRefeicoes();
   atualizarTotalMont();
@@ -3139,6 +3258,25 @@ async function gerarPlanosIA(){
     document.getElementById('ia-resultado-b').innerHTML=
       `<div style="font-size:11.5px;font-weight:600;color:var(--pe);padding:8px 16px 4px">${planoB.tipo_dieta} · ${planoB.kcal_total} kcal</div>`+
       planoB.refeicoes.map(refeicaoHtml).join('');
+
+    // Verificar restrições do paciente nos planos gerados
+    const pacIdMenu=document.getElementById('ia-paciente').value;
+    if(pacIdMenu){
+      const {data:pacMenu}=await sb.from('pacientes').select('restricoes').eq('id',pacIdMenu).single();
+      const restricoes=pacMenu?.restricoes||'';
+      if(restricoes&&restricoes!=='Nenhuma'){
+        renderAlerta(
+          document.getElementById('alerta-ia-a'),
+          document.getElementById('alerta-grave-a'),
+          restricoes,planoA
+        );
+        renderAlerta(
+          document.getElementById('alerta-ia-b'),
+          document.getElementById('alerta-grave-b'),
+          restricoes,planoB
+        );
+      }
+    }
   }catch(e){
     showToast('Erro ao gerar: '+e.message);
     document.getElementById('resultado-ia').style.display='none';
@@ -3227,6 +3365,15 @@ async function gerarPlanoIAFicha(){
     document.getElementById('ficha-ia-meta-a').textContent=planoA.tipo_dieta+' · '+planoA.kcal_total+' kcal';
     document.getElementById('ficha-ia-refeicoes-b').innerHTML=planoB.refeicoes.map(refeicaoHtml).join('');
     document.getElementById('ficha-ia-meta-b').textContent=planoB.tipo_dieta+' · '+planoB.kcal_total+' kcal';
+
+    // Verificar restrições do paciente
+    const {data:pacFicha}=await sb.from('pacientes').select('restricoes').eq('id',pacienteAtualId).single();
+    const restricoesFicha=pacFicha?.restricoes||'';
+    if(restricoesFicha&&restricoesFicha!=='Nenhuma'&&restricoesFicha!=='nenhuma'){
+      const nA=renderAlerta(document.getElementById('alerta-ficha-a'),document.getElementById('alerta-grave-ficha-a'),restricoesFicha,planoA);
+      const nB=renderAlerta(document.getElementById('alerta-ficha-b'),document.getElementById('alerta-grave-ficha-b'),restricoesFicha,planoB);
+      if(nA>0||nB>0)showToast('⚠️ Alertas de restrição detectados nos planos!');
+    }
     document.getElementById('plano-ia-resultado').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){
     showToast('Erro: '+e.message);
@@ -3250,6 +3397,18 @@ function selecionarOpcaoFicha(opcao){
 async function salvarPlanoIA(){
   if(!pacienteAtualId||!_opcaoFichaSelecionada){showToast('Selecione uma opção.');return;}
   const plano=_planosIAFicha[_opcaoFichaSelecionada];
+  // Verificar restrições antes de salvar
+  const {data:pacCheck}=await sb.from('pacientes').select('restricoes').eq('id',pacienteAtualId).single();
+  const restCheck=pacCheck?.restricoes||'';
+  if(restCheck&&restCheck!=='Nenhuma'&&restCheck!=='nenhuma'){
+    const {graves}=verificarRestricoes(restCheck,extrairTextoPlano(plano));
+    if(graves.length>0){
+      const msg=graves.map(g=>`• ${g.msg}: "${g.alimentos.join('", "')}"`).join('\n');
+      if(!confirm(`⛔ ALERTA DE ALÉRGENO!\n\nO plano contém alimentos restritos:\n${msg}\n\nSalvar mesmo assim?`)){
+        showToast('Plano não salvo. Revise os alimentos.');return;
+      }
+    }
+  }
   // Primeiro plano salvo como Ativo, desativa os outros
   await sb.from('planos').update({status:'Inativo'}).eq('paciente_id',pacienteAtualId);
   await _salvarPlanoNoBanco(pacienteAtualId,plano,true);
