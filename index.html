@@ -624,7 +624,9 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
               </div>
             </div>
             <div class="fsec-body">
-              <canvas id="chart-antro" height="260"></canvas>
+              <div style="position:relative;height:260px;width:100%">
+                <canvas id="chart-antro"></canvas>
+              </div>
               <div id="chart-deltas" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px"></div>
             </div>
           </div>
@@ -4032,17 +4034,20 @@ function renderGrafico(tipo){
         backgroundColor:d.bg,
         borderColor:d.border,
         borderWidth:2,
-        borderRadius:8,
+        borderRadius:6,
+        barPercentage:0.6,
+        categoryPercentage:0.5,
       }))
     },
     options:{
       responsive:true,
-      plugins:{legend:{position:'top',labels:{font:{family:'Poppins',size:12}}},title:{display:true,text:titulo,font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
+      maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{family:'Poppins',size:12},boxWidth:12}},title:{display:true,text:titulo,font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
       scales:{
-        y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins'}}},
-        x:{grid:{display:false},ticks:{font:{family:'Poppins'}}}
+        y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins',size:11}}},
+        x:{grid:{display:false},ticks:{font:{family:'Poppins',size:11}}}
       },
-      datasets:{bar:{maxBarThickness:80,minBarLength:2}}
+      datasets:{bar:{maxBarThickness:70}}
     }
   });
   document.getElementById('chart-deltas').innerHTML=deltasHtml;
@@ -4056,15 +4061,16 @@ function renderBarChart(labels,valA,valB,labelA,labelB,titulo){
     data:{
       labels,
       datasets:[
-        {label:labelA,data:valA,backgroundColor:'rgba(154,169,199,0.7)',borderColor:'#9AA9C7',borderWidth:2,borderRadius:6},
-        {label:labelB,data:valB,backgroundColor:'rgba(249,205,84,0.85)',borderColor:'#f0c040',borderWidth:2,borderRadius:6},
+        {label:labelA,data:valA,backgroundColor:'rgba(154,169,199,0.7)',borderColor:'#9AA9C7',borderWidth:2,borderRadius:6,barPercentage:0.7,categoryPercentage:0.6},
+        {label:labelB,data:valB,backgroundColor:'rgba(249,205,84,0.9)',borderColor:'#f0c040',borderWidth:2,borderRadius:6,barPercentage:0.7,categoryPercentage:0.6},
       ]
     },
     options:{
       responsive:true,
-      plugins:{legend:{position:'top',labels:{font:{family:'Poppins',size:12}}},title:{display:true,text:titulo,font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
-      scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins'}}},x:{grid:{display:false},ticks:{font:{family:'Poppins',size:10}}}},
-      datasets:{bar:{maxBarThickness:80}}
+      maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{family:'Poppins',size:12},boxWidth:12}},title:{display:true,text:titulo,font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
+      scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins',size:11}}},x:{grid:{display:false},ticks:{font:{family:'Poppins',size:11}}}},
+      datasets:{bar:{maxBarThickness:70}}
     }
   });
 }
