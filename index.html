@@ -674,9 +674,10 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
           <div class="fsec">
             <div class="fsec-hd">
               <span class="fsec-title">Planos alimentares</span>
-              <div style="display:flex;gap:8px">
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
                 <button class="fsec-action" onclick="exportarPlanoPDF()" style="background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:6px 12px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer">📄 PDF</button>
-                <button class="fsec-action" onclick="gerarPlanoIAFicha()" style="background:linear-gradient(135deg,var(--am),var(--pe));border:none;border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">✨ Gerar 2 opções com IA</button>
+                <button class="fsec-action" onclick="abrirMontadorPlano()" style="background:none;border:1.5px solid var(--az);border-radius:var(--rs);padding:6px 12px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:#1565C0;cursor:pointer">🍽️ Criar manualmente</button>
+                <button class="fsec-action" onclick="gerarPlanoIAFicha()" style="background:linear-gradient(135deg,var(--am),var(--pe));border:none;border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">✨ Gerar com IA</button>
               </div>
             </div>
             <div id="plano-blocos-lista" style="padding:0">
@@ -1163,6 +1164,64 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
     <div class="modal-ft">
       <button class="btn-cancel" id="det-btn-excluir" onclick="excluirConsulta()" style="color:var(--ro);border-color:var(--ro)">🗑️ Excluir</button>
       <button class="btn-cancel" onclick="fecharDetalheEvento()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MONTADOR DE PLANO -->
+<div class="modal-backdrop" id="modal-montador" style="align-items:flex-start;padding:20px;overflow-y:auto">
+  <div class="modal" style="max-width:780px;margin:auto">
+    <div class="modal-hd">
+      <div><h3 id="montador-titulo">🍽️ Criar plano alimentar</h3><p>Busque alimentos da TACO e monte as refeições</p></div>
+      <button class="modal-close" onclick="fecharMontador()">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Info do plano -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+        <div class="mfield"><label>Nome do plano</label><input type="text" id="mont-titulo" placeholder="Ex: Plano low carb semana 1" style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:10px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none"></div>
+        <div class="mfield"><label>Tipo de dieta</label>
+          <select id="mont-tipo" style="width:100%;background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:10px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none">
+            <option>Equilibrada</option><option>Low carb</option><option>Mediterrâneo</option>
+            <option>Hipertrofia</option><option>Vegetariana</option><option>Cetogênica</option>
+          </select>
+        </div>
+        <div class="mfield"><label>Total calculado</label>
+          <div style="background:var(--cr);border:1.5px solid var(--bd);border-radius:8px;padding:10px 13px;font-size:15px;font-weight:700;color:var(--dk)" id="mont-total-kcal">0 kcal</div>
+        </div>
+      </div>
+
+      <!-- Buscador TACO -->
+      <div style="background:#EEF4FB;border-radius:var(--r);padding:16px;margin-bottom:16px;border:1px solid #c5d5ea">
+        <div style="font-size:12px;font-weight:600;color:#1565C0;margin-bottom:10px">🔍 Buscar alimento na tabela TACO</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input type="text" id="taco-busca" placeholder="Digite o alimento... (ex: frango, arroz, ovo)" oninput="buscarTACOLocal(this.value)" style="flex:1;background:white;border:1.5px solid #c5d5ea;border-radius:8px;padding:10px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none">
+          <input type="number" id="taco-qtd" placeholder="Qtd (g)" value="100" min="1" max="2000" style="width:100px;background:white;border:1.5px solid #c5d5ea;border-radius:8px;padding:10px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none">
+          <select id="taco-refeicao-dest" style="background:white;border:1.5px solid #c5d5ea;border-radius:8px;padding:10px 13px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;min-width:140px">
+            <option value="0">Café da manhã</option>
+            <option value="1">Lanche manhã</option>
+            <option value="2">Almoço</option>
+            <option value="3">Lanche tarde</option>
+            <option value="4">Jantar</option>
+          </select>
+        </div>
+        <!-- Resultados da busca -->
+        <div id="taco-resultados" style="max-height:200px;overflow-y:auto;border-radius:8px;background:white;border:1px solid #c5d5ea;display:none"></div>
+        <!-- Nutrientes do selecionado -->
+        <div id="taco-selecionado" style="display:none;margin-top:10px;background:white;border-radius:8px;padding:12px;border:1px solid #c5d5ea">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="font-size:13px;font-weight:600;color:var(--dk)" id="taco-sel-nome"></div>
+            <button onclick="adicionarItemTACO()" style="background:var(--am);border:none;border-radius:var(--rs);padding:7px 16px;font-size:12px;font-weight:700;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">+ Adicionar</button>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap" id="taco-sel-nutrientes"></div>
+        </div>
+      </div>
+
+      <!-- Refeições -->
+      <div id="mont-refeicoes"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="fecharMontador()">Cancelar</button>
+      <button class="btn-criar" onclick="salvarPlanoMontado()">💾 Salvar plano</button>
     </div>
   </div>
 </div>
@@ -1835,6 +1894,240 @@ async function carregarSelectIA(){
 }
 
 function toggleTag(el){document.querySelectorAll('.tag-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+
+// ── MONTADOR DE PLANO MANUAL ───────────────────────────
+let _tacoCache=[];
+let _tacoSelecionado=null;
+let _montRefeicoes=[];
+let _montPlanoId=null; // para edição
+
+const MONT_NOMES=['Café da manhã','Lanche da manhã','Almoço','Lanche da tarde','Jantar','Ceia'];
+const MONT_EMOJIS=['☀️','🍎','🍽️','🥜','🌙','🥗'];
+const MONT_HORAS=['07:00','10:00','12:30','16:00','19:30','21:00'];
+
+async function carregarTACOCache(){
+  if(_tacoCache.length>0)return;
+  const {data}=await sb.from('taco').select('*').order('nome');
+  _tacoCache=data||[];
+}
+
+async function abrirMontadorPlano(planoId=null){
+  await carregarTACOCache();
+  _montPlanoId=planoId;
+  _tacoSelecionado=null;
+
+  if(planoId){
+    // Carregar plano existente para edição
+    const {data:plano}=await sb.from('planos').select('*,refeicoes(*)').eq('id',planoId).single();
+    document.getElementById('montador-titulo').textContent='✏️ Editar plano alimentar';
+    document.getElementById('mont-titulo').value=plano.titulo||'';
+    document.getElementById('mont-tipo').value=plano.tipo_dieta||'Equilibrada';
+    const refs=plano.refeicoes?.sort((a,b)=>a.ordem-b.ordem)||[];
+    // Converter refeições existentes para o formato do montador
+    _montRefeicoes=MONT_NOMES.map((nome,i)=>{
+      const ref=refs.find(r=>r.nome===nome)||refs[i];
+      if(ref){
+        return {
+          nome:ref.nome,emoji:ref.emoji||MONT_EMOJIS[i],
+          horario:ref.horario||MONT_HORAS[i],
+          itens:ref.descricao?ref.descricao.split(',').map(d=>({
+            nome:d.trim(),kcal:Math.round((ref.kcal||0)/Math.max(ref.descricao.split(',').length,1)),
+            ptn:0,cho:0,lip:0,qtd:100,_manual:true
+          })):[],
+          refId:ref.id
+        };
+      }
+      return {nome,emoji:MONT_EMOJIS[i],horario:MONT_HORAS[i],itens:[],refId:null};
+    });
+  } else {
+    document.getElementById('montador-titulo').textContent='🍽️ Criar plano alimentar';
+    document.getElementById('mont-titulo').value='';
+    document.getElementById('mont-tipo').value='Equilibrada';
+    _montRefeicoes=MONT_NOMES.map((nome,i)=>({nome,emoji:MONT_EMOJIS[i],horario:MONT_HORAS[i],itens:[],refId:null}));
+  }
+
+  renderMontRefeicoes();
+  atualizarTotalMont();
+  document.getElementById('taco-busca').value='';
+  document.getElementById('taco-resultados').style.display='none';
+  document.getElementById('taco-selecionado').style.display='none';
+  document.getElementById('modal-montador').classList.add('open');
+}
+
+async function editarPlano(id){
+  await abrirMontadorPlano(id);
+}
+
+function fecharMontador(){document.getElementById('modal-montador').classList.remove('open');}
+
+function buscarTACOLocal(q){
+  if(q.length<2){document.getElementById('taco-resultados').style.display='none';return;}
+  const ql=q.toLowerCase();
+  const res=_tacoCache.filter(a=>a.nome.toLowerCase().includes(ql)||
+    // Aliases populares
+    (ql.includes('frango')&&a.nome.toLowerCase().includes('galinha'))||
+    (ql.includes('carne')&&a.nome.toLowerCase().includes('bovina'))||
+    (ql.includes('ovo')&&a.nome.toLowerCase().includes('ovo'))
+  ).slice(0,12);
+
+  const el=document.getElementById('taco-resultados');
+  if(res.length===0){el.innerHTML='<div style="padding:12px;font-size:12.5px;color:var(--dm)">Nenhum resultado.</div>';el.style.display='block';return;}
+
+  el.style.display='block';
+  el.innerHTML=res.map(a=>`
+    <div onclick="selecionarTACO(${a.id})" style="padding:10px 14px;border-bottom:1px solid #F5EFE4;cursor:pointer;transition:background .1s" onmouseover="this.style.background='#F8F5EE'" onmouseout="this.style.background='white'">
+      <div style="font-size:13px;font-weight:500;color:var(--dk)">${nomeSimples(a.nome)}</div>
+      <div style="font-size:11px;color:var(--dm);margin-top:2px">${a.kcal} kcal/100g · ptn ${a.ptn}g · cho ${a.cho}g · lip ${a.lip}g</div>
+    </div>`).join('');
+}
+
+function nomeSimples(nome){
+  const mapa={
+    'Galinha, peito':'Frango (peito)','Galinha, coxa':'Frango (coxa)',
+    'Ovo, galinha, inteiro':'Ovo inteiro','Ovo, galinha, clara':'Clara de ovo',
+    'Arroz, tipo 1':'Arroz branco','Arroz, integral':'Arroz integral',
+    'Feijão, preto':'Feijão preto','Feijão, carioca':'Feijão carioca',
+    'Batata, inglesa':'Batata inglesa','Batata, doce':'Batata-doce',
+    'Leite, vaca, integral':'Leite integral','Leite, vaca, desnatado':'Leite desnatado',
+  };
+  for(const[k,v] of Object.entries(mapa)){if(nome.startsWith(k))return v+nome.slice(k.length);}
+  return nome.replace(/,\s*(cru|crua|cozido|cozida|grelhado|grelhada)$/i,'').trim();
+}
+
+function selecionarTACO(id){
+  _tacoSelecionado=_tacoCache.find(a=>a.id===id);
+  if(!_tacoSelecionado)return;
+  document.getElementById('taco-busca').value=nomeSimples(_tacoSelecionado.nome);
+  document.getElementById('taco-resultados').style.display='none';
+  document.getElementById('taco-selecionado').style.display='block';
+  document.getElementById('taco-sel-nome').textContent=nomeSimples(_tacoSelecionado.nome);
+  atualizarNutrientes();
+  // Atualizar ao mudar quantidade
+  document.getElementById('taco-qtd').oninput=atualizarNutrientes;
+}
+
+function atualizarNutrientes(){
+  if(!_tacoSelecionado)return;
+  const qtd=parseFloat(document.getElementById('taco-qtd').value)||100;
+  const f=qtd/100;
+  const kcal=Math.round(_tacoSelecionado.kcal*f);
+  const ptn=((_tacoSelecionado.ptn||0)*f).toFixed(1);
+  const cho=((_tacoSelecionado.cho||0)*f).toFixed(1);
+  const lip=((_tacoSelecionado.lip||0)*f).toFixed(1);
+  const fibra=((_tacoSelecionado.fibra||0)*f).toFixed(1);
+  document.getElementById('taco-sel-nutrientes').innerHTML=`
+    <span style="background:#FEF5D4;color:#B8860B;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600">⚡ ${kcal} kcal</span>
+    <span style="background:#E8F5E9;color:#388E3C;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600">💪 ${ptn}g ptn</span>
+    <span style="background:#E3F2FD;color:#1565C0;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600">🌾 ${cho}g cho</span>
+    <span style="background:#FCE4EC;color:#C62828;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600">🥑 ${lip}g lip</span>
+    <span style="background:var(--cr);color:var(--dm);padding:4px 10px;border-radius:999px;font-size:12px;font-weight:500">🌿 ${fibra}g fibra</span>
+    <span style="background:var(--cr);color:var(--dm);padding:4px 10px;border-radius:999px;font-size:12px;font-weight:500">📊 para ${qtd}g</span>`;
+}
+
+function adicionarItemTACO(){
+  if(!_tacoSelecionado)return;
+  const qtd=parseFloat(document.getElementById('taco-qtd').value)||100;
+  const refIdx=parseInt(document.getElementById('taco-refeicao-dest').value)||0;
+  const f=qtd/100;
+  const item={
+    nome:nomeSimples(_tacoSelecionado.nome)+' ('+qtd+'g)',
+    kcal:Math.round(_tacoSelecionado.kcal*f),
+    ptn:+((_tacoSelecionado.ptn||0)*f).toFixed(1),
+    cho:+((_tacoSelecionado.cho||0)*f).toFixed(1),
+    lip:+((_tacoSelecionado.lip||0)*f).toFixed(1),
+    qtd,tacoId:_tacoSelecionado.id
+  };
+  _montRefeicoes[refIdx].itens.push(item);
+  renderMontRefeicoes();
+  atualizarTotalMont();
+  // Limpar busca
+  document.getElementById('taco-busca').value='';
+  document.getElementById('taco-qtd').value='100';
+  document.getElementById('taco-selecionado').style.display='none';
+  _tacoSelecionado=null;
+  showToast(item.nome+' adicionado! ✅');
+}
+
+function removerItemMont(refIdx,itemIdx){
+  _montRefeicoes[refIdx].itens.splice(itemIdx,1);
+  renderMontRefeicoes();
+  atualizarTotalMont();
+}
+
+function renderMontRefeicoes(){
+  document.getElementById('mont-refeicoes').innerHTML=_montRefeicoes.map((ref,ri)=>{
+    const totalRef=ref.itens.reduce((s,i)=>s+i.kcal,0);
+    return `<div style="background:white;border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden">
+      <div style="background:var(--cr);padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bd)">
+        <span style="font-size:16px">${ref.emoji}</span>
+        <input value="${ref.nome}" onchange="_montRefeicoes[${ri}].nome=this.value" style="font-size:13px;font-weight:600;color:var(--dk);background:none;border:none;outline:none;font-family:'Poppins',sans-serif;flex:1">
+        <input type="time" value="${ref.horario}" onchange="_montRefeicoes[${ri}].horario=this.value" style="font-size:12px;color:var(--dm);background:none;border:none;outline:none;font-family:'Poppins',sans-serif;width:70px">
+        <span style="font-size:12px;font-weight:700;color:var(--pe)">${totalRef} kcal</span>
+      </div>
+      ${ref.itens.length===0
+        ?'<div style="padding:12px 14px;font-size:12.5px;color:var(--dm)">Nenhum alimento. Busque acima e selecione esta refeição.</div>'
+        :ref.itens.map((item,ii)=>`
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #F5EFE4">
+            <div style="flex:1">
+              <div style="font-size:12.5px;font-weight:500;color:var(--dk)">${item.nome}</div>
+              <div style="font-size:11px;color:var(--dm)">${item.kcal} kcal · ptn ${item.ptn}g · cho ${item.cho}g · lip ${item.lip}g</div>
+            </div>
+            <button onclick="removerItemMont(${ri},${ii})" style="background:none;border:none;cursor:pointer;color:var(--ro);font-size:14px;padding:4px">✕</button>
+          </div>`).join('')
+      }
+    </div>`;
+  }).join('');
+}
+
+function atualizarTotalMont(){
+  const total=_montRefeicoes.reduce((s,r)=>s+r.itens.reduce((ss,i)=>ss+i.kcal,0),0);
+  const el=document.getElementById('mont-total-kcal');
+  el.textContent=total+' kcal';
+  el.style.color=total>0?'var(--dk)':'#B0A898';
+}
+
+async function salvarPlanoMontado(){
+  const titulo=document.getElementById('mont-titulo').value.trim()||'Plano alimentar';
+  const tipo=document.getElementById('mont-tipo').value;
+  const total=_montRefeicoes.reduce((s,r)=>s+r.itens.reduce((ss,i)=>ss+i.kcal,0),0);
+
+  if(!pacienteAtualId){showToast('Abra a ficha de um paciente primeiro.');return;}
+
+  if(_montPlanoId){
+    // EDITAR plano existente
+    await sb.from('planos').update({titulo,tipo_dieta:tipo,kcal_total:total}).eq('id',_montPlanoId);
+    // Apagar refeições antigas e recriar
+    await sb.from('refeicoes').delete().eq('plano_id',_montPlanoId);
+    for(let i=0;i<_montRefeicoes.length;i++){
+      const ref=_montRefeicoes[i];
+      if(ref.itens.length===0)continue;
+      const desc=ref.itens.map(it=>it.nome).join(', ');
+      const kcalRef=ref.itens.reduce((s,it)=>s+it.kcal,0);
+      await sb.from('refeicoes').insert({plano_id:_montPlanoId,ordem:i+1,emoji:ref.emoji,nome:ref.nome,horario:ref.horario,kcal:kcalRef,descricao:desc});
+    }
+    showToast('Plano atualizado! ✅');
+  } else {
+    // CRIAR novo plano
+    await sb.from('planos').update({status:'Inativo'}).eq('paciente_id',pacienteAtualId);
+    const {data:novoPlano,error}=await sb.from('planos').insert({
+      paciente_id:pacienteAtualId,titulo,tipo_dieta:tipo,
+      kcal_total:total,status:'Ativo',gerado_por_ia:false
+    }).select().single();
+    if(error){showToast('Erro: '+error.message);return;}
+    for(let i=0;i<_montRefeicoes.length;i++){
+      const ref=_montRefeicoes[i];
+      if(ref.itens.length===0)continue;
+      const desc=ref.itens.map(it=>it.nome).join(', ');
+      const kcalRef=ref.itens.reduce((s,it)=>s+it.kcal,0);
+      await sb.from('refeicoes').insert({plano_id:novoPlano.id,ordem:i+1,emoji:ref.emoji,nome:ref.nome,horario:ref.horario,kcal:kcalRef,descricao:desc});
+    }
+    showToast('Plano salvo! 🥗');
+  }
+
+  fecharMontador();
+  await carregarPlanosDosPaciente(pacienteAtualId);
+  showTab('plano',document.querySelectorAll('.ftab')[2]);
+}
 
 // ── EXPORTAR PDF DO PLANO ──────────────────────────────
 async function exportarPlanoPDF(){
@@ -2990,6 +3283,7 @@ async function carregarPlanosDosPaciente(id){
         </div>
         <div style="display:flex;gap:6px;align-items:center">
           ${!isAtivo?`<button onclick="event.stopPropagation();ativarPlano('${p.id}')" style="background:var(--am);border:none;border-radius:var(--rs);padding:5px 10px;font-size:11px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">Ativar</button>`:''}
+          <button onclick="event.stopPropagation();editarPlano('${p.id}')" style="background:none;border:1px solid var(--bd);border-radius:var(--rs);padding:5px 8px;font-size:12px;color:var(--dm);cursor:pointer">✏️</button>
           <button onclick="event.stopPropagation();excluirPlano('${p.id}')" style="background:none;border:1px solid var(--bd);border-radius:var(--rs);padding:5px 8px;font-size:12px;color:var(--ro);cursor:pointer">🗑️</button>
           <span id="arrow-${p.id}" style="font-size:12px;color:var(--dm);transition:transform .2s">▼</span>
         </div>
