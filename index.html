@@ -3802,8 +3802,8 @@ async function salvarAvaliacao(){
     dobra_coxa:+document.getElementById('ant-dobra-coxa').value||null,
     dobra_panturrilha:+document.getElementById('ant-dobra-pant').value||null,
   };
-  // Remove nulls
-  Object.keys(payload).forEach(k=>{if(!payload[k])delete payload[k];});
+  // Remove nulls (mas manter 0 válido)
+  Object.keys(payload).forEach(k=>{if(payload[k]===null||payload[k]===undefined||payload[k]==='')delete payload[k];});
 
   // Chamar Edge Function
   let calc={};
@@ -3972,33 +3972,45 @@ function renderGrafico(tipo){
 
   } else if(tipo==='gordura'){
     titulo='% de Gordura Corporal';
-    dados=[{label:'% Gordura',data:[anterior.percentual_gordura||0,atual.percentual_gordura||0],bg:['rgba(245,153,150,0.6)','rgba(245,153,150,1)'],border:['#F59996','#F59996']}];
-    const dg=atual.percentual_gordura&&anterior.percentual_gordura?(atual.percentual_gordura-anterior.percentual_gordura).toFixed(1):null;
+    if(!anterior.percentual_gordura||!atual.percentual_gordura){
+      if(chartAntro)chartAntro.destroy();
+      document.getElementById('chart-deltas').innerHTML='<div style="color:var(--dm);font-size:13px;padding:8px">% de gordura não disponível — registre as dobras cutâneas para calcular.</div>';
+      return;
+    }
+    dados=[{label:'% Gordura',data:[anterior.percentual_gordura,atual.percentual_gordura],bg:['rgba(245,153,150,0.6)','rgba(245,153,150,1)'],border:['#F59996','#F59996']}];
+    const dg=(atual.percentual_gordura-anterior.percentual_gordura).toFixed(1);
     deltasHtml=deltaCard('% Gordura',dg,'%')
       +(atual.gordura_classificacao?`<div style="background:white;border:1px solid var(--bd);border-radius:var(--rs);padding:12px 16px;flex:1;min-width:120px"><div style="font-size:10px;color:#B0A898;font-weight:600">Classificação</div><div style="font-size:14px;font-weight:700;margin-top:4px">${atual.gordura_classificacao}</div></div>`:'')
       +(atual.risco_cv?`<div style="background:white;border:1px solid var(--bd);border-radius:var(--rs);padding:12px 16px;flex:1;min-width:120px"><div style="font-size:10px;color:#B0A898;font-weight:600">Risco CV</div><div style="font-size:14px;font-weight:700;margin-top:4px">${atual.risco_cv}</div></div>`:'');
 
-  } else if(tipo==='perimetros'){
+    } else if(tipo==='perimetros'){
     titulo='Comparativo de Perímetros (cm)';
     const campos=[['Cintura','cintura'],['Quadril','quadril'],['Braço','braco'],['Antebraço','antebraco'],['Coxa','coxa'],['Panturrilha','panturrilha'],['Pescoço','pescoco'],['Tórax','torax']];
-    const valAnterior=campos.map(([,k])=>anterior[k]||0);
-    const valAtual=campos.map(([,k])=>atual[k]||0);
-    const labelsCampos=campos.map(([l])=>l);
-    renderBarChart(labelsCampos,valAnterior,valAtual,`Anterior (${fmtD(anterior.data_avaliacao)})`,`Atual (${fmtD(atual.data_avaliacao)})`,titulo);
-    deltasHtml=campos.map(([l,k])=>{
-      const d=atual[k]&&anterior[k]?(atual[k]-anterior[k]).toFixed(1):null;
-      return d?deltaCard(l,d,'cm'):'';
-    }).join('');
+    // Só incluir campos com dados nas DUAS avaliações
+    const camposFilt=campos.filter(([,k])=>anterior[k]>0&&atual[k]>0);
+    if(camposFilt.length===0){
+      if(chartAntro)chartAntro.destroy();
+      const ctx2=document.getElementById('chart-antro').getContext('2d');
+      ctx2.clearRect(0,0,9999,9999);
+      document.getElementById('chart-deltas').innerHTML='<div style="color:var(--dm);font-size:13px;padding:8px">Nenhum perímetro registrado nas duas avaliações para comparar.</div>';
+      return;
+    }
+    renderBarChart(camposFilt.map(([l])=>l),camposFilt.map(([,k])=>anterior[k]||0),camposFilt.map(([,k])=>atual[k]||0),`Anterior (${fmtD(anterior.data_avaliacao)})`,`Atual (${fmtD(atual.data_avaliacao)})`,titulo);
+    deltasHtml=camposFilt.map(([l,k])=>{const d=(atual[k]-anterior[k]).toFixed(1);return deltaCard(l,d,'cm');}).join('');
     document.getElementById('chart-deltas').innerHTML=deltasHtml;
     return;
 
   } else if(tipo==='dobras'){
     titulo='Comparativo de Dobras Cutâneas (mm)';
     const campos=[['Tricipital','dobra_tricipital'],['Bicipital','dobra_bicipital'],['Subescapular','dobra_subescapular'],['Suprailíaca','dobra_suprailiaca'],['Supraespinal','dobra_supraespinal'],['Abdominal','dobra_abdominal'],['Coxa','dobra_coxa'],['Panturrilha','dobra_panturrilha']];
-    const valA=campos.map(([,k])=>anterior[k]||0);
-    const valB=campos.map(([,k])=>atual[k]||0);
-    renderBarChart(campos.map(([l])=>l),valA,valB,`Anterior`,`Atual`,titulo);
-    deltasHtml=campos.map(([l,k])=>{const d=atual[k]&&anterior[k]?(atual[k]-anterior[k]).toFixed(1):null;return d?deltaCard(l,d,'mm'):'';}).join('');
+    const camposFilt=campos.filter(([,k])=>anterior[k]>0&&atual[k]>0);
+    if(camposFilt.length===0){
+      if(chartAntro)chartAntro.destroy();
+      document.getElementById('chart-deltas').innerHTML='<div style="color:var(--dm);font-size:13px;padding:8px">Nenhuma dobra registrada nas duas avaliações para comparar.</div>';
+      return;
+    }
+    renderBarChart(camposFilt.map(([l])=>l),camposFilt.map(([,k])=>anterior[k]||0),camposFilt.map(([,k])=>atual[k]||0),`Anterior`,`Atual`,titulo);
+    deltasHtml=camposFilt.map(([l,k])=>{const d=(atual[k]-anterior[k]).toFixed(1);return deltaCard(l,d,'mm');}).join('');
     document.getElementById('chart-deltas').innerHTML=deltasHtml;
     return;
   }
