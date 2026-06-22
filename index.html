@@ -674,7 +674,10 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
           <div class="fsec">
             <div class="fsec-hd">
               <span class="fsec-title">Planos alimentares</span>
-              <button class="fsec-action" onclick="gerarPlanoIAFicha()" style="background:linear-gradient(135deg,var(--am),var(--pe));border:none;border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">✨ Gerar 2 opções com IA</button>
+              <div style="display:flex;gap:8px">
+                <button class="fsec-action" onclick="exportarPlanoPDF()" style="background:none;border:1.5px solid var(--bd);border-radius:var(--rs);padding:6px 12px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dm);cursor:pointer">📄 PDF</button>
+                <button class="fsec-action" onclick="gerarPlanoIAFicha()" style="background:linear-gradient(135deg,var(--am),var(--pe));border:none;border-radius:var(--rs);padding:7px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">✨ Gerar 2 opções com IA</button>
+              </div>
             </div>
             <div id="plano-blocos-lista" style="padding:0">
               <div class="empty-state" style="padding:32px"><div class="es-ico">🥗</div><p>Nenhum plano cadastrado.<br>Clique em <strong>✨ Gerar com IA</strong>.</p></div>
@@ -1707,12 +1710,19 @@ async function resetarSenha(){
   const btn=document.getElementById('btn-resetar');
   btn.textContent='Redefinindo...';btn.disabled=true;
 
-  // Chama Edge Function para redefinir senha via Admin API
+  // Chamar Edge Function gerenciar-paciente-auth para resetar senha
   try{
-    const res=await fetch(`${SUPA_URL}/functions/v1/resetar-senha-paciente`,{
+    // Primeiro buscar o user_id do paciente
+    const {data:pac}=await sb.from('pacientes').select('user_id').eq('email',_pacEmailAtual).single();
+    if(!pac?.user_id){
+      showToast('Paciente sem login ativo. Crie o acesso primeiro.');
+      btn.textContent='Redefinir senha';btn.disabled=false;
+      return;
+    }
+    const res=await fetch(`${SUPA_URL}/functions/v1/gerenciar-paciente-auth`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
-      body:JSON.stringify({email:_pacEmailAtual,nova_senha:novaSenha})
+      body:JSON.stringify({acao:'resetar',user_id:pac.user_id,senha:novaSenha})
     });
     const data=await res.json();
     if(data.erro||data.error){
@@ -1721,7 +1731,7 @@ async function resetarSenha(){
       return;
     }
   }catch(e){
-    // Fallback: se Edge Function não existe ainda, mostra credenciais para fazer manual
+    console.warn('Edge function indisponível:',e.message);
   }
 
   // Mostrar credenciais
@@ -1752,24 +1762,55 @@ async function criarPaciente(){
   const btn=document.getElementById('btn-criar');
   btn.textContent='Criando...';btn.disabled=true;
 
+  // 1. Criar usuário no Supabase Auth automaticamente via Edge Function
+  let authId=null;
+  let authOk=false;
+  try{
+    const r=await fetch(`${SUPA_URL}/functions/v1/gerenciar-paciente-auth`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify({acao:'criar',email,senha})
+    });
+    const data=await r.json();
+    if(data.ok){authId=data.auth_id;authOk=true;}
+    else console.warn('Auth warning:',data.erro||data.error);
+  }catch(e){console.warn('Edge function indisponível:',e.message);}
+
+  // 2. Salvar dados do paciente no banco
   const {data:pac,error}=await sb.from('pacientes').insert({
-    nome,email,telefone:document.getElementById('m-tel').value,
+    nome,email,
+    telefone:document.getElementById('m-tel').value||null,
     data_nascimento:document.getElementById('m-nasc').value||null,
     sexo:document.getElementById('m-sexo').value||null,
     objetivo:obj,tipo_atendimento:tipo,
     restricoes:document.getElementById('m-restrict').value||null,
     observacoes:document.getElementById('m-obs').value||null,
-    status:'Novo'
+    status:'Novo',
+    user_id:authId||null,
+    portal_ativo:true
   }).select().single();
 
   if(error){showToast('Erro: '+error.message);btn.textContent='Criar paciente';btn.disabled=false;return;}
 
+  // 3. Avaliação inicial se tiver peso/altura
   if(peso&&altura&&pac){
-    await sb.from('avaliacoes').insert({paciente_id:pac.id,peso:parseFloat(peso),altura:parseFloat(altura),data_avaliacao:new Date().toISOString().split('T')[0]});
+    const h=parseFloat(altura)/100;
+    const imc_val=+(parseFloat(peso)/(h*h)).toFixed(1);
+    await sb.from('avaliacoes').insert({
+      paciente_id:pac.id,
+      peso:parseFloat(peso),altura:parseFloat(altura),
+      imc:imc_val,
+      data_avaliacao:new Date().toISOString().split('T')[0]
+    });
   }
 
   let imc='—';
   if(peso&&altura){const h=parseFloat(altura)/100;imc=(parseFloat(peso)/(h*h)).toFixed(1);}
+
+  // 4. Inserir perfil no Auth se criou usuário
+  if(authId){
+    await sb.from('perfis').upsert({id:authId,tipo:'paciente',nome}).onConflict('id');
+  }
 
   document.getElementById('sucesso-box').classList.add('show');
   document.getElementById('cred-box').innerHTML=`
@@ -1778,13 +1819,13 @@ async function criarPaciente(){
     <div class="cr-row"><span class="cr-label">🔑 Senha</span><span class="cr-value">${senha}</span></div>
     <div class="cr-row"><span class="cr-label">🎯 Objetivo</span><span class="cr-value">${obj}</span></div>
     ${imc!=='—'?`<div class="cr-row"><span class="cr-label">📊 IMC</span><span class="cr-value">${imc}</span></div>`:''}
-    <div style="margin-top:10px;font-size:11px;color:#388E3C;line-height:1.5">Para ativar o login: Supabase → Authentication → Add user com este e-mail e senha.</div>`;
+    <div class="cr-row"><span class="cr-label">🔐 Login</span><span class="cr-value" style="color:${authOk?'#388E3C':'#F59600'}">${authOk?'✅ Criado automaticamente':'⚠️ Criar manualmente no Supabase'}</span></div>`;
   document.getElementById('sucesso-box').scrollIntoView({behavior:'smooth',block:'center'});
 
   btn.textContent='✅ Criado!';btn.style.background='#6BBF8E';btn.style.color='white';
   await carregarPacientes();await carregarDashboard();await carregarSelectIA();
 
-  setTimeout(()=>{fecharModal();btn.textContent='Criar paciente';btn.style.background='';btn.style.color='';showToast(nome.split(' ')[0]+' cadastrada! 🎉');},3500);
+  setTimeout(()=>{fecharModal();btn.textContent='Criar paciente';btn.style.background='';btn.style.color='';showToast(nome.split(' ')[0]+' cadastrado! 🎉');},3500);
 }
 
 async function carregarSelectIA(){
@@ -1794,6 +1835,127 @@ async function carregarSelectIA(){
 }
 
 function toggleTag(el){document.querySelectorAll('.tag-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+
+// ── EXPORTAR PDF DO PLANO ──────────────────────────────
+async function exportarPlanoPDF(){
+  if(!pacienteAtualId){showToast('Abra a ficha de um paciente primeiro.');return;}
+
+  // Buscar dados do paciente e plano ativo
+  const {data:pac}=await sb.from('pacientes').select('*').eq('id',pacienteAtualId).single();
+  const {data:planos}=await sb.from('planos').select('*,refeicoes(*)').eq('paciente_id',pacienteAtualId).eq('status','Ativo').limit(1);
+  const plano=planos?.[0];
+  const {data:avals}=await sb.from('avaliacoes').select('*').eq('paciente_id',pacienteAtualId).order('data_avaliacao',{ascending:false}).limit(1);
+  const ult=avals?.[0];
+
+  if(!plano){showToast('Nenhum plano ativo para exportar.');return;}
+
+  const refs=plano.refeicoes?.sort((a,b)=>a.ordem-b.ordem)||[];
+  const hoje=new Date().toLocaleDateString('pt-BR');
+  const nascFmt=pac?.data_nascimento?pac.data_nascimento.split('-').reverse().join('/'):'—';
+  const imcClass=ult?.imc_classificacao||'';
+
+  const html=`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Plano Alimentar — ${pac?.nome}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Poppins',sans-serif;color:#404041;background:#fff;padding:32px}
+  .header{background:linear-gradient(135deg,#F9CD54,#FAB87F);border-radius:14px;padding:28px 32px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-start}
+  .header-left h1{font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
+  .header-left p{font-size:13px;color:rgba(255,255,255,.85)}
+  .crn{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-top:6px}
+  .logo-nutri{font-size:28px;font-style:italic;font-weight:300;color:#fff;letter-spacing:-1px}
+  .paciente-box{background:#FEFAF0;border-radius:10px;padding:18px 24px;margin-bottom:24px;border:1px solid #EDE7D8;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .pac-item label{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#B0A898;display:block;margin-bottom:3px}
+  .pac-item span{font-size:13px;font-weight:600;color:#404041}
+  .plano-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .plano-header h2{font-size:16px;font-weight:700;color:#404041}
+  .plano-meta{font-size:12px;color:#6B6B6C}
+  .refeicao{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid #F5EFE4;align-items:flex-start}
+  .refeicao:last-child{border-bottom:none}
+  .ref-time{background:#FEF5D4;border-radius:8px;padding:7px 10px;text-align:center;flex-shrink:0;min-width:58px}
+  .ref-time .emoji{font-size:18px;display:block;margin-bottom:2px}
+  .ref-time .hora{font-size:11px;font-weight:700;color:#404041}
+  .ref-body{flex:1}
+  .ref-body h3{font-size:13.5px;font-weight:600;color:#404041;margin-bottom:4px}
+  .ref-body p{font-size:12.5px;color:#6B6B6C;line-height:1.6}
+  .ref-kcal{font-size:11px;font-weight:600;color:#FAB87F;margin-top:4px}
+  .footer{margin-top:32px;padding-top:18px;border-top:1px solid #EDE7D8;display:flex;justify-content:space-between;align-items:center}
+  .footer p{font-size:10.5px;color:#B0A898}
+  .assinatura{text-align:right}
+  .assinatura .linha{width:160px;border-top:1px solid #404041;margin-bottom:5px;margin-left:auto}
+  .assinatura p{font-size:10.5px;color:#404041}
+  @media print{body{padding:20px}.header{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-nutri">Jéssica Nogueira</div>
+      <div class="crn">CRN 87052/P · Nutricionista</div>
+      <p style="margin-top:10px;font-size:13px">Plano Alimentar Personalizado</p>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:11px;color:rgba(255,255,255,.8)">Emitido em</div>
+      <div style="font-size:16px;font-weight:700;color:#fff">${hoje}</div>
+    </div>
+  </div>
+
+  <div class="paciente-box">
+    <div class="pac-item"><label>Paciente</label><span>${pac?.nome||'—'}</span></div>
+    <div class="pac-item"><label>Nascimento</label><span>${nascFmt}</span></div>
+    <div class="pac-item"><label>Objetivo</label><span>${pac?.objetivo||'—'}</span></div>
+    <div class="pac-item"><label>Peso / IMC</label><span>${ult?.peso?ult.peso+' kg':'—'} ${ult?.imc?'/ '+ult.imc:''}${imcClass?' ('+imcClass+')':''}</span></div>
+  </div>
+
+  <div class="plano-header">
+    <h2>${plano.titulo}</h2>
+    <span class="plano-meta">${plano.tipo_dieta||'Equilibrada'} · ${plano.kcal_total||'—'} kcal/dia · ${refs.length} refeições</span>
+  </div>
+
+  <div>
+    ${refs.map(r=>`
+    <div class="refeicao">
+      <div class="ref-time">
+        <span class="emoji">${r.emoji||'🍽️'}</span>
+        <span class="hora">${r.horario?r.horario.slice(0,5):'—'}</span>
+      </div>
+      <div class="ref-body">
+        <h3>${r.nome}</h3>
+        <p>${r.descricao||'—'}</p>
+        <div class="ref-kcal">≈ ${r.kcal||'—'} kcal</div>
+      </div>
+    </div>`).join('')}
+  </div>
+
+  <div class="footer">
+    <div>
+      <p>app.jessicanog.com.br</p>
+      <p>contato@jessicanog.com.br</p>
+      ${pac?.restricoes?`<p style="margin-top:4px;color:#F59996">⚠️ Restrições: ${pac.restricoes}</p>`:''}
+    </div>
+    <div class="assinatura">
+      <div class="linha"></div>
+      <p>Jéssica Nogueira</p>
+      <p>CRN 87052/P</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  // Abrir em nova aba e acionar impressão
+  const win=window.open('','_blank');
+  win.document.write(html);
+  win.document.close();
+  win.onload=()=>{
+    win.focus();
+    win.print();
+  };
+  showToast('PDF aberto! Use Ctrl+P para salvar como PDF 📄');
+}
 
 // ── BLOQUEIO DE ACESSO ─────────────────────────────────
 async function toggleAcessoPaciente(){
