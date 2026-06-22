@@ -1203,6 +1203,15 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
             <option value="3">Lanche tarde</option>
             <option value="4">Jantar</option>
           </select>
+          <script>
+          function atualizarSelectRefeicoes(){
+            const sel=document.getElementById('taco-refeicao-dest');
+            if(!sel||!window._montRefeicoes)return;
+            const val=sel.value;
+            sel.innerHTML=_montRefeicoes.map((r,i)=>`<option value="${i}">${r.emoji} ${r.nome}</option>`).join('');
+            if(val)sel.value=val;
+          }
+          </script>
         </div>
         <!-- Resultados da busca -->
         <div id="taco-resultados" style="max-height:200px;overflow-y:auto;border-radius:8px;background:white;border:1px solid #c5d5ea;display:none"></div>
@@ -1922,23 +1931,41 @@ async function abrirMontadorPlano(planoId=null){
     document.getElementById('montador-titulo').textContent='✏️ Editar plano alimentar';
     document.getElementById('mont-titulo').value=plano.titulo||'';
     document.getElementById('mont-tipo').value=plano.tipo_dieta||'Equilibrada';
-    const refs=plano.refeicoes?.sort((a,b)=>a.ordem-b.ordem)||[];
-    // Converter refeições existentes para o formato do montador
-    _montRefeicoes=MONT_NOMES.map((nome,i)=>{
-      const ref=refs.find(r=>r.nome===nome)||refs[i];
-      if(ref){
-        return {
-          nome:ref.nome,emoji:ref.emoji||MONT_EMOJIS[i],
-          horario:ref.horario||MONT_HORAS[i],
-          itens:ref.descricao?ref.descricao.split(',').map(d=>({
-            nome:d.trim(),kcal:Math.round((ref.kcal||0)/Math.max(ref.descricao.split(',').length,1)),
-            ptn:0,cho:0,lip:0,qtd:100,_manual:true
-          })):[],
-          refId:ref.id
-        };
-      }
-      return {nome,emoji:MONT_EMOJIS[i],horario:MONT_HORAS[i],itens:[],refId:null};
-    });
+    const refs=(plano.refeicoes||[]).sort((a,b)=>a.ordem-b.ordem);
+    
+    // Converter refeições para o formato do montador
+    // A descrição é "Frango grelhado (120g), Arroz integral (150g)"
+    // Cada item precisa ser mantido inteiro, não splitado por vírgula interna
+    _montRefeicoes=refs.length>0?refs.map((ref,i)=>{
+      // Parsear descrição inteligente: divide por vírgula apenas quando não está dentro de parênteses
+      const desc=ref.descricao||'';
+      const itensRaw=desc.split(/,(?![^(]*\))/).map(s=>s.trim()).filter(Boolean);
+      const nItens=Math.max(itensRaw.length,1);
+      const kcalPorItem=Math.round((ref.kcal||0)/nItens);
+      const itens=itensRaw.map(nome=>{
+        // Tentar encontrar nutrientes na TACO pelo nome
+        const nomeLimpo=nome.replace(/\(.*?\)/g,'').trim().toLowerCase();
+        const tacoMatch=_tacoCache.find(a=>
+          a.nome.toLowerCase().includes(nomeLimpo.slice(0,8))||
+          nomeLimpo.includes(a.nome.toLowerCase().split(',')[0].slice(0,6))
+        );
+        // Extrair quantidade em gramas se houver
+        const qtdM=nome.match(/\((\d+(?:\.\d+)?)\s*g\)/i);
+        const qtd=qtdM?parseFloat(qtdM[1]):100;
+        if(tacoMatch){
+          const f=qtd/100;
+          return {
+            nome,kcal:Math.round(tacoMatch.kcal*f),
+            ptn:+((tacoMatch.ptn||0)*f).toFixed(1),
+            cho:+((tacoMatch.cho||0)*f).toFixed(1),
+            lip:+((tacoMatch.lip||0)*f).toFixed(1),
+            qtd,tacoId:tacoMatch.id
+          };
+        }
+        return {nome,kcal:kcalPorItem,ptn:0,cho:0,lip:0,qtd,_manual:true};
+      });
+      return {nome:ref.nome,emoji:ref.emoji||MONT_EMOJIS[i]||'🍽️',horario:ref.horario||MONT_HORAS[i],itens,refId:ref.id};
+    }):MONT_NOMES.map((nome,i)=>({nome,emoji:MONT_EMOJIS[i],horario:MONT_HORAS[i],itens:[],refId:null}));
   } else {
     document.getElementById('montador-titulo').textContent='🍽️ Criar plano alimentar';
     document.getElementById('mont-titulo').value='';
@@ -2055,6 +2082,13 @@ function removerItemMont(refIdx,itemIdx){
 }
 
 function renderMontRefeicoes(){
+  // Atualizar select de destino
+  const sel=document.getElementById('taco-refeicao-dest');
+  if(sel&&_montRefeicoes.length>0){
+    const valAtual=sel.value;
+    sel.innerHTML=_montRefeicoes.map((r,i)=>`<option value="${i}">${r.emoji} ${r.nome}</option>`).join('');
+    if(valAtual&&parseInt(valAtual)<_montRefeicoes.length)sel.value=valAtual;
+  }
   document.getElementById('mont-refeicoes').innerHTML=_montRefeicoes.map((ref,ri)=>{
     const totalRef=ref.itens.reduce((s,i)=>s+i.kcal,0);
     return `<div style="background:white;border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden">
