@@ -2734,8 +2734,9 @@ function renderFotos(fotos){
     return;
   }
 
-  // Comparativo: mais antiga vs mais recente
-  if(fotos.length>=2){
+  // Comparativo: só exibe se há fotos de datas diferentes
+  const datas=[...new Set(fotos.map(f=>f.data_foto))];
+  if(datas.length>=2){
     const antes=fotos[fotos.length-1];
     const depois=fotos[0];
     document.getElementById('foto-antes-img').src=antes.url;
