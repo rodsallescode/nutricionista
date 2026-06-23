@@ -4145,39 +4145,109 @@ function renderAvalsBlocos(){
 
 function renderAvalDetalhes(a){
   function card(label,valor,unit,badge,badgeCor){
-    if(!valor&&valor!==0)return'';
+    if(valor===null||valor===undefined||valor==='')return'';
     const corBadge={verde:'background:#E8F5E9;color:#2E7D32',amarelo:'background:#FFF8E1;color:#F57F17',vermelho:'background:#FFEBEE;color:#C62828',azul:'background:#E3F2FD;color:#1565C0',cinza:'background:#F5EFE4;color:#6B6B6C'}[badgeCor||'cinza'];
-    return `<div style="background:var(--cr);border-radius:10px;padding:14px;border:1px solid var(--bd);text-align:center">
-      <div style="font-size:9.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin-bottom:8px">${label}</div>
-      <div style="font-size:22px;font-weight:700;color:var(--dk);line-height:1;margin-bottom:4px">${valor}</div>
+    return `<div style="background:white;border-radius:12px;padding:16px 12px;border:1px solid var(--bd);text-align:center;box-shadow:0 2px 8px rgba(74,55,40,.05)">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#B0A898;margin-bottom:10px">${label}</div>
+      <div style="font-size:24px;font-weight:700;color:var(--dk);line-height:1;margin-bottom:4px">${valor}</div>
       <div style="font-size:11px;color:var(--dm)">${unit}</div>
-      ${badge?`<div style="${corBadge};font-size:10px;font-weight:600;padding:2px 10px;border-radius:999px;margin-top:8px;display:inline-block">${badge}</div>`:''}
+      ${badge?`<div style="${corBadge};font-size:10px;font-weight:600;padding:3px 10px;border-radius:999px;margin-top:8px;display:inline-block">${badge}</div>`:''}
     </div>`;
   }
 
-  const secao=(titulo)=>`<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">${titulo}</div>`;
+  const secao=(titulo,icone='')=>`<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin:20px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--bd)">${icone} ${titulo}</div>`;
+  const imcCor=a.imc?(a.imc<18.5?'azul':a.imc<25?'verde':a.imc<30?'amarelo':'vermelho'):'cinza';
 
   let html='';
 
-  // Calculados
-  const calc=[
-    card('IMC',a.imc,'kg/m²',a.imc_classificacao,a.imc<18.5?'azul':a.imc<25?'verde':a.imc<30?'amarelo':'vermelho'),
-    card('% Gordura',a.percentual_gordura,'%',a.gordura_classificacao,a.gordura_classificacao?.includes('Normal')?'verde':'amarelo'),
-    card('Massa Magra',a.massa_magra,'kg','','cinza'),
-    card('Massa Gorda',a.massa_gorda,'kg','','cinza'),
-    card('RCQ',a.rcq,'',a.rcq_class,a.rcq_class?.includes('Baixo')?'verde':'amarelo'),
-    card('RCE',a.rce,'',a.rce_class,a.rce_class?.includes('Adequado')?'verde':'amarelo'),
-    card('TMB',a.tmb,'kcal/dia','Harris-Benedict','azul'),
-    card('GET',a.get_calorico,'kcal/dia','Necessidade estimada','amarelo'),
-    card('Soma dobras',a.soma_dobras,'mm','','cinza'),
-    card('Risco CV',a.risco_cv,'',a.risco_cv?.includes('Sem')?'Sem risco':a.risco_cv,a.risco_cv?.includes('Sem')?'verde':'vermelho'),
-  ].filter(Boolean);
-  if(calc.length>0){
-    html+=secao('Resultados calculados');
-    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:4px">${calc.join('')}</div>`;
+  // ── IMC GAUGE ──────────────────────────────────────────
+  if(a.imc){
+    const imc=parseFloat(a.imc);
+    let pct=0;
+    if(imc<16)pct=imc/16*14;
+    else if(imc<17)pct=14+(imc-16)*7;
+    else if(imc<18.5)pct=21+(imc-17)/1.5*13;
+    else if(imc<25)pct=34+(imc-18.5)/6.5*19;
+    else if(imc<30)pct=53+(imc-25)/5*14;
+    else if(imc<35)pct=67+(imc-30)/5*14;
+    else if(imc<40)pct=81+(imc-35)/5*10;
+    else pct=95;
+    pct=Math.min(Math.max(pct,2),98);
+    const uid='imc-ptr-'+a.id;
+    html+=`
+    <div style="background:white;border-radius:14px;padding:20px;border:1px solid var(--bd);margin-bottom:14px;box-shadow:0 2px 8px rgba(74,55,40,.05)">
+      <div style="font-size:13px;font-weight:700;color:var(--dk);margin-bottom:3px">IMC · Classificação Nutricional</div>
+      <div style="font-size:10px;color:#B0A898;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px">WHO para adultos</div>
+      <div style="width:100%;height:28px;border-radius:14px;overflow:hidden;display:flex;position:relative;margin-bottom:10px">
+        <div style="flex:1.6;background:#9AA9C7;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Denut.</div>
+        <div style="flex:.7;background:#B0DEDB;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">D.I</div>
+        <div style="flex:1.3;background:#C5D9A6;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Eutrofia</div>
+        <div style="flex:1;background:#F9CD54;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(0,0,0,.6)">Sob.</div>
+        <div style="flex:1;background:#FAB87F;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Ob.I</div>
+        <div style="flex:1;background:#F59996;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Ob.II</div>
+        <div style="flex:1;background:#E57373;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Ob.III</div>
+        <div id="${uid}" style="width:12px;height:12px;background:#404041;border-radius:50%;border:2px solid white;position:absolute;top:50%;left:${pct}%;transform:translate(-50%,-50%);box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>
+      </div>
+      <div style="text-align:center;font-size:13px;font-weight:600;color:var(--dk)">Valor: <span style="color:#5a8450">${a.imc} kg/m²</span> · ${a.imc_classificacao||'—'}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
+        ${[['Denut. III','< 16','#9AA9C7'],['Denut. II','16–17','#9AA9C7'],['Denut. I','17–18.4','#B0DEDB'],['Eutrofia','18.5–24.9','#C5D9A6'],['Sobrepeso','25–29.9','#F9CD54'],['Ob. I','30–34.9','#FAB87F'],['Ob. II','35–39.9','#F59996'],['Ob. III','≥ 40','#E57373']].map(([l,r,c])=>{
+          const at=(a.imc_classificacao||'').toLowerCase().includes(l.toLowerCase().split(' ')[0]);
+          return `<div style="display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:7px;${at?'background:rgba(197,217,166,.15);border:1px solid #C5D9A6':'border:1px solid transparent'}">
+            <span style="width:8px;height:8px;border-radius:50%;background:${c};flex-shrink:0;display:inline-block"></span>
+            <span style="font-size:11px;color:var(--dk);font-weight:${at?'600':'400'}">${l}</span>
+            <span style="margin-left:auto;font-size:10px;color:var(--dm)">${r}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
   }
 
-  // Perímetros
+  // ── CALCULADOS ─────────────────────────────────────────
+  const calcCards=[
+    card('TMB',a.tmb,'kcal/dia','Harris-Benedict','azul'),
+    card('GET',a.get_calorico,'kcal/dia','Necessidade estimada','amarelo'),
+    card('RCQ',a.rcq,'',a.rcq_class,a.rcq_class?.includes('Baixo')?'verde':'amarelo'),
+    card('RCE',a.rce,'',a.rce_class,a.rce_class?.includes('Adequado')?'verde':'amarelo'),
+    card('Soma dobras',a.soma_dobras,'mm','dobras cutâneas','cinza'),
+    card('Risco CV',a.risco_cv,'',a.risco_cv,'verde'),
+  ].filter(Boolean);
+  if(calcCards.length>0){
+    html+=secao('Dados calculados','⚡');
+    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:4px">${calcCards.join('')}</div>`;
+  }
+
+  // ── COMPOSIÇÃO CORPORAL ────────────────────────────────
+  if(a.percentual_gordura||a.massa_magra){
+    html+=secao('Composição corporal','💪');
+    const gc=parseFloat(a.percentual_gordura||0);
+    const pctGord=Math.min(gc/50*100,100);
+    html+=`<div style="display:grid;grid-template-columns:${a.percentual_gordura?'1fr 1fr':'1fr'};gap:12px;margin-bottom:10px">
+      ${a.massa_magra?`<div style="background:rgba(197,217,166,.15);border-radius:10px;padding:14px;text-align:center;border:1px solid #C5D9A6">
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5a8450;margin-bottom:8px;font-weight:700">Massa Magra</div>
+        <div style="font-size:26px;font-weight:700;color:var(--dk)">${a.massa_magra}</div>
+        <div style="font-size:11px;color:var(--dm)">kg</div>
+      </div>`:''}
+      ${a.massa_gorda?`<div style="background:rgba(245,153,150,.1);border-radius:10px;padding:14px;text-align:center;border:1px solid #F59996">
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#c04040;margin-bottom:8px;font-weight:700">Massa Gorda</div>
+        <div style="font-size:26px;font-weight:700;color:var(--dk)">${a.massa_gorda}</div>
+        <div style="font-size:11px;color:var(--dm)">kg</div>
+      </div>`:''}
+    </div>`;
+    if(a.percentual_gordura){
+      html+=`<div style="background:white;border-radius:10px;padding:14px;border:1px solid var(--bd)">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--dk);margin-bottom:8px">
+          <span>% Gordura corporal</span>
+          <strong>${gc}% · ${a.gordura_classificacao||'—'}</strong>
+        </div>
+        <div style="background:#F5EFE4;border-radius:8px;height:12px;overflow:hidden">
+          <div style="height:100%;border-radius:8px;background:linear-gradient(90deg,#C5D9A6,#F9CD54,#F59996);width:${pctGord}%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--dm);margin-top:4px"><span>0%</span><span>25%</span><span>50%+</span></div>
+      </div>`;
+    }
+  }
+
+  // ── PERÍMETROS ─────────────────────────────────────────
   const perim=[
     card('Pescoço',a.pescoco,'cm','','cinza'),
     card('Tórax',a.torax,'cm','','cinza'),
@@ -4191,11 +4261,11 @@ function renderAvalDetalhes(a){
     card('Panturrilha',a.panturrilha,'cm','','cinza'),
   ].filter(Boolean);
   if(perim.length>0){
-    html+=secao('Perímetros (cm)');
+    html+=secao('Perímetros (cm)','📏');
     html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-bottom:4px">${perim.join('')}</div>`;
   }
 
-  // Dobras
+  // ── DOBRAS ─────────────────────────────────────────────
   const dobras=[
     card('Tricipital',a.dobra_tricipital,'mm','','cinza'),
     card('Bicipital',a.dobra_bicipital,'mm','','cinza'),
@@ -4207,8 +4277,30 @@ function renderAvalDetalhes(a){
     card('Panturrilha',a.dobra_panturrilha,'mm','','cinza'),
   ].filter(Boolean);
   if(dobras.length>0){
-    html+=secao('Dobras cutâneas (mm)');
+    html+=secao('Dobras cutâneas (mm)','📐');
     html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-bottom:4px">${dobras.join('')}</div>`;
+  }
+
+  // ── NECESSIDADES ENERGÉTICAS ───────────────────────────
+  if(a.tmb){
+    html+=`<div style="background:white;border-radius:14px;padding:18px;border:1px solid var(--bd);margin-top:14px;box-shadow:0 2px 8px rgba(74,55,40,.05)">
+      <div style="font-size:12px;font-weight:700;color:var(--dk);margin-bottom:12px">⚡ Necessidades energéticas</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="text-align:center;background:#EEF4FB;border-radius:10px;padding:14px;border:1px solid #9AA9C7">
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#3a5a8a;margin-bottom:6px;font-weight:700">TMB (repouso)</div>
+          <div style="font-size:26px;font-weight:700;color:var(--dk)">${a.tmb}</div>
+          <div style="font-size:11px;color:var(--dm)">kcal/dia</div>
+        </div>
+        <div style="text-align:center;background:#FEF5D4;border-radius:10px;padding:14px;border:1px solid var(--am)">
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#a07a00;margin-bottom:6px;font-weight:700">GET (atividade)</div>
+          <div style="font-size:26px;font-weight:700;color:var(--dk)">${a.get_calorico||'—'}</div>
+          <div style="font-size:11px;color:var(--dm)">kcal/dia</div>
+        </div>
+      </div>
+      ${a.risco_cv?`<div style="margin-top:12px;padding:9px 12px;background:var(--cr);border-radius:8px;font-size:12px;display:flex;align-items:center;gap:8px">
+        <span>🫀</span><span style="color:var(--dm)">Risco cardiovascular:</span><strong style="color:var(--dk)">${a.risco_cv}</strong>
+      </div>`:''}
+    </div>`;
   }
 
   if(a.observacoes){
@@ -4333,6 +4425,8 @@ function mostrarCompAvals(){
   const ctx=document.getElementById('chart-comp-avals').getContext('2d');
   if(_chartCompAvals)_chartCompAvals.destroy();
   const max=Math.max(vAnt,vAt)*1.2||1;
+  const yMin=Math.min(vAnt,vAt)*0.95;
+  const yMax=Math.max(vAnt,vAt)*1.05;
   _chartCompAvals=new Chart(ctx,{
     type:'bar',
     data:{
@@ -4342,13 +4436,24 @@ function mostrarCompAvals(){
         backgroundColor:['rgba(154,169,199,0.8)','rgba(249,205,84,0.9)'],
         borderColor:['#9AA9C7','#f0c040'],
         borderWidth:2,borderRadius:8,
-        barPercentage:0.4,categoryPercentage:0.6
+        barPercentage:0.45,categoryPercentage:0.5
       }]
     },
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},title:{display:true,text:med.label+' ('+med.unit+')',font:{family:'Poppins',size:13,weight:'600'},color:'#404041'}},
-      scales:{y:{beginAtZero:false,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{family:'Poppins',size:11}}},x:{grid:{display:false},ticks:{font:{family:'Poppins',size:11}}}}
+      plugins:{
+        legend:{display:false},
+        title:{display:true,text:med.label+(med.unit?' ('+med.unit+')':''),font:{family:'Poppins',size:13,weight:'600'},color:'#404041'},
+        tooltip:{callbacks:{label:ctx=>ctx.parsed.y+' '+med.unit}}
+      },
+      scales:{
+        y:{
+          min:yMin,max:yMax,
+          grid:{color:'rgba(0,0,0,.05)'},
+          ticks:{font:{family:'Poppins',size:11},callback:v=>v+(med.unit?' '+med.unit:'')}
+        },
+        x:{grid:{display:false},ticks:{font:{family:'Poppins',size:12,weight:'600'}}}
+      }
     }
   });
 
