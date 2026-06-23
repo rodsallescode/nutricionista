@@ -790,8 +790,12 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
             </div>
             <div class="fsec-body">
               <div id="fotos-comparativo" style="display:none;margin-bottom:20px">
-                <div style="font-size:12px;font-weight:600;color:var(--dk);margin-bottom:10px">🔄 Comparativo antes / depois</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+                  <div style="font-size:12px;font-weight:600;color:var(--dk)">🔄 Comparativo antes / depois</div>
+                  <div id="comp-tipo-pills" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+                </div>
+                <div id="comp-sem-datas" style="display:none;text-align:center;padding:16px;color:var(--dm);font-size:12px">Adicione fotos em datas diferentes para comparar a evolução.</div>
+                <div id="comp-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                   <div style="text-align:center">
                     <img id="foto-antes-img" style="width:100%;border-radius:var(--r);border:1px solid var(--bd);max-height:480px;object-fit:contain;background:#f9f6f0">
                     <div style="font-size:11px;color:var(--dm);margin-top:6px" id="foto-antes-label"></div>
@@ -2721,6 +2725,23 @@ async function carregarFotos(id){
   renderFotos(_todasFotos);
 }
 
+function renderCompTipo(){
+  const tipo=window._compTipoAtivo;
+  const fotosDoTipo=_todasFotos.filter(f=>f.tipo===tipo).sort((a,b)=>a.data_foto.localeCompare(b.data_foto));
+  const antes=fotosDoTipo[0];
+  const depois=fotosDoTipo[fotosDoTipo.length-1];
+  const fmtD=d=>d.split('-').reverse().join('/');
+  document.getElementById('foto-antes-img').src=antes.url;
+  document.getElementById('foto-antes-label').textContent='Antes · '+fmtD(antes.data_foto)+' · '+antes.tipo;
+  document.getElementById('foto-depois-img').src=depois.url;
+  document.getElementById('foto-depois-label').textContent='Atual · '+fmtD(depois.data_foto)+' · '+depois.tipo;
+  // Atualizar pills highlight
+  document.querySelectorAll('#comp-tipo-pills button').forEach(btn=>{
+    btn.style.background=btn.textContent===tipo?'var(--am)':'white';
+    btn.style.fontWeight=btn.textContent===tipo?'600':'400';
+  });
+}
+
 function filtrarFotos(tipo,btn){
   document.querySelectorAll('#ftab-fotos .tag-pill').forEach(p=>p.classList.remove('sel'));
   btn.classList.add('sel');
@@ -2734,16 +2755,23 @@ function renderFotos(fotos){
     return;
   }
 
-  // Comparativo: só exibe se há fotos de datas diferentes
-  const datas=[...new Set(fotos.map(f=>f.data_foto))];
-  if(datas.length>=2){
-    const antes=fotos[fotos.length-1];
-    const depois=fotos[0];
-    document.getElementById('foto-antes-img').src=antes.url;
-    document.getElementById('foto-antes-label').textContent='Antes · '+antes.data_foto.split('-').reverse().join('/')+' · '+antes.tipo;
-    document.getElementById('foto-depois-img').src=depois.url;
-    document.getElementById('foto-depois-label').textContent='Atual · '+depois.data_foto.split('-').reverse().join('/')+' · '+depois.tipo;
+  // Comparativo: tipos que têm fotos em pelo menos 2 datas diferentes
+  const tiposComEvolucao=[];
+  const todosTipos=[...new Set(_todasFotos.map(f=>f.tipo))];
+  todosTipos.forEach(tipo=>{
+    const datasDoTipo=[...new Set(_todasFotos.filter(f=>f.tipo===tipo).map(f=>f.data_foto))];
+    if(datasDoTipo.length>=2) tiposComEvolucao.push(tipo);
+  });
+
+  if(tiposComEvolucao.length>0){
     document.getElementById('fotos-comparativo').style.display='block';
+    document.getElementById('comp-sem-datas').style.display='none';
+    document.getElementById('comp-grid').style.display='grid';
+    // Montar pills de tipo
+    const pillsEl=document.getElementById('comp-tipo-pills');
+    if(!window._compTipoAtivo||!tiposComEvolucao.includes(window._compTipoAtivo)) window._compTipoAtivo=tiposComEvolucao[0];
+    pillsEl.innerHTML=tiposComEvolucao.map(t=>`<button onclick="window._compTipoAtivo='${t}';renderCompTipo()" style="border:1px solid var(--bd);background:${window._compTipoAtivo===t?'var(--am)':'white'};color:var(--dk);border-radius:999px;padding:3px 12px;font-size:11px;font-weight:${window._compTipoAtivo===t?'600':'400'};cursor:pointer;font-family:'Poppins',sans-serif">${t}</button>`).join('');
+    renderCompTipo();
   } else {
     document.getElementById('fotos-comparativo').style.display='none';
   }
