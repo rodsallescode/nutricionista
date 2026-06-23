@@ -4333,27 +4333,16 @@ function renderAvalDetalhes(a){
       <div style="font-size:13px;font-weight:700;color:var(--dk);margin-bottom:3px">IMC · Classificação Nutricional</div>
       <div style="font-size:10px;color:#B0A898;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px">WHO para adultos</div>
       <div style="position:relative;margin-bottom:10px">
-`+((imc_val)=>{
-      const cl=a.imc_classificacao||'';
-      const isD=cl.includes('Desnut')&&!cl.includes('I')&&!cl.includes('II');
-      const isDI=cl.includes('Desnut. I')||cl.includes('Desnutrição Grau I');
-      const isE=cl.includes('normal')||cl.includes('Eutrofia');
-      const isS=cl.includes('Sobrepeso');
-      const isO1=cl.includes('Grau I');
-      const isO2=cl.includes('Grau II');
-      const isO3=cl.includes('Grau III');
-      const hl='box-shadow:inset 0 0 0 2px rgba(255,255,255,.8),inset 0 0 0 4px rgba(0,0,0,.15)';
-      return \`<div style="width:100%;height:32px;border-radius:14px;display:flex;overflow:hidden">
-          <div style="flex:1.6;background:#9AA9C7;\${isD?hl:''};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:\${isD?'800':'600'};color:rgba(255,255,255,.9)">Desnut.</div>
-          <div style="flex:.7;background:#B0DEDB;\${isDI?hl:''};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:\${isDI?'800':'600'};color:rgba(255,255,255,.9)">Desnut.I</div>
-          <div style="flex:1.3;background:#C5D9A6;\${isE?hl:''};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:\${isE?'800':'600'};color:rgba(255,255,255,.9)">Eutrofia</div>
-          <div style="flex:1;background:#F9CD54;\${isS?hl:''};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:\${isS?'800':'600'};color:rgba(0,0,0,.7)">Sobrepeso</div>
-          <div style="flex:1;background:#FAB87F;\${isO1?hl:''};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:\${isO1?'800':'600'};color:rgba(255,255,255,.9)">Ob.I</div>
-          <div style="flex:1;background:#F59996;\${isO2?hl:''};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:\${isO2?'800':'600'};color:rgba(255,255,255,.9)">Ob.II</div>
-          <div style="flex:1;background:#E57373;\${isO3?hl:''};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:\${isO3?'800':'600'};color:rgba(255,255,255,.9)">Ob.III</div>
+        <div style="width:100%;height:28px;border-radius:14px;display:flex;overflow:hidden">
+          <div style="flex:1.6;background:#9AA9C7;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Desnut.</div>
+          <div style="flex:.7;background:#B0DEDB;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Desnut.I</div>
+          <div style="flex:1.3;background:#C5D9A6;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Eutrofia</div>
+          <div style="flex:1;background:#F9CD54;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(0,0,0,.6)">Sobrepeso</div>
+          <div style="flex:1;background:#FAB87F;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Ob.I</div>
+          <div style="flex:1;background:#F59996;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Ob.II</div>
+          <div style="flex:1;background:#E57373;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:rgba(255,255,255,.9)">Ob.III</div>
         </div>
-        <div id="\${uid}" style="width:14px;height:14px;background:#404041;border-radius:50%;border:2px solid white;position:absolute;top:50%;left:\${pct}%;transform:translate(-50%,-50%);box-shadow:0 2px 6px rgba(0,0,0,.4);pointer-events:none"></div>\`;
-      })(a.imc)+`
+        <div id="${uid}" style="width:14px;height:14px;background:#404041;border-radius:50%;border:2px solid white;position:absolute;top:50%;left:${pct}%;transform:translate(-50%,-50%);box-shadow:0 2px 6px rgba(0,0,0,.4);pointer-events:none"></div>
       </div>
       <div style="text-align:center;font-size:13px;font-weight:600;color:var(--dk)">Valor: <span style="color:#5a8450">${a.imc} kg/m²</span> · ${a.imc_classificacao||'—'}</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
