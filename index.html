@@ -4035,7 +4035,9 @@ async function salvarAvaliacao(){
     massa_magra:calc.massa_magra||null,
     massa_gorda:calc.massa_gorda||null,
     rcq:calc.rcq||null,
+    rcq_class:calc.rcq_class||null,
     rce:calc.rce||null,
+    rce_class:calc.rce_class||null,
     tmb:calc.tmb||null,
     get_calorico:calc.get||null,
     imc_classificacao:calc.imc_class||null,
@@ -4160,31 +4162,41 @@ async function recalcularAvaliacao(avalId){
     return;
   }
 
-  if(calc.erro||!calc.percentual_gordura){
-    showToast('Não foi possível calcular % gordura. Verifique sexo e data de nascimento do paciente.');
+  if(calc.erro){
+    showToast('Erro na Edge Function: '+calc.erro);
     if(btn){btn.textContent='⚡ Recalcular';btn.disabled=false;}
     return;
   }
 
-  // Atualizar no banco
-  const {error}=await sb.from('avaliacoes').update({
-    percentual_gordura:calc.percentual_gordura||null,
-    massa_magra:calc.massa_magra||null,
-    massa_gorda:calc.massa_gorda||null,
-    gordura_classificacao:calc.gordura_class||null,
-    imc:calc.imc||av.imc,
-    imc_classificacao:calc.imc_class||av.imc_classificacao,
-    rcq:calc.rcq||av.rcq,
-    rce:calc.rce||av.rce,
-    tmb:calc.tmb||av.tmb,
-    get_calorico:calc.get||av.get_calorico,
-    risco_cv:calc.risco_cv||av.risco_cv,
-    soma_dobras:calc.soma_dobras||av.soma_dobras,
-  }).eq('id',avalId);
+  // Montar update — só sobrescreve campos que a Edge Function calculou
+  const upd={};
+  if(calc.imc)               upd.imc=calc.imc;
+  if(calc.imc_class)         upd.imc_classificacao=calc.imc_class;
+  if(calc.percentual_gordura)upd.percentual_gordura=calc.percentual_gordura;
+  if(calc.gordura_class)     upd.gordura_classificacao=calc.gordura_class;
+  if(calc.massa_magra)       upd.massa_magra=calc.massa_magra;
+  if(calc.massa_gorda)       upd.massa_gorda=calc.massa_gorda;
+  if(calc.rcq)               upd.rcq=calc.rcq;
+  if(calc.rcq_class)         upd.rcq_class=calc.rcq_class;
+  if(calc.rce)               upd.rce=calc.rce;
+  if(calc.rce_class)         upd.rce_class=calc.rce_class;
+  if(calc.tmb)               upd.tmb=calc.tmb;
+  if(calc.get)               upd.get_calorico=calc.get;
+  if(calc.risco_cv)          upd.risco_cv=calc.risco_cv;
+  if(calc.soma_dobras)       upd.soma_dobras=calc.soma_dobras;
+
+  if(Object.keys(upd).length===0){
+    showToast('Nada para recalcular — verifique se há dobras e dados do paciente.');
+    if(btn){btn.textContent='⚡ Recalcular';btn.disabled=false;}
+    return;
+  }
+
+  const {error}=await sb.from('avaliacoes').update(upd).eq('id',avalId);
 
   if(error){showToast('Erro ao salvar: '+error.message);if(btn){btn.textContent='⚡ Recalcular';btn.disabled=false;}return;}
 
-  showToast('✅ Recalculado! % Gordura: '+calc.percentual_gordura+'%');
+  const msg=calc.percentual_gordura?`✅ Recalculado! % Gordura: ${calc.percentual_gordura}%`:'✅ Dados atualizados!';
+  showToast(msg);
   await carregarAvaliacoes(av.paciente_id);
 }
 
