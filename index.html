@@ -1968,7 +1968,7 @@ function renderResultadosVisuais(calc, payload){
   if(calc.imc) cards.push({label:'IMC',value:calc.imc,unit:'kg/m²',badge:calc.imc_class||'—',cor:imcCor(calc.imc)});
   if(payload?.peso) cards.push({label:'Peso',value:payload.peso,unit:'kg',badge:'Aferido',cor:'rc-amber'});
   if(payload?.altura_cm) cards.push({label:'Altura',value:payload.altura_cm,unit:'cm',badge:'Aferida',cor:'rc-teal'});
-  if(calc.tmb) cards.push({label:'TMB',value:calc.tmb,unit:'kcal',badge:'Taxa Basal',cor:'rc-blue'});
+  if(calc.tmb) cards.push({label:'TMB',value:calc.tmb,unit:'kcal',badge:'Harris-Benedict',cor:'rc-blue'});
   if(calc.get) cards.push({label:'GET',value:calc.get,unit:'kcal/dia',badge:'Necessidade estimada',cor:'rc-blue'});
   if(calc.percentual_gordura) cards.push({label:'% Gordura',value:calc.percentual_gordura+'%',unit:'',badge:calc.gordura_class||'—',cor:badgeCor(calc.gordura_class)==='rcb-green'?'rc-green':'rc-amber'});
   if(calc.massa_magra) cards.push({label:'Massa Magra',value:calc.massa_magra,unit:'kg',badge:'MM',cor:'rc-green'});
@@ -4090,6 +4090,91 @@ async function carregarAvaliacoes(id){
   renderAvalsBlocos();
 }
 
+async function recalcularAvaliacao(avalId){
+  const btn=document.getElementById('btn-recalc-'+avalId);
+  if(btn){btn.textContent='⏳ Calculando...';btn.disabled=true;}
+
+  // Buscar avaliação completa do banco
+  const {data:av}=await sb.from('avaliacoes').select('*').eq('id',avalId).single();
+  if(!av){showToast('Erro: avaliação não encontrada.');return;}
+
+  // Buscar dados do paciente
+  const {data:pac}=await sb.from('pacientes').select('sexo,data_nascimento').eq('id',av.paciente_id).single();
+  let idade=null;
+  if(pac?.data_nascimento){
+    const nasc=new Date(pac.data_nascimento);
+    idade=Math.floor((new Date()-nasc)/(365.25*24*60*60*1000));
+  }
+
+  const payload={
+    peso:av.peso,
+    altura_cm:av.altura||null,
+    sexo:pac?.sexo||null,
+    idade,
+    nivel_atividade:'moderado',
+    cintura:av.cintura||null,
+    quadril:av.quadril||null,
+    pescoco:av.pescoco||null,
+    torax:av.torax||null,
+    abdomen:av.abdomen||null,
+    braco:av.braco||null,
+    braco_contraido:av.braco_contraido||null,
+    antebraco:av.antebraco||null,
+    coxa:av.coxa||null,
+    panturrilha:av.panturrilha||null,
+    dobra_tricipital:av.dobra_tricipital||null,
+    dobra_bicipital:av.dobra_bicipital||null,
+    dobra_subescapular:av.dobra_subescapular||null,
+    dobra_suprailiaca:av.dobra_suprailiaca||null,
+    dobra_supraespinal:av.dobra_supraespinal||null,
+    dobra_abdominal:av.dobra_abdominal||null,
+    dobra_coxa:av.dobra_coxa||null,
+    dobra_panturrilha:av.dobra_panturrilha||null,
+  };
+  Object.keys(payload).forEach(k=>{if(payload[k]===null||payload[k]===undefined)delete payload[k];});
+
+  let calc={};
+  try{
+    const r=await fetch(`${SUPA_URL}/functions/v1/calculos-nutricionais`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify(payload)
+    });
+    calc=await r.json();
+  }catch(e){
+    showToast('Erro ao chamar Edge Function: '+e.message);
+    if(btn){btn.textContent='⚡ Recalcular';btn.disabled=false;}
+    return;
+  }
+
+  if(calc.erro||!calc.percentual_gordura){
+    showToast('Não foi possível calcular % gordura. Verifique sexo e data de nascimento do paciente.');
+    if(btn){btn.textContent='⚡ Recalcular';btn.disabled=false;}
+    return;
+  }
+
+  // Atualizar no banco
+  const {error}=await sb.from('avaliacoes').update({
+    percentual_gordura:calc.percentual_gordura||null,
+    massa_magra:calc.massa_magra||null,
+    massa_gorda:calc.massa_gorda||null,
+    gordura_classificacao:calc.gordura_class||null,
+    imc:calc.imc||av.imc,
+    imc_classificacao:calc.imc_class||av.imc_classificacao,
+    rcq:calc.rcq||av.rcq,
+    rce:calc.rce||av.rce,
+    tmb:calc.tmb||av.tmb,
+    get_calorico:calc.get||av.get_calorico,
+    risco_cv:calc.risco_cv||av.risco_cv,
+    soma_dobras:calc.soma_dobras||av.soma_dobras,
+  }).eq('id',avalId);
+
+  if(error){showToast('Erro ao salvar: '+error.message);if(btn){btn.textContent='⚡ Recalcular';btn.disabled=false;}return;}
+
+  showToast('✅ Recalculado! % Gordura: '+calc.percentual_gordura+'%');
+  await carregarAvaliacoes(av.paciente_id);
+}
+
 function renderAvalsBlocos(){
   const el=document.getElementById('avals-blocos');
   if(!el)return;
@@ -4131,6 +4216,7 @@ function renderAvalsBlocos(){
           ${isInicial?'<span style="background:#E3F2FD;color:#1565C0;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px">Inicial</span>':''}
           ${delta?`<span style="background:${neg?'#E8F5E9':'#FFEBEE'};color:${neg?'#2E7D32':'#C62828'};font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px">${parseFloat(delta)>0?'+':''}${delta} kg</span>`:''}
           ${a.imc_classificacao?`<span style="background:#F5EFE4;color:var(--dk);font-size:10px;font-weight:500;padding:2px 8px;border-radius:999px">${a.imc_classificacao}</span>`:''}
+          ${(!a.percentual_gordura&&(a.dobra_tricipital||a.dobra_bicipital||a.dobra_subescapular||a.dobra_suprailiaca))?`<button onclick="event.stopPropagation();recalcularAvaliacao('${a.id}')" id="btn-recalc-${a.id}" style="background:#FFF8E1;color:#856404;border:1px solid #f0c040;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:4px">⚡ Recalcular</button>`:''}
           <span style="font-size:12px;color:var(--dm);transition:transform .2s;${isOpen?'transform:rotate(180deg)':''}">▼</span>
         </div>
       </div>
