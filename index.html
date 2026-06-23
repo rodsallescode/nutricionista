@@ -2698,7 +2698,8 @@ async function salvarFoto(){
   const {error:upErr}=await sb.storage.from('fotos-pacientes').upload(path,_fotoFile,{contentType:'image/jpeg'});
   if(upErr){showToast('Erro no upload: '+upErr.message);btn.textContent='💾 Salvar foto';btn.disabled=false;return;}
 
-  await sb.from('fotos_pacientes').insert({paciente_id:pacienteAtualId,path,tipo,data_foto:data});
+  const {error:insErr}=await sb.from('fotos_pacientes').insert({paciente_id:pacienteAtualId,path,tipo,data_foto:data});
+  if(insErr){showToast('Erro ao salvar registro: '+insErr.message);console.error('INSERT ERROR:',insErr);btn.textContent='💾 Salvar foto';btn.disabled=false;return;}
 
   showToast('Foto salva! 📸');
   limparFoto();
