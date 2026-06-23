@@ -1905,7 +1905,8 @@ async function criarPaciente(){
       paciente_id:pac.id,
       peso:parseFloat(peso),altura:parseFloat(altura),
       imc:imc_val,
-      data_avaliacao:new Date().toISOString().split('T')[0]
+      data_avaliacao:new Date().toISOString().split('T')[0],
+      observacoes:'__cadastro_rapido__'
     });
   }
 
@@ -3279,7 +3280,8 @@ async function carregarAniversarios(){
 let chartPac=null;
 
 async function carregarGraficoPaciente(pacienteId){
-  const {data:avals}=await sb.from('avaliacoes').select('*').eq('paciente_id',pacienteId).order('data_avaliacao',{ascending:false}).limit(10);
+  const {data:avals_raw}=await sb.from('avaliacoes').select('*').eq('paciente_id',pacienteId).order('data_avaliacao',{ascending:false}).limit(10);
+  const avals=(avals_raw||[]).filter(a=>a.observacoes!=='__cadastro_rapido__');
   if(!avals||avals.length<2){
     document.getElementById('pac-evolucao-title').style.display='none';
     document.getElementById('pac-evolucao-section').style.display='none';
@@ -4078,16 +4080,27 @@ let _chartCompAvals=null;
 
 async function carregarAvaliacoes(id){
   const {data}=await sb.from('avaliacoes').select('*').eq('paciente_id',id).order('data_avaliacao',{ascending:false});
-  avals_cache=data||[];
+  const todas=data||[];
+  // Separar: cadastro_rapido só serve pro hero, não aparece na aba Antropometria
+  avals_cache=todas.filter(a=>a.observacoes!=='__cadastro_rapido__');
+  const comCadastro=todas; // usado só para o peso inicial no hero
 
-  // Atualizar hero
-  if(avals_cache.length>0){
-    const ult=avals_cache[0];
+  // Atualizar hero — usa a mais recente independente de origem
+  if(comCadastro.length>0){
+    const ult=comCadastro[0];
     document.getElementById('ficha-peso').textContent=ult.peso?ult.peso+'kg':'—';
     document.getElementById('ficha-imc').textContent=ult.imc||'—';
   }
 
   renderAvalsBlocos();
+}
+
+async function marcarCadastroRapido(avalId){
+  if(!confirm('Ocultar esta avaliação da aba Antropometria? Ela ficará salva no banco mas não aparecerá nos gráficos nem comparativos.'))return;
+  const {error}=await sb.from('avaliacoes').update({observacoes:'__cadastro_rapido__'}).eq('id',avalId);
+  if(error){showToast('Erro: '+error.message);return;}
+  showToast('Avaliação ocultada da Antropometria ✓');
+  await carregarAvaliacoes(pacienteAtualId);
 }
 
 async function recalcularAvaliacao(avalId){
@@ -4215,9 +4228,10 @@ function renderAvalsBlocos(){
         <!-- Badges -->
         <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
           ${isInicial?'<span style="background:#E3F2FD;color:#1565C0;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px">Inicial</span>':''}
+          ${(!a.dobra_tricipital&&!a.cintura&&!a.percentual_gordura)?`<button onclick="event.stopPropagation();marcarCadastroRapido('${a.id}')" style="background:#F3F4F6;color:#6B7280;border:1px solid #D1D5DB;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;cursor:pointer">Ocultar</button>`:''}
           ${delta?`<span style="background:${neg?'#E8F5E9':'#FFEBEE'};color:${neg?'#2E7D32':'#C62828'};font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px">${parseFloat(delta)>0?'+':''}${delta} kg</span>`:''}
           ${a.imc_classificacao?`<span style="background:#F5EFE4;color:var(--dk);font-size:10px;font-weight:500;padding:2px 8px;border-radius:999px">${a.imc_classificacao}</span>`:''}
-          ${(!a.percentual_gordura&&(a.dobra_tricipital||a.dobra_bicipital||a.dobra_subescapular||a.dobra_suprailiaca))?`<button onclick="event.stopPropagation();recalcularAvaliacao('${a.id}')" id="btn-recalc-${a.id}" style="background:#FFF8E1;color:#856404;border:1px solid #f0c040;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:4px">⚡ Recalcular</button>`:''}
+          ${(a.dobra_tricipital&&a.dobra_bicipital&&a.dobra_subescapular&&a.dobra_suprailiaca)?`<button onclick="event.stopPropagation();recalcularAvaliacao('${a.id}')" id="btn-recalc-${a.id}" style="background:#FFF8E1;color:#856404;border:1px solid #f0c040;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:4px">⚡ Recalcular</button>`:''}
           <span style="font-size:12px;color:var(--dm);transition:transform .2s;${isOpen?'transform:rotate(180deg)':''}">▼</span>
         </div>
       </div>
