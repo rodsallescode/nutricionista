@@ -1968,7 +1968,7 @@ function renderResultadosVisuais(calc, payload){
   if(calc.imc) cards.push({label:'IMC',value:calc.imc,unit:'kg/m²',badge:calc.imc_class||'—',cor:imcCor(calc.imc)});
   if(payload?.peso) cards.push({label:'Peso',value:payload.peso,unit:'kg',badge:'Aferido',cor:'rc-amber'});
   if(payload?.altura_cm) cards.push({label:'Altura',value:payload.altura_cm,unit:'cm',badge:'Aferida',cor:'rc-teal'});
-  if(calc.tmb) cards.push({label:'TMB',value:calc.tmb,unit:'kcal',badge:'Harris-Benedict',cor:'rc-blue'});
+  if(calc.tmb) cards.push({label:'TMB',value:calc.tmb,unit:'kcal',badge:'Taxa Basal',cor:'rc-blue'});
   if(calc.get) cards.push({label:'GET',value:calc.get,unit:'kcal/dia',badge:'Necessidade estimada',cor:'rc-blue'});
   if(calc.percentual_gordura) cards.push({label:'% Gordura',value:calc.percentual_gordura+'%',unit:'',badge:calc.gordura_class||'—',cor:badgeCor(calc.gordura_class)==='rcb-green'?'rc-green':'rc-amber'});
   if(calc.massa_magra) cards.push({label:'Massa Magra',value:calc.massa_magra,unit:'kg',badge:'MM',cor:'rc-green'});
