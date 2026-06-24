@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jéssica Nutricionista</title>
+<title>NutriJéssica</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1921,7 +1921,7 @@ async function criarPaciente(){
 
   // 4. Inserir perfil no Auth se criou usuário
   if(authId){
-    await sb.from('perfis').upsert({id:authId,tipo:'paciente',nome}).onConflict('id');
+    await sb.from('perfis').upsert({id:authId,tipo:'paciente',nome},{onConflict:'id'});
   }
 
   document.getElementById('sucesso-box').classList.add('show');
