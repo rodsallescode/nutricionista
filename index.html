@@ -1387,6 +1387,25 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       </div></div>
 
       <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#B0A898;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bd)">Refeições do modelo</div>
+
+      <!-- Buscador TACO no template -->
+      <div style="background:#EEF4FB;border-radius:var(--r);padding:14px;margin-bottom:14px;border:1px solid #c5d5ea">
+        <div style="font-size:12px;font-weight:600;color:#1565C0;margin-bottom:10px">🔍 Buscar alimento na tabela TACO</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <input type="text" id="tpl-taco-busca" placeholder="Digite o alimento... (ex: frango, arroz, ovo)" oninput="buscarTACOTemplate(this.value)" style="flex:1;min-width:180px;background:white;border:1.5px solid #c5d5ea;border-radius:8px;padding:9px 12px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none">
+          <input type="number" id="tpl-taco-qtd" placeholder="Qtd (g)" value="100" min="1" style="width:90px;background:white;border:1.5px solid #c5d5ea;border-radius:8px;padding:9px 12px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none">
+          <select id="tpl-taco-dest" style="background:white;border:1.5px solid #c5d5ea;border-radius:8px;padding:9px 12px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;min-width:140px"></select>
+        </div>
+        <div id="tpl-taco-resultados" style="max-height:180px;overflow-y:auto;border-radius:8px;background:white;border:1px solid #c5d5ea;display:none"></div>
+        <div id="tpl-taco-selecionado" style="display:none;margin-top:10px;background:white;border-radius:8px;padding:12px;border:1px solid #c5d5ea">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="font-size:13px;font-weight:600;color:var(--dk)" id="tpl-taco-sel-nome"></div>
+            <button onclick="adicionarItemTACOTemplate()" style="background:var(--am);border:none;border-radius:var(--rs);padding:7px 16px;font-size:12px;font-weight:700;font-family:'Poppins',sans-serif;color:var(--dk);cursor:pointer">+ Adicionar</button>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap" id="tpl-taco-sel-nutrientes"></div>
+        </div>
+      </div>
+
       <div id="tpl-refeicoes-lista"></div>
       <button onclick="adicionarRefeicaoTemplate()" style="width:100%;border:2px dashed var(--bd);background:none;border-radius:var(--rs);padding:12px;font-size:13px;font-weight:500;color:var(--dm);cursor:pointer;font-family:'Poppins',sans-serif;margin-top:8px;transition:all .2s" onmouseover="this.style.borderColor='var(--am)'" onmouseout="this.style.borderColor='var(--bd)'">+ Adicionar refeição</button>
     </div>
@@ -3995,6 +4014,10 @@ function abrirModalTemplate(dados=null){
   if(dados?.categoria)document.getElementById('tpl-categoria').value=dados.categoria;
   if(dados?.tipo_dieta)document.getElementById('tpl-tipo').value=dados.tipo_dieta;
   renderRefeicoesTpl();
+  atualizarSelectTACOTemplate();
+  document.getElementById('tpl-taco-busca').value='';
+  document.getElementById('tpl-taco-resultados').style.display='none';
+  document.getElementById('tpl-taco-selecionado').style.display='none';
   document.getElementById('modal-template').classList.add('open');
 }
 
@@ -4005,22 +4028,99 @@ function adicionarRefeicaoTemplate(){
   const emojis=['☀️','🍎','🍽️','🥜','🌙','🥗'];
   const nomes=['Café da manhã','Lanche da manhã','Almoço','Lanche da tarde','Jantar','Ceia'];
   const horas=['07:00','10:00','12:30','16:00','19:30','21:00'];
-  _tplRefeicoes.push({ordem:n,emoji:emojis[n-1]||'🍽️',nome:nomes[n-1]||'Refeição '+n,horario:horas[n-1]||'12:00',kcal:'',descricao:''});
+  _tplRefeicoes.push({ordem:n,emoji:emojis[n-1]||'🍽️',nome:nomes[n-1]||'Refeição '+n,horario:horas[n-1]||'12:00',kcal:'',descricao:'',itens:[]});
   renderRefeicoesTpl();
+  atualizarSelectTACOTemplate();
 }
 
 function renderRefeicoesTpl(){
-  document.getElementById('tpl-refeicoes-lista').innerHTML=_tplRefeicoes.map((r,i)=>`
-    <div style="background:var(--cr);border-radius:var(--rs);padding:12px;margin-bottom:8px;border:1px solid var(--bd)">
-      <div style="display:grid;grid-template-columns:40px 1fr 80px 80px auto;gap:8px;align-items:center;margin-bottom:8px">
-        <input value="${r.emoji}" oninput="_tplRefeicoes[${i}].emoji=this.value" style="text-align:center;background:white;border:1px solid var(--bd);border-radius:6px;padding:6px;font-size:16px;width:40px">
-        <input value="${r.nome}" placeholder="Nome da refeição" oninput="_tplRefeicoes[${i}].nome=this.value" style="background:white;border:1px solid var(--bd);border-radius:6px;padding:7px 10px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;width:100%">
-        <input type="time" value="${r.horario}" oninput="_tplRefeicoes[${i}].horario=this.value" style="background:white;border:1px solid var(--bd);border-radius:6px;padding:7px 8px;font-size:12px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;width:100%">
-        <input type="number" value="${r.kcal}" placeholder="kcal" oninput="_tplRefeicoes[${i}].kcal=this.value" style="background:white;border:1px solid var(--bd);border-radius:6px;padding:7px 8px;font-size:12px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;width:100%">
-        <button onclick="_tplRefeicoes.splice(${i},1);renderRefeicoesTpl()" style="background:none;border:none;cursor:pointer;color:var(--ro);font-size:16px;padding:4px">✕</button>
+  document.getElementById('tpl-refeicoes-lista').innerHTML=_tplRefeicoes.map((r,i)=>{
+    const itens=r.itens||[];
+    const totalKcal=itens.reduce((s,it)=>s+(it.kcal||0),0);
+    if(totalKcal>0)_tplRefeicoes[i].kcal=totalKcal;
+    return `<div style="background:white;border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden">
+      <div style="background:var(--cr);padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bd)">
+        <input value="${r.emoji}" oninput="_tplRefeicoes[${i}].emoji=this.value" style="text-align:center;background:none;border:none;outline:none;font-size:18px;width:28px">
+        <input value="${r.nome}" placeholder="Nome da refeição" oninput="_tplRefeicoes[${i}].nome=this.value;atualizarSelectTACOTemplate()" style="font-size:13px;font-weight:600;color:var(--dk);background:none;border:none;outline:none;font-family:'Poppins',sans-serif;flex:1">
+        <input type="time" value="${r.horario}" oninput="_tplRefeicoes[${i}].horario=this.value" style="font-size:12px;color:var(--dm);background:none;border:none;outline:none;font-family:'Poppins',sans-serif;width:70px">
+        ${totalKcal>0?`<span style="font-size:12px;font-weight:700;color:var(--pe)">${totalKcal} kcal</span>`:''}
+        <button onclick="_tplRefeicoes.splice(${i},1);renderRefeicoesTpl();atualizarSelectTACOTemplate()" style="background:none;border:none;cursor:pointer;color:var(--ro);font-size:16px;padding:4px">✕</button>
       </div>
-      <textarea placeholder="Descrição dos alimentos e quantidades..." oninput="_tplRefeicoes[${i}].descricao=this.value" style="width:100%;background:white;border:1px solid var(--bd);border-radius:6px;padding:8px 10px;font-size:12.5px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:50px">${r.descricao}</textarea>
-    </div>`).join('');
+      ${itens.length>0?itens.map((it,ii)=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #F5EFE4">
+          <div style="flex:1">
+            <div style="font-size:12.5px;font-weight:500;color:var(--dk)">${it.nome}</div>
+            <div style="font-size:11px;color:var(--dm)">${it.kcal} kcal · ptn ${it.ptn}g · cho ${it.cho}g · lip ${it.lip}g</div>
+          </div>
+          <button onclick="_tplRefeicoes[${i}].itens.splice(${ii},1);renderRefeicoesTpl()" style="background:none;border:none;cursor:pointer;color:#e57373;font-size:14px;padding:2px 6px">✕</button>
+        </div>`).join(''):'<div style="padding:10px 14px;font-size:12px;color:var(--dm)">Nenhum alimento. Busque acima.</div>'}
+      <div style="padding:8px 14px">
+        <textarea placeholder="Observações adicionais desta refeição (opcional)..." oninput="_tplRefeicoes[${i}].descricao=this.value" style="width:100%;background:var(--cr);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;font-size:12px;font-family:'Poppins',sans-serif;color:var(--dk);outline:none;resize:vertical;min-height:40px">${r.descricao||''}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+  atualizarSelectTACOTemplate();
+}
+
+function atualizarSelectTACOTemplate(){
+  const sel=document.getElementById('tpl-taco-dest');
+  if(!sel||!_tplRefeicoes.length)return;
+  const val=sel.value;
+  sel.innerHTML=_tplRefeicoes.map((r,i)=>`<option value="${i}">${r.emoji} ${r.nome}</option>`).join('');
+  if(val&&parseInt(val)<_tplRefeicoes.length)sel.value=val;
+}
+
+let _tplTacoSelecionado=null;
+function buscarTACOTemplate(q){
+  if(q.length<2){document.getElementById('tpl-taco-resultados').style.display='none';return;}
+  const ql=q.toLowerCase();
+  const res=_tacoCache.filter(a=>a.nome.toLowerCase().includes(ql)).slice(0,12);
+  const el=document.getElementById('tpl-taco-resultados');
+  if(!res.length){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML=res.map(a=>`<div onclick="selecionarTACOTemplate(${a.id})" style="padding:10px 13px;cursor:pointer;font-size:12.5px;border-bottom:1px solid #f0f0f0;transition:background .15s" onmouseover="this.style.background='#EEF4FB'" onmouseout="this.style.background=''">${a.nome}</div>`).join('');
+}
+
+function selecionarTACOTemplate(id){
+  const alim=_tacoCache.find(a=>a.id===id);
+  if(!alim)return;
+  _tplTacoSelecionado=alim;
+  document.getElementById('tpl-taco-resultados').style.display='none';
+  document.getElementById('tpl-taco-busca').value=alim.nome;
+  document.getElementById('tpl-taco-sel-nome').textContent=alim.nome;
+  const qtd=parseFloat(document.getElementById('tpl-taco-qtd').value)||100;
+  const f=qtd/100;
+  document.getElementById('tpl-taco-sel-nutrientes').innerHTML=
+    `<span style="background:#FFF8E1;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600">${Math.round((alim.energia_kcal||0)*f)} kcal</span>
+     <span style="background:#E8F5E9;border-radius:6px;padding:3px 8px;font-size:11px">Ptn ${((alim.proteina||0)*f).toFixed(1)}g</span>
+     <span style="background:#E3F2FD;border-radius:6px;padding:3px 8px;font-size:11px">Cho ${((alim.carboidrato||0)*f).toFixed(1)}g</span>
+     <span style="background:#FCE4EC;border-radius:6px;padding:3px 8px;font-size:11px">Lip ${((alim.lipideos||0)*f).toFixed(1)}g</span>`;
+  document.getElementById('tpl-taco-selecionado').style.display='block';
+}
+
+function adicionarItemTACOTemplate(){
+  if(!_tplTacoSelecionado)return;
+  const idx=parseInt(document.getElementById('tpl-taco-dest').value)||0;
+  if(!_tplRefeicoes[idx])return;
+  const qtd=parseFloat(document.getElementById('tpl-taco-qtd').value)||100;
+  const f=qtd/100;
+  const alim=_tplTacoSelecionado;
+  if(!_tplRefeicoes[idx].itens)_tplRefeicoes[idx].itens=[];
+  _tplRefeicoes[idx].itens.push({
+    nome:alim.nome+' ('+qtd+'g)',
+    kcal:Math.round((alim.energia_kcal||0)*f),
+    ptn:+((alim.proteina||0)*f).toFixed(1),
+    cho:+((alim.carboidrato||0)*f).toFixed(1),
+    lip:+((alim.lipideos||0)*f).toFixed(1),
+    qtd,tacoId:alim.id
+  });
+  document.getElementById('tpl-taco-busca').value='';
+  document.getElementById('tpl-taco-selecionado').style.display='none';
+  _tplTacoSelecionado=null;
+  renderRefeicoesTpl();
+  // Atualizar total de kcal no campo
+  const totalGeral=_tplRefeicoes.reduce((s,r)=>s+(r.itens||[]).reduce((ss,it)=>ss+(it.kcal||0),0),0);
+  if(totalGeral>0)document.getElementById('tpl-kcal').value=totalGeral;
 }
 
 async function salvarTemplate(){
