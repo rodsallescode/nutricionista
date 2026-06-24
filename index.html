@@ -496,6 +496,7 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
           <div class="ficha-hero-stats">
             <div class="fhs"><div class="fhs-v" id="ficha-peso">—</div><div class="fhs-l">Peso</div></div>
             <div class="fhs"><div class="fhs-v" id="ficha-imc">—</div><div class="fhs-l">IMC</div></div>
+            <div class="fhs" style="cursor:pointer" onclick="abrirMetaPeso()" title="Clique para definir meta"><div class="fhs-v" id="ficha-meta">—</div><div class="fhs-l">Meta kg</div></div>
             <div class="fhs"><div class="fhs-v" id="ficha-tempo">—</div><div class="fhs-l">Acompanh.</div></div>
           </div>
         </div>
@@ -551,6 +552,24 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
               <div style="font-size:13px;color:var(--dk);line-height:1.7;background:var(--cr);border-radius:var(--rs);padding:12px" id="fd-obs">—</div>
             </div></div>
           </div>
+          <div class="fsec" id="fsec-meta-peso" style="display:none">
+            <div class="fsec-hd"><span class="fsec-title">🎯 Meta de peso</span><button class="fsec-action" onclick="abrirMetaPeso()">✏️ Alterar</button></div>
+            <div class="fsec-body">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+                <div style="flex:1">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--dm);margin-bottom:6px">
+                    <span id="meta-label-atual">—</span>
+                    <span id="meta-label-meta">Meta: —</span>
+                  </div>
+                  <div style="height:10px;background:#F0EDE8;border-radius:999px;overflow:hidden">
+                    <div id="meta-barra" style="height:100%;background:linear-gradient(90deg,var(--am),#F9A825);border-radius:999px;transition:width .6s;width:0%"></div>
+                  </div>
+                  <div style="text-align:center;margin-top:6px;font-size:12px;color:var(--dm)" id="meta-faltam"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="fsec">
             <div class="fsec-hd">
               <span class="fsec-title">📅 Consultas agendadas</span>
@@ -1098,6 +1117,63 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
   </div>
 </div>
 
+<!-- MODAL EDITAR AVALIAÇÃO -->
+<div class="modal-backdrop" id="modal-editar-aval" style="align-items:flex-start;padding:20px;overflow-y:auto">
+  <div class="modal" style="max-width:680px;margin:auto">
+    <div class="modal-hd">
+      <div><h3>✏️ Editar avaliação</h3><p>Corrija os dados desta avaliação</p></div>
+      <button class="modal-close" onclick="fecharEditarAvaliacao()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-aval-id">
+      <div class="modal-section">Dados básicos</div>
+      <div class="mrow">
+        <div class="mfield"><label>Data *</label><input type="date" id="edit-aval-data"></div>
+        <div class="mfield"><label>Peso (kg) *</label><input type="number" id="edit-aval-peso" step="0.1"></div>
+        <div class="mfield"><label>Altura (cm)</label><input type="number" id="edit-aval-altura"></div>
+        <div class="mfield"><label>Nível de atividade</label>
+          <select id="edit-aval-atividade">
+            <option value="sedentario">Sedentário</option>
+            <option value="leve">Leve (1-3x/sem)</option>
+            <option value="moderado">Moderado (3-5x/sem)</option>
+            <option value="intenso">Intenso (6-7x/sem)</option>
+            <option value="muito_intenso">Muito intenso</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-section">Perímetros (cm)</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px">
+        <div class="mfield"><label>Pescoço</label><input type="number" id="edit-aval-pescoco" step="0.1"></div>
+        <div class="mfield"><label>Tórax</label><input type="number" id="edit-aval-torax" step="0.1"></div>
+        <div class="mfield"><label>Cintura</label><input type="number" id="edit-aval-cintura" step="0.1"></div>
+        <div class="mfield"><label>Abdômen</label><input type="number" id="edit-aval-abdomen" step="0.1"></div>
+        <div class="mfield"><label>Quadril</label><input type="number" id="edit-aval-quadril" step="0.1"></div>
+        <div class="mfield"><label>Braço relax.</label><input type="number" id="edit-aval-braco" step="0.1"></div>
+        <div class="mfield"><label>Braço contr.</label><input type="number" id="edit-aval-braco-contr" step="0.1"></div>
+        <div class="mfield"><label>Antebraço</label><input type="number" id="edit-aval-antebraco" step="0.1"></div>
+        <div class="mfield"><label>Coxa</label><input type="number" id="edit-aval-coxa" step="0.1"></div>
+        <div class="mfield"><label>Panturrilha</label><input type="number" id="edit-aval-panturrilha" step="0.1"></div>
+      </div>
+      <div class="modal-section">Dobras cutâneas (mm)</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+        <div class="mfield"><label>Tricipital ⭐</label><input type="number" id="edit-aval-tricipital" step="0.1"></div>
+        <div class="mfield"><label>Bicipital ⭐</label><input type="number" id="edit-aval-bicipital" step="0.1"></div>
+        <div class="mfield"><label>Subescapular ⭐</label><input type="number" id="edit-aval-subescapular" step="0.1"></div>
+        <div class="mfield"><label>Suprailíaca ⭐</label><input type="number" id="edit-aval-suprailiaca" step="0.1"></div>
+        <div class="mfield"><label>Supraespinal</label><input type="number" id="edit-aval-supraespinal" step="0.1"></div>
+        <div class="mfield"><label>Abdominal</label><input type="number" id="edit-aval-abdominal" step="0.1"></div>
+        <div class="mfield"><label>Coxa medial</label><input type="number" id="edit-aval-coxa-dobra" step="0.1"></div>
+        <div class="mfield"><label>Panturrilha</label><input type="number" id="edit-aval-panturrilha-dobra" step="0.1"></div>
+      </div>
+      <div class="mrow full"><div class="mfield"><label>Observações</label><textarea id="edit-aval-obs" style="min-height:60px"></textarea></div></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="fecharEditarAvaliacao()">Cancelar</button>
+      <button class="btn-criar" onclick="salvarEdicaoAvaliacao()">💾 Salvar e recalcular</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL NOVO EVENTO -->
 <div class="modal-backdrop" id="modal-evento">
   <div class="modal" style="max-width:460px">
@@ -1586,6 +1662,7 @@ async function abrirFicha(id){
   pacienteAtualId=id;
   const {data:p}=await sb.from('pacientes').select('*').eq('id',id).single();
   if(!p)return;
+  window._pacienteAtual=p;
 
   document.getElementById('ficha-av').textContent=iniPac(p.nome);
   document.getElementById('ficha-av').style.background=corPac(p.nome);
@@ -1660,6 +1737,8 @@ async function abrirFicha(id){
   }
 
   const {data:diario}=await sb.from('diario').select('*').eq('paciente_id',id).order('criado_em',{ascending:false}).limit(10);
+  verificarAlertaDiario(diario);
+  setTimeout(atualizarBarraMeta, 500);
   const dHtml=diario&&diario.length>0?diario.map(d=>`<div class="diario-item"><div class="diario-data">${new Date(d.criado_em).toLocaleDateString('pt-BR')}<br><span style="font-weight:400;font-size:10px">${new Date(d.criado_em).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span></div><div class="diario-content"><p>${d.texto||'—'}</p><div class="dc-sub">${d.peso_dia?'⚖️ Peso: <strong>'+d.peso_dia+' kg</strong>':''}</div></div></div>`).join(''):'<div style="color:var(--dm);font-size:13px">Nenhum registro ainda.</div>';
   document.getElementById('diario-lista').innerHTML=dHtml;
   document.getElementById('ficha-diario-resumo').innerHTML=diario&&diario.length>0?`<div class="diario-item" style="padding-top:0;border:none"><div class="diario-data">${new Date(diario[0].criado_em).toLocaleDateString('pt-BR')}</div><div class="diario-content"><p>${diario[0].texto||'—'}</p><div class="dc-sub">${diario[0].peso_dia?'⚖️ Peso: <strong>'+diario[0].peso_dia+' kg</strong>':''}</div></div></div>`:'<div style="color:var(--dm);font-size:13px">Nenhum registro ainda.</div>';
@@ -1907,10 +1986,34 @@ async function criarPaciente(){
   if(peso&&altura&&pac){
     const h=parseFloat(altura)/100;
     const imc_val=+(parseFloat(peso)/(h*h)).toFixed(1);
+    const sexoCad=document.getElementById('m-sexo').value||null;
+    const nascCad=document.getElementById('m-nasc').value||null;
+    let idadeCad=null;
+    if(nascCad){const n=new Date(nascCad);idadeCad=Math.floor((new Date()-n)/(365.25*24*60*60*1000));}
+
+    // Calcular TMB/GET via Edge Function com dados básicos
+    let tmbCad=null, getCad=null, imcClassCad=null;
+    try{
+      const payload={peso:parseFloat(peso),altura_cm:parseFloat(altura),sexo:sexoCad,idade:idadeCad,nivel_atividade:'moderado'};
+      Object.keys(payload).forEach(k=>{if(!payload[k])delete payload[k];});
+      const r=await fetch(`${SUPA_URL}/functions/v1/calculos-nutricionais`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+        body:JSON.stringify(payload)
+      });
+      const calc=await r.json();
+      tmbCad=calc.tmb||null;
+      getCad=calc.get||null;
+      imcClassCad=calc.imc_class||null;
+    }catch(e){}
+
     await sb.from('avaliacoes').insert({
       paciente_id:pac.id,
       peso:parseFloat(peso),altura:parseFloat(altura),
       imc:imc_val,
+      imc_classificacao:imcClassCad,
+      tmb:tmbCad,
+      get_calorico:getCad,
       data_avaliacao:new Date().toISOString().split('T')[0],
       observacoes:'__cadastro_rapido__'
     });
@@ -1931,6 +2034,8 @@ async function criarPaciente(){
     <div class="cr-row"><span class="cr-label">🔑 Senha</span><span class="cr-value">${senha}</span></div>
     <div class="cr-row"><span class="cr-label">🎯 Objetivo</span><span class="cr-value">${obj}</span></div>
     ${imc!=='—'?`<div class="cr-row"><span class="cr-label">📊 IMC</span><span class="cr-value">${imc}</span></div>`:''}
+    ${tmbCad?`<div class="cr-row"><span class="cr-label">🔥 TMB</span><span class="cr-value">${tmbCad} kcal/dia</span></div>`:''}
+    ${getCad?`<div class="cr-row"><span class="cr-label">⚡ GET</span><span class="cr-value">${getCad} kcal/dia (moderado)</span></div>`:''}
     <div class="cr-row"><span class="cr-label">🔐 Login</span><span class="cr-value" style="color:${authOk?'#388E3C':'#F59600'}">${authOk?'✅ Criado automaticamente':'⚠️ Criar manualmente no Supabase'}</span></div>`;
   document.getElementById('sucesso-box').scrollIntoView({behavior:'smooth',block:'center'});
 
@@ -2779,13 +2884,30 @@ function renderFotos(fotos){
   }
 
   document.getElementById('fotos-grid').innerHTML=fotos.map(f=>`
-    <div style="position:relative;border-radius:var(--r);overflow:hidden;cursor:pointer;border:1px solid var(--bd)" onclick="verFotoGrande('${f.url}')">
-      <img src="${f.url}" style="width:100%;height:160px;object-fit:cover;display:block">
-      <div style="padding:8px;background:white">
-        <div style="font-size:11px;font-weight:600;color:var(--dk)">${f.tipo}</div>
-        <div style="font-size:10px;color:var(--dm)">${f.data_foto.split('-').reverse().join('/')}</div>
+    <div style="position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--bd)">
+      <div style="position:relative;cursor:zoom-in" onclick="verFotoGrande('${f.url}')">
+        <img src="${f.url}" style="width:100%;height:160px;object-fit:cover;display:block">
+        <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.45);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px">🔍</div>
+      </div>
+      <div style="padding:8px;background:white;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--dk)">${f.tipo}</div>
+          <div style="font-size:10px;color:var(--dm)">${f.data_foto.split('-').reverse().join('/')}</div>
+        </div>
+        <button onclick="excluirFoto('${f.id}','${f.path}')" style="background:none;border:none;cursor:pointer;font-size:15px;color:#e57373;padding:2px 4px" title="Excluir foto">🗑️</button>
       </div>
     </div>`).join('');
+}
+
+async function excluirFoto(fotoId, path){
+  if(!confirm('Excluir esta foto? A ação não pode ser desfeita.'))return;
+  // Deletar do storage
+  if(path) await sb.storage.from('fotos-pacientes').remove([path]);
+  // Deletar do banco
+  const {error}=await sb.from('fotos_pacientes').delete().eq('id',fotoId);
+  if(error){showToast('Erro ao excluir: '+error.message);return;}
+  showToast('Foto excluída ✓');
+  await carregarFotos(pacienteAtualId);
 }
 
 function verFotoGrande(url){
@@ -4167,6 +4289,151 @@ async function carregarAvaliacoes(id){
   renderAvalsBlocos();
 }
 
+async function abrirEditarAvaliacao(avalId){
+  const {data:a}=await sb.from('avaliacoes').select('*').eq('id',avalId).single();
+  if(!a)return;
+  document.getElementById('edit-aval-id').value=a.id;
+  document.getElementById('edit-aval-data').value=a.data_avaliacao||'';
+  document.getElementById('edit-aval-peso').value=a.peso||'';
+  document.getElementById('edit-aval-altura').value=a.altura||'';
+  document.getElementById('edit-aval-atividade').value='moderado';
+  document.getElementById('edit-aval-pescoco').value=a.pescoco||'';
+  document.getElementById('edit-aval-torax').value=a.torax||'';
+  document.getElementById('edit-aval-cintura').value=a.cintura||'';
+  document.getElementById('edit-aval-abdomen').value=a.abdomen||'';
+  document.getElementById('edit-aval-quadril').value=a.quadril||'';
+  document.getElementById('edit-aval-braco').value=a.braco||'';
+  document.getElementById('edit-aval-braco-contr').value=a.braco_contraido||'';
+  document.getElementById('edit-aval-antebraco').value=a.antebraco||'';
+  document.getElementById('edit-aval-coxa').value=a.coxa||'';
+  document.getElementById('edit-aval-panturrilha').value=a.panturrilha||'';
+  document.getElementById('edit-aval-tricipital').value=a.dobra_tricipital||'';
+  document.getElementById('edit-aval-bicipital').value=a.dobra_bicipital||'';
+  document.getElementById('edit-aval-subescapular').value=a.dobra_subescapular||'';
+  document.getElementById('edit-aval-suprailiaca').value=a.dobra_suprailiaca||'';
+  document.getElementById('edit-aval-supraespinal').value=a.dobra_supraespinal||'';
+  document.getElementById('edit-aval-abdominal').value=a.dobra_abdominal||'';
+  document.getElementById('edit-aval-coxa-dobra').value=a.dobra_coxa||'';
+  document.getElementById('edit-aval-panturrilha-dobra').value=a.dobra_panturrilha||'';
+  document.getElementById('edit-aval-obs').value=a.observacoes||'';
+  document.getElementById('modal-editar-aval').classList.add('open');
+}
+
+function fecharEditarAvaliacao(){document.getElementById('modal-editar-aval').classList.remove('open');}
+
+async function salvarEdicaoAvaliacao(){
+  const avalId=document.getElementById('edit-aval-id').value;
+  const g=id=>document.getElementById(id).value;
+  const gn=id=>parseFloat(g(id))||null;
+
+  const row={
+    data_avaliacao:g('edit-aval-data'),
+    peso:gn('edit-aval-peso'),
+    altura:gn('edit-aval-altura'),
+    pescoco:gn('edit-aval-pescoco'),
+    torax:gn('edit-aval-torax'),
+    cintura:gn('edit-aval-cintura'),
+    abdomen:gn('edit-aval-abdomen'),
+    quadril:gn('edit-aval-quadril'),
+    braco:gn('edit-aval-braco'),
+    braco_contraido:gn('edit-aval-braco-contr'),
+    antebraco:gn('edit-aval-antebraco'),
+    coxa:gn('edit-aval-coxa'),
+    panturrilha:gn('edit-aval-panturrilha'),
+    dobra_tricipital:gn('edit-aval-tricipital'),
+    dobra_bicipital:gn('edit-aval-bicipital'),
+    dobra_subescapular:gn('edit-aval-subescapular'),
+    dobra_suprailiaca:gn('edit-aval-suprailiaca'),
+    dobra_supraespinal:gn('edit-aval-supraespinal'),
+    dobra_abdominal:gn('edit-aval-abdominal'),
+    dobra_coxa:gn('edit-aval-coxa-dobra'),
+    dobra_panturrilha:gn('edit-aval-panturrilha-dobra'),
+    observacoes:g('edit-aval-obs')||null,
+  };
+
+  const {error}=await sb.from('avaliacoes').update(row).eq('id',avalId);
+  if(error){showToast('Erro ao salvar: '+error.message);return;}
+
+  fecharEditarAvaliacao();
+  showToast('Salvando e recalculando...');
+  await recalcularAvaliacao(avalId);
+}
+
+function abrirMetaPeso(){
+  const atual=window._pacienteAtual;
+  const metaAtual=atual?.meta_peso||'';
+  const nova=prompt('Definir meta de peso (kg):', metaAtual);
+  if(nova===null)return;
+  const metaNum=parseFloat(nova);
+  if(isNaN(metaNum)||metaNum<=0){showToast('Valor inválido.');return;}
+  sb.from('pacientes').update({meta_peso:metaNum}).eq('id',pacienteAtualId).then(({error})=>{
+    if(error){showToast('Erro: '+error.message);return;}
+    if(window._pacienteAtual) window._pacienteAtual.meta_peso=metaNum;
+    showToast('Meta definida: '+metaNum+' kg');
+    atualizarBarraMeta();
+  });
+}
+
+function atualizarBarraMeta(){
+  const p=window._pacienteAtual;
+  if(!p||!p.meta_peso){
+    document.getElementById('fsec-meta-peso').style.display='none';
+    document.getElementById('ficha-meta').textContent='—';
+    return;
+  }
+  const avals=avals_cache||[];
+  const pesoAtual=avals.length>0?parseFloat(avals[0].peso):null;
+  const pesoInicial=avals.length>0?parseFloat(avals[avals.length-1].peso):null;
+  const meta=parseFloat(p.meta_peso);
+  document.getElementById('ficha-meta').textContent=meta+'kg';
+  document.getElementById('fsec-meta-peso').style.display='block';
+  if(pesoAtual&&pesoInicial){
+    const total=Math.abs(pesoInicial-meta);
+    const feito=Math.abs(pesoInicial-pesoAtual);
+    const pct=total>0?Math.min(Math.round(feito/total*100),100):100;
+    document.getElementById('meta-barra').style.width=pct+'%';
+    document.getElementById('meta-label-atual').textContent='Atual: '+pesoAtual+'kg';
+    document.getElementById('meta-label-meta').textContent='Meta: '+meta+'kg';
+    const faltam=+(pesoAtual-meta).toFixed(1);
+    document.getElementById('meta-faltam').textContent=faltam===0?'🎉 Meta atingida!':(faltam>0?'Faltam '+faltam+'kg para a meta':'Meta superada em '+Math.abs(faltam)+'kg');
+  }
+}
+
+function verificarAlertaDiario(diarios){
+  if(!diarios||diarios.length===0){
+    // Sem registros — alertar se paciente tem mais de 7 dias de cadastro
+    const p=window._pacienteAtual;
+    if(!p)return;
+    const inicio=new Date(p.criado_em||Date.now());
+    const diasCadastro=Math.floor((new Date()-inicio)/(1000*60*60*24));
+    if(diasCadastro>=3){
+      mostrarAlertaDiario('Paciente nunca registrou o diário alimentar.');
+    }
+    return;
+  }
+  const ultimo=new Date(diarios[0].criado_em||diarios[0].data);
+  const diasSemRegistro=Math.floor((new Date()-ultimo)/(1000*60*60*24));
+  if(diasSemRegistro>=5){
+    mostrarAlertaDiario('Sem registro no diário há '+diasSemRegistro+' dias.');
+  } else {
+    const el=document.getElementById('alerta-diario');
+    if(el) el.style.display='none';
+  }
+}
+
+function mostrarAlertaDiario(msg){
+  let el=document.getElementById('alerta-diario');
+  if(!el){
+    el=document.createElement('div');
+    el.id='alerta-diario';
+    el.style.cssText='background:#FFF3E0;border:1px solid #FFB74D;border-radius:var(--rs);padding:10px 14px;font-size:12px;color:#E65100;display:flex;align-items:center;gap:8px;margin-bottom:12px';
+    const resumo=document.getElementById('ftab-resumo');
+    if(resumo) resumo.prepend(el);
+  }
+  el.style.display='flex';
+  el.innerHTML='⚠️ <span>'+msg+'</span>';
+}
+
 async function marcarCadastroRapido(avalId){
   if(!confirm('Ocultar esta avaliação da aba Antropometria? Ela ficará salva no banco mas não aparecerá nos gráficos nem comparativos.'))return;
   const {error}=await sb.from('avaliacoes').update({observacoes:'__cadastro_rapido__'}).eq('id',avalId);
@@ -4314,6 +4581,7 @@ function renderAvalsBlocos(){
           ${delta?`<span style="background:${neg?'#E8F5E9':'#FFEBEE'};color:${neg?'#2E7D32':'#C62828'};font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px">${parseFloat(delta)>0?'+':''}${delta} kg</span>`:''}
           ${a.imc_classificacao?`<span style="background:#F5EFE4;color:var(--dk);font-size:10px;font-weight:500;padding:2px 8px;border-radius:999px">${a.imc_classificacao}</span>`:''}
           ${(a.dobra_tricipital&&a.dobra_bicipital&&a.dobra_subescapular&&a.dobra_suprailiaca)?`<button onclick="event.stopPropagation();recalcularAvaliacao('${a.id}')" id="btn-recalc-${a.id}" style="background:#FFF8E1;color:#856404;border:1px solid #f0c040;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:4px">⚡ Recalcular</button>`:''}
+          <button onclick="event.stopPropagation();abrirEditarAvaliacao('${a.id}')" style="background:#F0F4FF;color:#3949AB;border:1px solid #C5CAE9;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;cursor:pointer">✏️ Editar</button>
           <span style="font-size:12px;color:var(--dm);transition:transform .2s;${isOpen?'transform:rotate(180deg)':''}">▼</span>
         </div>
       </div>
