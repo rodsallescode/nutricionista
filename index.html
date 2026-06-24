@@ -1710,6 +1710,7 @@ async function abrirFicha(id){
   const meses=Math.floor((new Date()-new Date(p.criado_em))/(1000*60*60*24*30));
   document.getElementById('ficha-tempo').textContent=meses===0?'Novo':meses+'m';
   document.getElementById('ficha-meta').textContent=p.meta_peso?p.meta_peso+'kg':'—';
+  console.log('🔍 abrirFicha — status:', p.status, '| meta_peso:', p.meta_peso);
   await carregarAvaliacoes(id);
 
   // Carregar todos os planos do paciente em blocos
