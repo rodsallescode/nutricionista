@@ -1710,7 +1710,6 @@ async function abrirFicha(id){
   const meses=Math.floor((new Date()-new Date(p.criado_em))/(1000*60*60*24*30));
   document.getElementById('ficha-tempo').textContent=meses===0?'Novo':meses+'m';
   document.getElementById('ficha-meta').textContent=p.meta_peso?p.meta_peso+'kg':'—';
-  console.log('🔍 abrirFicha — status:', p.status, '| meta_peso:', p.meta_peso);
   await carregarAvaliacoes(id);
 
   // Carregar todos os planos do paciente em blocos
@@ -2042,7 +2041,7 @@ async function criarPaciente(){
       get_calorico:getCad,
       data_avaliacao:new Date().toISOString().split('T')[0],
       observacoes:'__cadastro_rapido__'
-    });
+    }).then(({error})=>{if(error)console.warn('Avaliação inicial:',error.message);});
   }
 
   let imc='—';
@@ -2077,7 +2076,6 @@ async function carregarSelectIA(){
   sel.innerHTML='<option value="">Selecione...</option>'+(data||[]).map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
 }
 
-function toggleTag(el){document.querySelectorAll('.tag-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
 
 // ── RENDERIZAÇÃO VISUAL DOS RESULTADOS ANTROPOMÉTRICOS ─
 function renderResultadosVisuais(calc, payload){
@@ -2739,7 +2737,7 @@ async function toggleAcessoPaciente(){
   bolinha.style.right=novoStatus?'3px':'21px';
   label.textContent=novoStatus?'Acesso ativo':'Acesso bloqueado';
   label.style.color=novoStatus?'var(--dm)':'var(--ro)';
-  await sb.from('pacientes').update({portal_ativo:novoStatus}).eq('id',pacienteAtualId);
+  await sb.from('pacientes').update({portal_ativo:novoStatus}).eq('id',pacienteAtualId).then(({error})=>{if(error)showToast('Erro ao alterar acesso: '+error.message);});
   showToast(novoStatus?'Acesso ao portal reativado ✅':'Acesso ao portal bloqueado 🔒');
 }
 
@@ -2836,7 +2834,7 @@ async function salvarFoto(){
   if(upErr){showToast('Erro no upload: '+upErr.message);btn.textContent='💾 Salvar foto';btn.disabled=false;return;}
 
   const {error:insErr}=await sb.from('fotos_pacientes').insert({paciente_id:pacienteAtualId,path,tipo,data_foto:data});
-  if(insErr){showToast('Erro ao salvar registro: '+insErr.message);console.error('INSERT ERROR:',insErr);btn.textContent='💾 Salvar foto';btn.disabled=false;return;}
+  if(insErr){showToast('Erro ao salvar registro: '+insErr.message);btn.textContent='💾 Salvar foto';btn.disabled=false;return;}
 
   showToast('Foto salva! 📸');
   limparFoto();
@@ -2956,7 +2954,7 @@ function toggleAnotacaoPlano(){
 async function salvarAnotacaoPlano(){
   if(!pacienteAtualId)return;
   const txt=document.getElementById('plano-anotacao-txt').value.trim();
-  await sb.from('pacientes').update({anotacao_plano:txt}).eq('id',pacienteAtualId);
+  await sb.from('pacientes').update({anotacao_plano:txt}).eq('id',pacienteAtualId).then(({error})=>{if(error)showToast('Erro ao salvar anotação: '+error.message);});
   document.getElementById('plano-anotacao-salva').style.display='block';
   setTimeout(()=>document.getElementById('plano-anotacao-salva').style.display='none',3000);
   showToast('Anotações salvas!');
@@ -2994,7 +2992,7 @@ async function gerarPlanoIAFicha(){
     if(data.erro)throw new Error(data.erro);
     const plano=data.plano;
     window._planoIAGerado=plano;
-    mostrarPlanoIAResultado(plano);
+    document.getElementById('plano-ia-resultado').style.display='block';
   }catch(e){
     // Fallback simulado
     const plano={titulo:'Plano '+( p?.objetivo||'equilibrado'),kcal_total:1800,tipo_dieta:'Equilibrada',refeicoes:[
@@ -3005,22 +3003,13 @@ async function gerarPlanoIAFicha(){
       {ordem:5,emoji:'🌙',nome:'Jantar',horario:'19:30',kcal:490,descricao:'Sopa de legumes com frango (300ml), torrada integral (2 un.)'},
     ]};
     window._planoIAGerado=plano;
-    mostrarPlanoIAResultado(plano);
+    document.getElementById('plano-ia-resultado').style.display='block';
   }
 
   btn.textContent='✨ Gerar com IA';btn.disabled=false;
 }
 
-function mostrarPlanoIAResultado(plano){
-  document.getElementById('plano-ia-meta').textContent=plano.kcal_total+' kcal · '+plano.tipo_dieta;
-  document.getElementById('plano-ia-refeicoes').innerHTML=plano.refeicoes.map(r=>`
-    <div class="plano-resumo-item">
-      <div class="pri-time">${r.emoji||'🍽️'} ${r.horario||'—'}</div>
-      <div><div class="pri-nome">${r.nome}</div><div class="pri-desc">${r.descricao}</div><div class="pri-kcal">≈ ${r.kcal||'—'} kcal</div></div>
-    </div>`).join('');
-  document.getElementById('plano-ia-resultado').style.display='block';
-  document.getElementById('plano-ia-resultado').scrollIntoView({behavior:'smooth',block:'start'});
-}
+
 
 async function salvarPlanoIA(){
   if(!window._planoIAGerado||!pacienteAtualId)return;
@@ -3342,7 +3331,7 @@ async function salvarEvento(){
 
 async function excluirEvento(id){
   if(!confirm('Excluir este evento?'))return;
-  await sb.from('eventos_agenda').delete().eq('id',id);
+  await sb.from('eventos_agenda').delete().eq('id',id).then(({error})=>{if(error)showToast('Erro ao excluir evento: '+error.message);});
   showToast('Evento excluído.');
   await carregarCalendario();
   if(calDiaSelecionado){
@@ -3414,7 +3403,7 @@ function irParaPaciente(){
 async function excluirConsulta(id){
   const cid=id||_consultaDetalhada?.id;
   if(!cid||!confirm('Excluir esta consulta?'))return;
-  await sb.from('consultas').delete().eq('id',cid);
+  await sb.from('consultas').delete().eq('id',cid).then(({error})=>{if(error)showToast('Erro ao excluir consulta: '+error.message);});
   fecharDetalheEvento();
   showToast('Consulta excluída.');
   await carregarCalendario();
@@ -3428,7 +3417,7 @@ async function excluirConsulta(id){
 async function carregarAniversarios(){
   const {data:pacs}=await sb.from('pacientes').select('id,nome,data_nascimento').not('data_nascimento','is',null);
   if(!pacs||pacs.length===0){
-    const _elMes=document.getElementById('lista-aniversarios-mes');
+    const _elMes=document.getElementById('lista-aniversarios');
     if(_elMes)_elMes.innerHTML='<div style="padding:14px;font-size:12.5px;color:var(--dm);text-align:center">Nenhum aniversário cadastrado</div>';
     document.getElementById('lista-aniversarios-proximos').innerHTML='<div style="padding:14px;font-size:12.5px;color:var(--dm);text-align:center">—</div>';
     return;
@@ -3451,7 +3440,7 @@ async function carregarAniversarios(){
   }).sort((a,b)=>a.dia-b.dia);
 
   if(doMes.length>0){
-    const _elMes2=document.getElementById('lista-aniversarios-mes');
+    const _elMes2=document.getElementById('lista-aniversarios');
     if(_elMes2)_elMes2.innerHTML=doMes.map(({p,dia,anos,hoje2})=>`
       <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #F5EFE4;cursor:pointer" onclick="abrirFicha('${p.id}')">
         <div style="width:36px;height:36px;border-radius:50%;background:${hoje2?'linear-gradient(135deg,var(--am),var(--pe))':'var(--cr)'};border:2px solid ${hoje2?'var(--am)':'var(--bd)'};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:${hoje2?'#fff':'var(--dm)'};flex-shrink:0">${dia}</div>
@@ -3462,7 +3451,7 @@ async function carregarAniversarios(){
         ${hoje2?'<span style="background:#FEF5D4;color:#B8860B;font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px">Hoje!</span>':''}
       </div>`).join('');
   } else {
-    const _elMes3=document.getElementById('lista-aniversarios-mes');
+    const _elMes3=document.getElementById('lista-aniversarios');
     if(_elMes3)_elMes3.innerHTML='<div style="padding:14px;font-size:12.5px;color:var(--dm);text-align:center">Nenhum aniversário este mês</div>';
   }
 
@@ -4154,7 +4143,7 @@ async function editarTemplate(id){
 
 async function excluirTemplate(id){
   if(!confirm('Excluir este modelo?'))return;
-  await sb.from('templates_plano').delete().eq('id',id);
+  await sb.from('templates_plano').delete().eq('id',id).then(({error})=>{if(error)showToast('Erro ao excluir modelo: '+error.message);});
   showToast('Modelo excluído.');
   carregarTemplates();
 }
@@ -4247,17 +4236,7 @@ function abrirModalNovaAvaliacao(){
 function fecharModalNovaAvaliacao(){document.getElementById('modal-nova-aval').classList.remove('open');}
 
 // Legacy compat
-function toggleFormAntro(){}
 
-function limparFormAntro(){
-  ['ant-data','ant-peso','ant-altura','ant-pescoco','ant-torax','ant-cintura','ant-abdomen',
-   'ant-quadril','ant-braco','ant-braco-c','ant-antebraco','ant-coxa','ant-panturrilha',
-   'ant-tricipital','ant-bicipital','ant-subescapular','ant-suprailiaca','ant-supraespinal',
-   'ant-abdominal','ant-dobra-coxa','ant-dobra-pant','ant-obs'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.value='';
-  });
-  document.getElementById('ant-resultados').style.display='none';
-}
 
 async function salvarAvaliacao(){
   const peso=document.getElementById('ant-peso').value;
@@ -5043,11 +5022,6 @@ function mostrarCompAvals(){
   document.getElementById('comp-avals-area').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function mudarGrafico(tipo,btn){
-  document.querySelectorAll('#grafico-section .tag-pill').forEach(p=>p.classList.remove('sel'));
-  btn.classList.add('sel');
-  renderGrafico(tipo);
-}
 
 function renderGrafico(tipo){
   if(avals_cache.length<2)return;
