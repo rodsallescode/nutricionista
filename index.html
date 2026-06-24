@@ -1106,6 +1106,7 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
       </div>
       <div class="mrow">
         <div class="mfield"><label>Status</label><select id="edit-status"><option>Novo</option><option>Ativo</option><option>Inativo</option><option>Pausado</option></select></div>
+        <div class="mfield"><label>Meta de peso (kg)</label><input type="number" id="edit-meta-peso" step="0.1" placeholder="Ex: 65"></div>
         <div class="mfield"><label>Restrições alimentares</label><input type="text" id="edit-restrict"></div>
       </div>
       <div class="mrow full"><div class="mfield"><label>Observações clínicas</label><textarea id="edit-obs" style="min-height:70px"></textarea></div></div>
@@ -1483,7 +1484,10 @@ body{font-family:'Poppins',sans-serif;background:var(--cr);color:var(--dk);min-h
         <div class="mfield"><label>Peso atual (kg)</label><input type="number" id="m-peso" placeholder="68" step="0.1"></div>
         <div class="mfield"><label>Altura (cm)</label><input type="number" id="m-altura" placeholder="165"></div>
       </div>
-      <div class="mrow full"><div class="mfield"><label>Restrições alimentares</label><input type="text" id="m-restrict" placeholder="Ex: sem glúten, sem lactose..."></div></div>
+      <div class="mrow">
+        <div class="mfield"><label>Meta de peso (kg)</label><input type="number" id="m-meta-peso" step="0.1" placeholder="Ex: 65"></div>
+        <div class="mfield"><label>Restrições alimentares</label><input type="text" id="m-restrict" placeholder="Ex: sem glúten, sem lactose..."></div>
+      </div>
       <div class="mrow full"><div class="mfield"><label>Observações clínicas</label><textarea id="m-obs" placeholder="Histórico, medicamentos, condições especiais..."></textarea></div></div>
       <div class="modal-section">Acesso ao portal</div>
       <div class="acesso-box"><div class="ab-title">🔐 Login do paciente</div><div class="ab-desc">Você define o e-mail e a senha. Repasse as credenciais ao paciente após o cadastro.</div></div>
@@ -1974,6 +1978,7 @@ async function criarPaciente(){
     sexo:document.getElementById('m-sexo').value||null,
     objetivo:obj,tipo_atendimento:tipo,
     restricoes:document.getElementById('m-restrict').value||null,
+    meta_peso:parseFloat(document.getElementById('m-meta-peso').value)||null,
     observacoes:document.getElementById('m-obs').value||null,
     status:'Novo',
     user_id:authId||null,
@@ -3030,6 +3035,7 @@ function abrirModalEditarPaciente(){
     if(!p)return;
     if(p.data_nascimento)document.getElementById('edit-nasc').value=p.data_nascimento;
     if(p.sexo)document.getElementById('edit-sexo').value=p.sexo;
+    document.getElementById('edit-meta-peso').value=p.meta_peso||'';
     if(p.objetivo)document.getElementById('edit-obj').value=p.objetivo;
     if(p.tipo_atendimento)document.getElementById('edit-tipo').value=p.tipo_atendimento;
     if(p.status)document.getElementById('edit-status').value=p.status;
@@ -3046,6 +3052,7 @@ async function salvarEdicaoPaciente(){
     data_nascimento:document.getElementById('edit-nasc').value||null,
     telefone:document.getElementById('edit-tel').value||null,
     sexo:document.getElementById('edit-sexo').value||null,
+    meta_peso:parseFloat(document.getElementById('edit-meta-peso').value)||null,
     email:document.getElementById('edit-email').value||null,
     objetivo:document.getElementById('edit-obj').value||null,
     tipo_atendimento:document.getElementById('edit-tipo').value||null,
