@@ -1690,6 +1690,7 @@ async function abrirFicha(id){
   // Carregar avaliações via função dedicada
   const meses=Math.floor((new Date()-new Date(p.criado_em))/(1000*60*60*24*30));
   document.getElementById('ficha-tempo').textContent=meses===0?'Novo':meses+'m';
+  document.getElementById('ficha-meta').textContent=p.meta_peso?p.meta_peso+'kg':'—';
   await carregarAvaliacoes(id);
 
   // Carregar todos os planos do paciente em blocos
@@ -3031,7 +3032,7 @@ function abrirModalEditarPaciente(){
   document.getElementById('edit-restrict').value=document.getElementById('fd-restrict').textContent==='Sem restrições'?'':document.getElementById('fd-restrict').textContent;
   document.getElementById('edit-obs').value=document.getElementById('fd-obs').textContent==='Sem observações'?'':document.getElementById('fd-obs').textContent;
   // Preencher data nascimento
-  sb.from('pacientes').select('data_nascimento,sexo,objetivo,tipo_atendimento,status').eq('id',pacienteAtualId).single().then(({data:p})=>{
+  sb.from('pacientes').select('data_nascimento,sexo,objetivo,tipo_atendimento,status,meta_peso').eq('id',pacienteAtualId).single().then(({data:p})=>{
     if(!p)return;
     if(p.data_nascimento)document.getElementById('edit-nasc').value=p.data_nascimento;
     if(p.sexo)document.getElementById('edit-sexo').value=p.sexo;
@@ -3063,9 +3064,9 @@ async function salvarEdicaoPaciente(){
   if(error){showToast('Erro: '+error.message);return;}
   fecharModalEditar();
   showToast('Dados atualizados! ✅');
-  await abrirFicha(pacienteAtualId);
   await carregarPacientes();
   await carregarAniversarios();
+  await abrirFicha(pacienteAtualId);
 }
 
 // ── CALENDÁRIO ─────────────────────────────────────────
